@@ -1,0 +1,37 @@
+@import 'constants.styl'
+
+centered-margin()
+  width 100%
+  margin-right auto
+  margin-left auto
+centered-flex-container()
+  display flex
+  align-items center
+  justify-content center
+centered-absolute-transform()
+  position absolute
+  top 50%
+  left 50%
+  transform translate(-50%, -50%)
+
+trans(time=0.2s)
+  transition all time ease
+
+button-no-styles()
+  margin 0
+  padding 0
+  background none
+  border none
+  outline none
+list-no-styles()
+  margin 0
+  padding 0
+  list-style none
+
+pc-hidden()
+  @media ({desktop})
+    display none
+
+mobile-hidden()
+  @media ({mobile})
+    display none
