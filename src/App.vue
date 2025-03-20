@@ -2,15 +2,68 @@
 @import 'styles/constants.styl'
 @import 'styles/buttons.styl'
 @import 'styles/fonts.styl'
+@import 'styles/animations.styl'
 
 .wrapper
+  position relative
   width 100%
+  max-width 400px
   min-height 100vh
+  border 2px solid colorSec1
+  border-radius borderRadiusL
+  centered-margin()
+  // overflow hidden
 
   > *
     position absolute
     width 100%
     min-height 100vh
+    padding 60px 15px
+
+  .bottom-interface
+    position absolute
+    bottom 0
+    left 0
+    width 100%
+    padding 0
+    .bottom-line-bg
+      position absolute
+      bottom 0
+      width 100%
+      height 70px
+      object-fit cover
+      object-position bottom
+    .buttons
+      > *
+        button-no-styles()
+
+        position absolute
+        bottom 28px
+        transform translate(-50%, 50%)
+        width 35px
+        height 35px
+        padding 8px
+        background colorBlockBg
+        border-radius borderRadiusS
+        hover-effect()
+        img
+          width 100%
+          height 100%
+      .fight
+        left 10%
+      .tree
+        left 27%
+      .map
+        left 73%
+      .profile
+        left 90%
+
+      .button-scanner
+        bottom 65px
+        left 50%
+        width 65px
+        height 65px
+        background none
 </style>
 
 <style lang="stylus">
@@ -69,6 +122,18 @@
         <component :is="Component" />
       </transition>
     </router-view>
+
+    <div class="bottom-interface">
+      <img class="bottom-line-bg" src="/static/images/bottom-line.svg" alt="">
+      <nav class="buttons">
+        <router-link :to="{name: 'fight'}" class="fight"><img src="/static/icons/fight.svg" alt=""></router-link>
+        <router-link :to="{name: 'skillsTree'}" class="tree"><img src="/static/icons/tree.svg" alt=""></router-link>
+        <router-link :to="{name: 'map'}" class="map"><img src="/static/icons/map.svg" alt=""></router-link>
+        <router-link :to="{name: 'profile'}" class="profile"><img src="/static/icons/profile.svg" alt=""></router-link>
+
+        <router-link :to="{name: 'qrScanner'}" class="button-scanner"><img src="/static/icons/qr-scanner.svg" alt=""></router-link>
+      </nav>
+    </div>
   </div>
 
   <Popups ref="popups" />

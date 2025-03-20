@@ -30,6 +30,15 @@ hover-effect()
     &:hover
       opacity 0.7
 
+hover-effect-scale()
+  cursor pointer
+  transition all 0.2s ease
+
+  @media ({desktop})
+    &:hover
+      transform scale(1.1)
+      opacity 0.7
+
 hover-effect-underline(color=white)
   background linear-gradient(color, color) 50% 100% / 0 1px no-repeat
   transition all 0.2s

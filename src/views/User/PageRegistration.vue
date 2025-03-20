@@ -52,62 +52,17 @@ export default {
   components: { FormWithErrors },
   data() {
     return {
+      guildId: this.$route.query.guildId,
+
       fields: {
         name: {
-          title: 'ФИО',
+          title: 'Имя',
           name: 'name',
           type: 'text',
-          placeholder: 'Иванов Иван Иванович',
+          placeholder: 'Тяпкин Сергей',
           validationRegExp: Validators.name.regExp,
           prettifyResult: Validators.name.prettifyResult,
           autocomplete: 'name',
-        },
-        group: {
-          title: 'Учебная группа',
-          name: 'group',
-          type: 'text',
-          placeholder: 'ОЭ2-11',
-          validationRegExp: Validators.group.regExp,
-          prettifyResult: Validators.group.prettifyResult,
-          autocomplete: 'group',
-        },
-        tg: {
-          title: 'Telegram',
-          name: 'telegram',
-          type: 'text',
-          placeholder: '@legends_bmstu',
-          validationRegExp: Validators.tg.regExp,
-          prettifyResult: Validators.tg.prettifyResult,
-          info: 'В любом формате',
-          autocomplete: 'telegram',
-        },
-        vk: {
-          title: 'VK',
-          name: 'vk',
-          type: 'text',
-          placeholder: 'vk.com/legends_bmstu',
-          validationRegExp: Validators.vk.regExp,
-          prettifyResult: Validators.vk.prettifyResult,
-          info: 'В любом формате',
-          autocomplete: 'vk',
-        },
-        email: {
-          title: 'Электронная почта',
-          name: 'email',
-          type: 'text',
-          placeholder: 'legends@bmstu.ru',
-          validationRegExp: Validators.email.regExp,
-          prettifyResult: Validators.email.prettifyResult,
-          autocomplete: 'email',
-        },
-        phone: {
-          title: 'Номер телефона',
-          name: 'phone',
-          type: 'text',
-          placeholder: '8-(123)-456-78-90',
-          validationRegExp: Validators.phone.regExp,
-          prettifyResult: Validators.phone.prettifyResult,
-          autocomplete: 'tel',
         },
         password: {
           title: 'Пароль',
@@ -116,7 +71,7 @@ export default {
           placeholder: '●●●●●●',
           validationRegExp: Validators.password.regExp,
           prettifyResult: Validators.password.prettifyResult,
-          info: 'Минимум 6 символов',
+          info: 'Ваш пароль хэшируется и не может быть раскрыт, вводите надёжный пароль',
           autocomplete: 'password',
         },
         passwordAgain: {
@@ -132,6 +87,13 @@ export default {
     };
   },
 
+  mounted() {
+    if (this.guildId === undefined) {
+      this.$popups.error("Ошибка", "Необходимо отсканировать QR гильдии, чтобы зарегистрироваться!");
+      this.$router.push({name: 'page404'})
+    }
+  },
+
   methods: {
     async register(data) {
       if (data.password !== data.passwordAgain) {
@@ -142,11 +104,6 @@ export default {
       this.loading = true;
       const { ok } = await this.$api.register(
         data.name,
-        data.group,
-        data.tg,
-        data.vk,
-        data.email,
-        data.phone,
         data.password,
         detectBrowser(),
         detectOS(),
@@ -154,7 +111,7 @@ export default {
       this.loading = false;
 
       if (!ok) {
-        this.$refs.form.setError([this.fields.email], 'На указанный email уже зарегестрирован аккаунт');
+        this.$refs.form.setError([this.fields.email], 'Неизвестная ошибка. Проверьте подключение к сети');
         return;
       }
       this.loading = true;

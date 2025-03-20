@@ -55,18 +55,16 @@ export default class API extends REST_API {
   // User
   getUser = () =>
     this.#GET(`/user`, {}, UserModel, Response200(UserModelMockData)) as MyResponse<User>;
-  updateProfile = (id: string, profileData: { username?: string; email?: string; password?: string }) =>
+  updateProfile = (id: string, profileData: { username?: string; password?: string }) =>
     this.#PUT(`/user/${id}`, profileData, UserModel) as MyResponse<User>;
-  register = (username: string, email: string, password: string) =>
-    this.#POST(`/user`, { username, email, password }, UserModel) as MyResponse<User>;
+  updatePassword = (id: string, oldPassword: string, newPassword: string) =>
+    this.#PUT(`/user/${id}`, {old_password: oldPassword, new_password: newPassword}, UserModel) as MyResponse<User>;
+  register = (name: string, password: string) =>
+    this.#POST(`/user`, { name, password }, UserModel) as MyResponse<User>;
   deleteProfile = () =>
     this.#DELETE(`/user`) as MyResponse<unknown>;
-  login = (usernameOrEmail: string, password: string) =>
-    this.#POST(`/auth`, { username_or_email: usernameOrEmail, password }, UserModel) as MyResponse<User>;
+  login = (name: string, password: string) =>
+    this.#POST(`/auth`, { name, password }, UserModel) as MyResponse<User>;
   logout = () =>
     this.#DELETE(`/auth`) as MyResponse<unknown>;
-  sendPasswordRestorationLetter = () =>
-    this.#POST(`/auth/password/restore`) as MyResponse<unknown>;
-  restorePasswordByCode = (code: string, newPassword: string): MyResponse<unknown> =>
-    this.#PUT(`/auth/password/restore`, { code, new_password: newPassword }) as MyResponse<unknown>;
 }

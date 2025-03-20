@@ -5,10 +5,9 @@ import { type Store } from '~/types/store';
 import Page from '~/views/Page.vue';
 import Page404 from '~/views/Page404.vue';
 import PageRegistration from '~/views/User/PageRegistration.vue';
+import PageChangePassword from '~/views/User/PageChangePassword.vue';
 import PageLogin from '~/views/User/PageLogin.vue';
 import PageProfile from '~/views/User/PageProfile.vue';
-import PageRestorePassword from '~/views/User/PageRestorePassword.vue';
-import PageConfirmEmail from '~/views/User/PageConfirmEmail.vue';
 import routes from '~/routes';
 import { RouteRecordRaw } from 'vue-router';
 
@@ -24,12 +23,15 @@ export default function createVueRouter(Store: Store): Router {
   const routesList: MyRoute[] = [
     { path: '/', name: 'default', component: Page },
 
-    { path: '/profile', name: 'profile', component: PageProfile },
+    { path: '/profile', name: 'profile', component: PageProfile, meta: {loginRequired: true}},
     { path: '/login', name: 'login', component: PageLogin },
     { path: '/signup', name: 'signup', component: PageRegistration },
-    { path: '/password/restore', name: 'restorePassword', component: PageRestorePassword },
-    { path: '/password/change', name: 'changePassword', component: PageRestorePassword },
-    { path: '/email/confirm', name: 'confirmEmail', component: PageConfirmEmail },
+    { path: '/password/change', name: 'changePassword', component: PageChangePassword },
+
+    { path: '/fight', name: 'fight', component: Page },
+    { path: '/skills', name: 'skillsTree', component: Page },
+    { path: '/map', name: 'map', component: Page },
+    { path: '/qr-scanner', name: 'qrScanner', component: Page },
 
     { path: '/:pathMatch(.*)*', name: 'page404', component: Page404 },
   ];

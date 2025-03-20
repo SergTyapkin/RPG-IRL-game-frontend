@@ -28,7 +28,7 @@
       margin-top 20px
       text-decoration none
       font-small()
-      .signin-by-email-link
+      .signin-by-name-link
         color colorText1
         text-decoration none
       .restore-password-link
@@ -41,14 +41,14 @@
     <div class="form">
       ВХОД<br>
       <FormWithErrors ref="form" :fields="fields" submit-text="Вход" :loading="loading" @success="login" />
-      <router-link class="profile-link" :to="{ name: 'signup' }">
-        <button class="profile-button">Зарегистрироваться</button>
-      </router-link>
+      <!--      <router-link class="profile-link" :to="{ name: 'signup' }">-->
+      <!--        <button class="profile-button">Зарегистрироваться</button>-->
+      <!--      </router-link>-->
 
-      <div class="signin-links">
-        <!--<router-link class="signin-by-email-link" :to="{name: 'signInByEmail'}">Войти по почте</router-link>-->
-        <router-link class="restore-password-link" :to="{name: 'restorePassword'}">Восстановить пароль</router-link>
-      </div>
+      <!--      <div class="signin-links">-->
+      <!--        &lt;!&ndash;<router-link class="signin-by-name-link" :to="{name: 'signInByname'}">Войти по почте</router-link>&ndash;&gt;-->
+      <!--        <router-link class="restore-password-link" :to="{name: 'restorePassword'}">Восстановить пароль</router-link>-->
+      <!--      </div>-->
     </div>
   </div>
 </template>
@@ -63,14 +63,14 @@ export default {
   data() {
     return {
       fields: {
-        email: {
-          title: 'Электронная почта',
-          name: 'email',
+        name: {
+          title: 'Ваше имя',
+          name: 'name',
           type: 'text',
-          placeholder: 'legends@bmstu.ru',
-          validationRegExp: Validators.email.regExp,
-          prettifyResult: Validators.email.prettifyResult,
-          autocomplete: 'email',
+          placeholder: 'Сергей Тяпкин',
+          validationRegExp: Validators.name.regExp,
+          prettifyResult: Validators.name.prettifyResult,
+          autocomplete: 'name',
         },
         password: {
           title: 'Пароль',
@@ -89,11 +89,11 @@ export default {
   methods: {
     async login(data) {
       this.loading = true;
-      const { ok } = await this.$api.login(data.email, data.password, detectBrowser(), detectOS());
+      const { ok } = await this.$api.login(data.name, data.password, detectBrowser(), detectOS());
       this.loading = false;
 
       if (!ok) {
-        this.$refs.form.setError([this.fields.email, this.fields.password], 'Неверные email или пароль');
+        this.$refs.form.setError([this.fields.name, this.fields.password], 'Неверные имя или пароль');
         return;
       }
       this.loading = true;

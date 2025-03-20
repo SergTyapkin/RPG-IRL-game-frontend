@@ -102,7 +102,7 @@ export default {
       }
 
       this.loading = true;
-      const { ok } = await this.$api.changePassword(data.oldPassword, data.newPassword);
+      const { ok } = await this.$api.changePassword(this.$user.id, data.oldPassword, data.newPassword);
       this.loading = false;
 
       if (!ok) {
