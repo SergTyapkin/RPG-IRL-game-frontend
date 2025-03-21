@@ -151,6 +151,8 @@
         :min-y-offset="100"
         :min-scale="0.5"
         :max-scale="3"
+        :inner-element-width="svgMaxWidth"
+        :inner-element-height="svgMaxHeight"
         class="draggable-element">
         <div class="tree-container">
           <svg :viewBox="`0 0 ${svgMaxWidth} ${svgMaxHeight}`" :width="svgMaxWidth" :height="svgMaxHeight">
@@ -179,7 +181,7 @@
                       </div>
                     </transition>
                     <transition name="opacity">
-                      <div class="cost" :class="selectedTree" v-if="!$user.skills.includes(skill.id) && $user.skills.includes(skill.parentId)">{{ skill.cost }}</div>
+                      <div class="cost" :class="selectedTree" v-if="!$user.skills.includes(skill.id) && (skill.parentId === undefined || $user.skills.includes(skill.parentId))">{{ skill.cost }}</div>
                     </transition>
                   </Cell>
                 </foreignObject>
@@ -219,7 +221,6 @@ export default {
 
   computed: {
     iterableSkillTree(): (Skill | { lines?: [number, number] })[] {
-      console.log(IterableSkillTrees[this.selectedTree]);
       return IterableSkillTrees[this.selectedTree];
     },
     svgMaxWidth() {
