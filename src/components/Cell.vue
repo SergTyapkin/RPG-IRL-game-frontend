@@ -10,6 +10,7 @@
   width var(--size)
   height var(--size)
   padding 10px
+  border-radius borderRadiusS
   img
     width 100%
     height 100%
@@ -18,6 +19,7 @@
 <template>
   <div class="root-cell" :style="{'--size': size}">
     <img v-if="src" :src="src" alt="">
+    <slot></slot>
   </div>
 </template>
 

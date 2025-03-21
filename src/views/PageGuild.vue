@@ -27,6 +27,9 @@
       color colorText2
       font-bold()
       margin-bottom 15px
+
+  .section-members
+    margin-top 30px
 </style>
 
 <template>

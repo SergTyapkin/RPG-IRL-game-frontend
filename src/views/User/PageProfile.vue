@@ -9,10 +9,12 @@
   .section-user-info
     display flex
     align-items flex-end
+
     .guild-button
       width 40px
       height 40px
       padding 8px
+
       img
         width 100%
         height 100%
@@ -28,6 +30,7 @@
   .section-equipment
   .section-inventory
     margin-top 60px
+
     header
       color colorText2
       font-bold()
@@ -49,24 +52,24 @@
   <div class="root-profile">
     <section class="section-user-info">
       <UserProfileInfo show-guild />
-      <router-link :to="{ name: 'guild' }" class="guild-button"
-        ><img src="/static/icons/guild.svg" alt=""
-      /></router-link>
+      <router-link :to="{ name: 'guild' }" class="guild-button">
+        <img src="/static/icons/guild.svg" alt="">
+      </router-link>
     </section>
 
     <section class="section-level">
-      <LevelComponent :level="2" :cur-synced-xp="700" :cur-not-synced-xp="300" :max-xp="2000" />
+      <LevelComponent :level="2" :cur-synced-xp="$user.stats?.experience" :cur-not-synced-xp="0" :max-xp="2000" />
     </section>
 
     <section class="section-HP-Money">
-      <ValueBadge :type="ResourceTypes.hp" :value="$user.stats?.hp || 20" :not-synced-value="50" />
-      <ValueBadge :type="ResourceTypes.money" :value="$user.stats?.money || 95" :not-synced-value="50" />
+      <ValueBadge :type="ResourceTypes.hp" :value="$user.stats?.hp" :not-synced-value="50" />
+      <ValueBadge :type="ResourceTypes.money" :value="$user.stats?.money" :not-synced-value="50" />
     </section>
 
     <section class="section-equipment">
       <div class="top-string">
         <header>Экипировка</header>
-        <ValueBadge :type="ResourceTypes.protection" :value="$user.stats?.protection || 15" />
+        <ValueBadge :type="ResourceTypes.protection" :value="$user.stats?.protection" />
       </div>
       <Equipment />
     </section>
@@ -101,7 +104,7 @@ export default {
 
   data() {
     return {
-      loadingProfile: false,
+      loading: false,
 
       ResourceTypes,
     };
@@ -133,7 +136,7 @@ export default {
       }
 
       newUserData[fieldName] = Validators[fieldNameUser].prettifyResult(inputValue);
-      this.loadingProfile = true;
+      this.loading = true;
       const { ok } = await this.$api.editProfile(
         newUserData.name,
         newUserData.group,
@@ -142,7 +145,7 @@ export default {
         newUserData.email,
         newUserData.phone_number,
       );
-      this.loadingProfile = false;
+      this.loading = false;
       if (!ok) {
         this.$popups.error(`Не удалось изменить значение поля ${fieldName}`);
         return;
@@ -151,9 +154,9 @@ export default {
     },
 
     async logout() {
-      this.loadingProfile = true;
+      this.loading = true;
       const { ok } = await this.$api.logout();
-      this.loadingProfile = true;
+      this.loading = true;
 
       if (!ok) {
         this.$popups.error('Не получилось выйти из аккаунта', 'Неизвестная ошибка');

@@ -16,6 +16,7 @@
       display flex
       flex-direction column
       justify-content space-between
+      align-items flex-start
       header
         text-transform uppercase
         font-large()
@@ -36,10 +37,17 @@
           img
             width 100%
             height 100%
+  &.small
+    .badge
+      height 30px
+    .text-block
+      white-space nowrap
+      header
+        font-small-extra()
 </style>
 
 <template>
-  <div class="root-value-badge">
+  <div class="root-value-badge" :class="{small}">
     <div v-if="type === ResourceTypes.hp" class="content">
       <img class="badge" src="/static/images/hp-badge.svg" alt="hp">
       <div class="text-block">
@@ -102,6 +110,7 @@ export default {
       type: Number,
       required: false,
     },
+    small: Boolean,
   },
   emits: ['update:modelValue'],
 

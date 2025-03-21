@@ -38,11 +38,11 @@
 <!--    <div class="avatar"><img :src="overrideAvatar || $user.avatarUrl" alt="avatar"></div>-->
     <div class="avatar"><img src="/static/images/user-avatar-example.png" alt="avatar"></div>
     <div class="text-block">
-      <strong class="name">{{ overrideName || $user.name || 'Имя_пользователя' }}</strong>
+      <strong class="name">{{ overrideName || $user.name }}</strong>
       <div class="guild-info" v-if="showGuild">
         <img src="/static/icons/guild.svg" alt="">
         <div class="guild-name"> {{ $user.guild?.name || 'Гильдия' }} </div>
-        <div class="guild-xp-badge"> {{ $user.guild?.xp || 400 }} xp </div>
+        <div class="guild-xp-badge"> {{ $user.guild?.experience }} xp </div>
       </div>
     </div>
   </div>
