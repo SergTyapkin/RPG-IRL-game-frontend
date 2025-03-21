@@ -34,11 +34,22 @@ export const Guilds = {
   },
 };
 
-export const Resources = {
+export const ResourceTypes = {
   money: "M",
-  heal: "H",
+  hp: "H",
   experience: "X",
   power: "P",
   agility: "A",
   protection: "D",
+  intelligence: "I",
+}
+
+export const ItemTypes = {
+  hat: 'hat',
+  main: 'main',
+  boots: 'boots',
+  artefact: 'artefact',
+  weapon: 'weapon',
+  material: 'material',
+  other: 'other',
 }

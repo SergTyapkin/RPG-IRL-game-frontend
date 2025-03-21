@@ -10,6 +10,8 @@ import PageLogin from '~/views/User/PageLogin.vue';
 import PageProfile from '~/views/User/PageProfile.vue';
 import routes from '~/routes';
 import { RouteRecordRaw } from 'vue-router';
+import PageMap from '~/views/PageMap.vue';
+import PageGuild from '~/views/PageGuild.vue';
 
 type MyRoute = RouteRecordRaw & {
   path: keyof typeof routes,
@@ -30,8 +32,9 @@ export default function createVueRouter(Store: Store): Router {
 
     { path: '/fight', name: 'fight', component: Page },
     { path: '/skills', name: 'skillsTree', component: Page },
-    { path: '/map', name: 'map', component: Page },
+    { path: '/map', name: 'map', component: PageMap },
     { path: '/qr-scanner', name: 'qrScanner', component: Page },
+    { path: '/guild', name: 'guild', component: PageGuild },
 
     { path: '/:pathMatch(.*)*', name: 'page404', component: Page404 },
   ];

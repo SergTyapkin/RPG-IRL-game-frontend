@@ -18,14 +18,16 @@
     position absolute
     width 100%
     min-height 100vh
-    padding 60px 15px
+    padding 60px 15px 120px 15px
 
   .bottom-interface
-    position absolute
+    position fixed
     bottom 0
-    left 0
+    transform translateX(-2px)
     width 100%
+    max-width 400px
     padding 0
+    pointer-events none
     .bottom-line-bg
       position absolute
       bottom 0
@@ -36,6 +38,7 @@
     .buttons
       > *
         button-no-styles()
+        pointer-events all
 
         position absolute
         bottom 28px
@@ -43,9 +46,11 @@
         width 35px
         height 35px
         padding 8px
-        background colorBlockBg
         border-radius borderRadiusS
         hover-effect()
+        trans()
+        &.router-link-active
+          background colorBlockBg
         img
           width 100%
           height 100%
@@ -128,7 +133,7 @@
       <nav class="buttons">
         <router-link :to="{name: 'fight'}" class="fight"><img src="/static/icons/fight.svg" alt=""></router-link>
         <router-link :to="{name: 'skillsTree'}" class="tree"><img src="/static/icons/tree.svg" alt=""></router-link>
-        <router-link :to="{name: 'map'}" class="map"><img src="/static/icons/map.svg" alt=""></router-link>
+        <router-link :to="{name: 'map'}" class="map"><img src="/static/icons/map-2.svg" alt=""></router-link>
         <router-link :to="{name: 'profile'}" class="profile"><img src="/static/icons/profile.svg" alt=""></router-link>
 
         <router-link :to="{name: 'qrScanner'}" class="button-scanner"><img src="/static/icons/qr-scanner.svg" alt=""></router-link>

@@ -1,21 +1,14 @@
 <style lang="stylus" scoped>
-@import '../../styles/constants.styl'
-@import '../../styles/buttons.styl'
-@import '../../styles/fonts.styl'
-@import '../../styles/utils.styl'
-@import '../../styles/animations.styl'
+@import '../styles/constants.styl'
+@import '../styles/buttons.styl'
+@import '../styles/fonts.styl'
+@import '../styles/utils.styl'
+@import '../styles/animations.styl'
 
 .root-profile
   .section-user-info
     display flex
-    align-items flex-end
-    .guild-button
-      width 40px
-      height 40px
-      padding 8px
-      img
-        width 100%
-        height 100%
+    gap 15px
 
   .section-level
     margin-top 10px
@@ -25,64 +18,51 @@
     justify-content space-between
     margin-top 20px
 
-  .section-equipment
+  .section-leader
+  .section-members
   .section-inventory
     margin-top 60px
+
     header
       color colorText2
       font-bold()
-      font-large()
-
-  .section-equipment
-    .top-string
-      display flex
-      justify-content space-between
-      align-items center
       margin-bottom 15px
-
-  .section-inventory
-    header
-      margin-bottom 20px
 </style>
 
 <template>
   <div class="root-profile">
     <section class="section-user-info">
-      <UserProfileInfo show-guild />
-      <router-link :to="{ name: 'guild' }" class="guild-button"
-        ><img src="/static/icons/guild.svg" alt=""
-      /></router-link>
+      <UserProfileInfo :override-avatar="undefined" override-name="Гильдия 1" />
+      <ValueBadge :type="ResourceTypes.money" :value="90" />
     </section>
 
     <section class="section-level">
-      <LevelComponent :level="2" :cur-synced-xp="700" :cur-not-synced-xp="300" :max-xp="2000" />
+      <LevelComponent :level="2" :cur-synced-xp="700" :max-xp="2000" />
     </section>
 
-    <section class="section-HP-Money">
-      <ValueBadge :type="ResourceTypes.hp" :value="$user.stats?.hp || 20" :not-synced-value="50" />
-      <ValueBadge :type="ResourceTypes.money" :value="$user.stats?.money || 95" :not-synced-value="50" />
+    <section class="section-leader">
+      <header>Лидер гильдии</header>
+      <UsersList :users="[{ name: 'Крутой глава', level: 55 }]" />
     </section>
 
-    <section class="section-equipment">
-      <div class="top-string">
-        <header>Экипировка</header>
-        <ValueBadge :type="ResourceTypes.protection" :value="$user.stats?.protection || 15" />
-      </div>
-      <Equipment />
+    <section class="section-members">
+      <header>Участники гильдии</header>
+      <UsersList
+        :users="[
+          { name: 'Участник какой-то', level: 5 },
+          { name: 'Участник какой-то', level: 5 },
+          { name: 'Участник какой-то', level: 5 },
+          { name: 'Участник какой-то', level: 5 },
+          { name: 'Участник какой-то', level: 5 },
+          { name: 'Участник какой-то', level: 5 },
+        ]"
+      />
     </section>
 
     <section class="section-inventory">
       <header>Инвентарь</header>
       <Inventory :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]" />
     </section>
-
-    <!--    <div class="buttons-row">-->
-    <!--      <router-link :to="{ name: 'changePassword' }">-->
-    <!--        <button class="change-password">Сменить пароль</button>-->
-    <!--      </router-link>-->
-
-    <!--      <button class="logout-button" @click="logout">Выйти</button>-->
-    <!--    </div>-->
   </div>
 </template>
 
@@ -93,11 +73,11 @@ import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import LevelComponent from '~/components/LevelComponent.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
 import { ResourceTypes } from '~/constants';
-import Equipment from '~/components/Equipment.vue';
 import Inventory from '~/components/Inventory.vue';
+import UsersList from '~/components/UsersList.vue';
 
 export default {
-  components: { Inventory, Equipment, ValueBadge, LevelComponent, UserProfileInfo, CircleLoading },
+  components: { UsersList, Inventory, ValueBadge, LevelComponent, UserProfileInfo, CircleLoading },
 
   data() {
     return {
