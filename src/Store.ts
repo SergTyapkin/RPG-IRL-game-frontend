@@ -44,6 +44,16 @@ export default new Vuex.Store({
         state.commit('DELETE_USER');
         return;
       }
+      data.inventory.forEach((item: Item) => {
+        item.effects.forEach(effect => {
+          effect.sourceType = 'item';
+          effect.source = item;
+        });
+        item.abilities.forEach(ability => {
+          ability.sourceType = 'item';
+          ability.source = item;
+        });
+      });
       state.commit('SET_USER', data);
     },
     DELETE_USER(state: State) {

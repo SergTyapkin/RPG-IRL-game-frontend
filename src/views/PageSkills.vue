@@ -173,7 +173,7 @@
             <g class="skills">
               <g v-for="skill in iterableSkillTree">
                 <foreignObject class="cell-container" :x="skill.position[0]" :y="skill.position[1]" :width="80" :height="80">
-                  <Cell class="cell" :src="AbilityDefaultImage" @click="$user.skills.push(skill.id)">
+                  <Cell class="cell" :src="skill.imageUrl" @click="$user.skills.push(skill.id)">
                     <div class="item-name">{{ skill.name }}</div>
                     <transition name="opacity">
                       <div class="locked" v-if="!$user.skills.includes(skill.id)">
@@ -199,12 +199,9 @@
 import CircleLoading from '~/components/loaders/CircleLoading.vue';
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { IterableSkillTrees, ResourceTypes, SkillTrees } from '~/constants';
+import { IterableSkillTrees, ResourceTypes } from '~/constants';
 import DraggableComponent from '~/components/DraggableComponent.vue';
 import Cell from '~/components/Cell.vue';
-import { deepClone } from '~/utils/utils';
-
-import AbilityDefaultImage from '#/images/knife-example.png';
 
 export default {
   components: { Cell, DraggableComponent, ValueBadge, UserProfileInfo, CircleLoading },
@@ -215,7 +212,6 @@ export default {
       selectedTree: ResourceTypes.power,
 
       ResourceTypes,
-      AbilityDefaultImage,
     };
   },
 

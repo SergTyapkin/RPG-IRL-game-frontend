@@ -30,8 +30,19 @@ interface Ability {
   damage: number;
   damageTargets: number;
   heal: number;
-  buffType: string;
-  buffValue: number;
+  reload: number;
+  buffs: {[key: string]: number};
+}
+
+interface Effect {
+  id: string;
+  name: string;
+  description: string;
+  imageUrl: string;
+  sourceType: 'skill' | 'item'
+  source: Skill | Item;
+
+  buffs: {[key: string]: number};
 }
 
 interface Skill {
@@ -39,6 +50,7 @@ interface Skill {
   description: string;
   abilities: Ability[];
   buffs: {[key: string]: number};
+  effects: Effect[];
   cost: number;
   position: [number, number];
   children: Skill[];
@@ -65,7 +77,7 @@ interface Item {
   name: string;
   type: ItemTypes;
   abilities: Ability[];
-  buffs: {[key: string]: number};
+  effects: Effect[],
   description: string;
   imageUrl: string;
 }

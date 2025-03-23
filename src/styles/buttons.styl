@@ -3,11 +3,11 @@
 @import 'utils.styl'
 
 
-border-color = colorBorder
-border-color-hover = colorEmp1
+border-color = colorEmp1
+border-color-hover = colorSec1
 border-color-disabled = mix(colorBorder, colorBg, 50%)
-text-color = colorBorder
-text-color-hover-1 = colorEmp1
+text-color = colorEmp1
+text-color-hover-1 = colorSec1
 text-color-disabled = mix(colorBorder, colorBg, 50%)
 bg-color = colorBg
 bg-color-hover = saturation(bg-color, 120%)
@@ -20,14 +20,14 @@ shadow-color = mix(black, transparent, 70%)
 button()
   cursor pointer
   box-sizing border-box
-  padding 10px
+  padding 7px
   color text-color
   text-shadow none
   background bg-color
-  border colorBorder solid 1px
-  border-radius 999999999px
+  border border-color solid 1px
+  border-radius borderRadiusM
   transition all 0.2s ease
-  font-medium()
+  font-small()
   font-bold()
   centered-margin()
   centered-flex-container()
@@ -42,6 +42,25 @@ button()
     color text-color-disabled
     background bg-color-disabled
     box-shadow none
+
+button-emp()
+  button()
+
+  min-height 40px
+  padding 10px 20px
+  color colorBg
+  background text-color
+  border bg-color solid 2px
+
+  &:hover
+    background colorSec1
+    border-color bg-color
+    color colorBg
+
+  &[disabled]:not([disabled="false"])
+    color colorText3
+    background mix(bg-color, transparent, 40%)
+
 
 button-no-fill()
   button()

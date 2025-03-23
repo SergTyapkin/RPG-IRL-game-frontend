@@ -21,7 +21,7 @@ export default class API extends REST_API {
     path: string,
     data = {},
     model?: Model,
-    mockData?: object,
+    mockData?: { ok: boolean; data: object; status: number },
   ): Promise<{ ok: boolean; data: object; status: number }> {
     if (!model) {
       throw SyntaxError(`Model for request '${path}' not specified`);
@@ -38,33 +38,28 @@ export default class API extends REST_API {
 
     return { ok, data: validateModel(model, dataRes), status };
   }
-  #POST(path: string, data = {}, model?: Model, mockData?: object) {
+  #POST(path: string, data = {}, model?: Model, mockData?: { ok: boolean; data: object; status: number }) {
     return this.modelParsedRequest(super.post, path, data, model, mockData);
   }
-  #GET(path: string, data = {}, model?: Model, mockData?: object) {
+  #GET(path: string, data = {}, model?: Model, mockData?: { ok: boolean; data: object; status: number }) {
     return this.modelParsedRequest(super.get, path, data, model, mockData);
   }
-  #PUT(path: string, data = {}, model?: Model, mockData?: object) {
+  #PUT(path: string, data = {}, model?: Model, mockData?: { ok: boolean; data: object; status: number }) {
     return this.modelParsedRequest(super.put, path, data, model, mockData);
   }
-  #DELETE(path: string, data = {}, model?: Model, mockData?: object) {
+  #DELETE(path: string, data = {}, model?: Model, mockData?: { ok: boolean; data: object; status: number }) {
     return this.modelParsedRequest(super.delete, path, data, model, mockData);
   }
 
   // Api configuration
   // User
-  getUser = () =>
-    this.#GET(`/user`, {}, UserModel, Response200(UserModelMockData)) as MyResponse<User>;
+  getUser = () => this.#GET(`/user`, {}, UserModel, Response200(UserModelMockData)) as MyResponse<User>;
   updateProfile = (id: string, profileData: { username?: string; password?: string }) =>
     this.#PUT(`/user/${id}`, profileData, UserModel) as MyResponse<User>;
   updatePassword = (id: string, oldPassword: string, newPassword: string) =>
-    this.#PUT(`/user/${id}`, {old_password: oldPassword, new_password: newPassword}, UserModel) as MyResponse<User>;
-  register = (name: string, password: string) =>
-    this.#POST(`/user`, { name, password }, UserModel) as MyResponse<User>;
-  deleteProfile = () =>
-    this.#DELETE(`/user`) as MyResponse<unknown>;
-  login = (name: string, password: string) =>
-    this.#POST(`/auth`, { name, password }, UserModel) as MyResponse<User>;
-  logout = () =>
-    this.#DELETE(`/auth`) as MyResponse<unknown>;
+    this.#PUT(`/user/${id}`, { old_password: oldPassword, new_password: newPassword }, UserModel) as MyResponse<User>;
+  register = (name: string, password: string) => this.#POST(`/user`, { name, password }, UserModel) as MyResponse<User>;
+  deleteProfile = () => this.#DELETE(`/user`) as MyResponse<unknown>;
+  login = (name: string, password: string) => this.#POST(`/auth`, { name, password }, UserModel) as MyResponse<User>;
+  logout = () => this.#DELETE(`/auth`) as MyResponse<unknown>;
 }
