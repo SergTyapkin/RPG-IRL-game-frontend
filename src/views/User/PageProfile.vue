@@ -58,18 +58,18 @@
     </section>
 
     <section class="section-level">
-      <LevelComponent :level="2" :cur-synced-xp="$user.stats?.experience" :cur-not-synced-xp="0" :max-xp="2000" />
+      <LevelComponent :level="$user.level" :cur-synced-xp="$user.stats?.experience" :cur-not-synced-xp="$user.notSyncedStats?.experience" :max-xp="UserLevels[$user.level].experience" />
     </section>
 
     <section class="section-HP-Money">
-      <ValueBadge :type="ResourceTypes.hp" :value="$user.stats?.hp" :not-synced-value="50" />
-      <ValueBadge :type="ResourceTypes.money" :value="$user.stats?.money" :not-synced-value="50" />
+      <ValueBadge :type="ResourceTypes.hp" :value="$user.stats?.hp" />
+      <ValueBadge :type="ResourceTypes.money" :value="$user.stats?.money" :not-synced-value="$user.notSyncedStats?.money" />
     </section>
 
     <section class="section-equipment">
       <div class="top-string">
         <header>Экипировка</header>
-        <ValueBadge :type="ResourceTypes.protection" :value="$user.stats?.protection" />
+        <ValueBadge :type="ResourceTypes.protection" :value="$user.stats?.protection" :not-synced-value="$user.notSyncedStats?.protection" />
       </div>
       <Equipment />
     </section>
@@ -95,7 +95,7 @@ import Validators from '~/utils/validators';
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import LevelComponent from '~/components/LevelComponent.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { ResourceTypes } from '~/constants';
+import { ResourceTypes, UserLevels } from '~/constants';
 import Equipment from '~/components/Equipment.vue';
 import Inventory from '~/components/Inventory.vue';
 
@@ -107,6 +107,7 @@ export default {
       loading: false,
 
       ResourceTypes,
+      UserLevels,
     };
   },
 

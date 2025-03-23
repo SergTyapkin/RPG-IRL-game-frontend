@@ -2,8 +2,19 @@ interface User {
   id: string;
   name: string;
   level: number;
+  imageUrl: string;
   stats: {
+    maxHp: number;
     hp: number;
+    experience: number;
+    protection: number;
+    money: number;
+    power: number;
+    agility: number;
+    intelligence: number;
+  };
+  notSyncedStats: {
+    maxHp: number;
     experience: number;
     protection: number;
     money: number;
@@ -64,6 +75,7 @@ interface Guild {
   id: string;
   name: string;
   description: string;
+  money: number;
   experience: number;
   level: number;
   imageUrl: string;
@@ -80,4 +92,5 @@ interface Item {
   effects: Effect[],
   description: string;
   imageUrl: string;
+  notSynced?: boolean;
 }

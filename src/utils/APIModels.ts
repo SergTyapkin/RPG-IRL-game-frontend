@@ -1,5 +1,5 @@
 import validateModel from "@sergtyapkin/models-validator";
-import { BuffsTypes, DefaultAbilityImage, DefaultKnifeImage } from '~/constants';
+import { BuffsTypes, DefaultAbilityImage, DefaultAvatarImage, DefaultKnifeImage } from '~/constants';
 
 export const EffectModel = {
   id: String,
@@ -12,7 +12,7 @@ export const EffectModel = {
 
 export const EffectModelMockData = validateModel(EffectModel,     {
   id: 'EFF_ID_1',
-  name: 'Название ээффекта',
+  name: 'Название эффекта',
   type: 'EffectType some',
   description: 'Какое-то описание эффекта',
   imageUrl: DefaultAbilityImage,
@@ -89,7 +89,9 @@ export const GuildModel = {
   name: String,
   description: String,
   experience: Number,
+  money: Number,
   level:  Number,
+  imageUrl: String,
 
   leader: String,
   members: {
@@ -100,10 +102,12 @@ export const GuildModel = {
 
 export const GuildModelMockData = validateModel(GuildModel, {
   id: 'GUILD_ID_1',
-  name: 'Гильдия 1',
+  name: 'Ушкуйники',
   description: 'Описание гильдии (ушкуйники блин)',
+  money: 80,
   experience: 2400,
   level: 2,
+  imageUrl: DefaultAbilityImage,
 
   leader: 'Some_Gamer_ID',
   members: ['GMR_1', 'GMR_2', 'GMR_3'],
@@ -118,6 +122,7 @@ export const UserModel = {
   stats: {
     type: Object,
     fields: {
+      maxHp: Number,
       hp: Number,
       experience: Number,
       protection: Number,
@@ -147,9 +152,10 @@ export const UserModel = {
 export const UserModelMockData = validateModel(UserModel, {
   id: 'USER_ID',
   name: 'Сергей Тяпкин',
-  imageUrl: DefaultAbilityImage,
+  imageUrl: DefaultAvatarImage,
   level: 2,
   stats: {
+    maxHp: 15,
     hp: 13,
     experience: 400,
     protection: 3,

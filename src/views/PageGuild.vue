@@ -9,6 +9,8 @@
   .section-user-info
     display flex
     gap 15px
+    .money-badge
+      margin-top 10px
 
   .section-level
     margin-top 10px
@@ -35,12 +37,17 @@
 <template>
   <div class="root-profile">
     <section class="section-user-info">
-      <UserProfileInfo :override-avatar="undefined" override-name="Гильдия 1" />
-      <ValueBadge :type="ResourceTypes.money" :value="90" />
+      <UserProfileInfo :override-avatar="$user.guild?.imageUrl" :override-name="$user.guild?.name">
+        <ValueBadge class="money-badge" :type="ResourceTypes.money" :value="$user.guild?.money" />
+      </UserProfileInfo>
     </section>
 
     <section class="section-level">
-      <LevelComponent :level="2" :cur-synced-xp="700" :max-xp="2000" />
+      <LevelComponent
+        :level="$user.guild?.level"
+        :cur-synced-xp="$user.guild?.experience"
+        :max-xp="GuildLevels[$user.guild?.level].experience"
+      />
     </section>
 
     <section class="section-leader">
@@ -58,8 +65,7 @@
           { name: 'Участник какой-то', level: 5 },
           { name: 'Участник какой-то', level: 5 },
           { name: 'Участник какой-то', level: 5 },
-        ]"
-      />
+        ]" />
     </section>
 
     <section class="section-inventory">
@@ -71,11 +77,10 @@
 
 <script>
 import CircleLoading from '~/components/loaders/CircleLoading.vue';
-import Validators from '~/utils/validators';
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import LevelComponent from '~/components/LevelComponent.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { ResourceTypes } from '~/constants';
+import { GuildLevels, ResourceTypes } from '~/constants';
 import Inventory from '~/components/Inventory.vue';
 import UsersList from '~/components/UsersList.vue';
 
@@ -87,13 +92,12 @@ export default {
       loading: false,
 
       ResourceTypes,
+      GuildLevels,
     };
   },
 
-  mounted() {
-  },
+  mounted() {},
 
-  methods: {
-  },
+  methods: {},
 };
 </script>

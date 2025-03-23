@@ -14,6 +14,7 @@ import PageMap from '~/views/PageMap.vue';
 import PageGuild from '~/views/PageGuild.vue';
 import PageSkills from '~/views/PageSkills.vue';
 import PageFight from '~/views/PageFight.vue';
+import PageScanner from '~/views/PageScanner.vue';
 
 type MyRoute = RouteRecordRaw & {
   path: keyof typeof routes,
@@ -35,7 +36,7 @@ export default function createVueRouter(Store: Store): Router {
     { path: '/fight', name: 'fight', component: PageFight },
     { path: '/skills', name: 'skillsTree', component: PageSkills },
     { path: '/map', name: 'map', component: PageMap },
-    { path: '/qr-scanner', name: 'qrScanner', component: Page },
+    { path: '/qr-scanner', name: 'qrScanner', component: PageScanner },
     { path: '/guild', name: 'guild', component: PageGuild },
 
     { path: '/:pathMatch(.*)*', name: 'page404', component: Page404 },

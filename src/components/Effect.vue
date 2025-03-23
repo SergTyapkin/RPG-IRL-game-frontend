@@ -27,7 +27,7 @@
       width 100%
       height 100%
     .name
-      font-large()
+      font-medium()
       margin-bottom 10px
     .description
       font-small()
@@ -53,7 +53,7 @@
 
   .buffs
     position absolute
-    left -10px
+    left -5px
     top -17px
     display flex
     gap 5px
@@ -113,15 +113,10 @@ export default {
       type: Object,
       required: true,
     },
-    src: {
-      type: String,
-      default: undefined,
-    },
   },
 
   data() {
     return {
-
       BuffsTypes,
     }
   },

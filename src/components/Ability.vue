@@ -48,6 +48,7 @@
     .description
       margin-bottom 7px
       font-small()
+      font-thin()
     .reload-info
       font-small-extra()
       color colorSec1
@@ -74,24 +75,16 @@
 </template>
 
 <script>
-import { BuffsTypes } from '~/constants';
-
 export default {
   props: {
     ability: {
       type: Object,
       required: true,
     },
-    src: {
-      type: String,
-      default: undefined,
-    },
   },
 
   data() {
     return {
-
-      BuffsTypes,
     }
   },
 
