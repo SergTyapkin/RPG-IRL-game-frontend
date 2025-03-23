@@ -32,7 +32,7 @@ export default new Vuex.Store({
       state.user.stats.intelligence = Number(userData.stats.intelligence);
       state.user.skills = userData.skills;
       state.user.inventory = userData.inventory;
-      state.user.role = String(userData.role);
+      state.user.role = String(userData.role) as 'admin' | 'user';
 
       state.user.isSignedIn = true;
     },

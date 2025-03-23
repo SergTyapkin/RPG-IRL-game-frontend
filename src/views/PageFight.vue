@@ -103,7 +103,6 @@ export default {
   computed: {
     effects() {
       const effects = [];
-      console.log(this.$user.inventory);
       this.$user.inventory.forEach(item => effects.push(...item.effects));
       this.$user.skills
         .map(id => {
@@ -112,13 +111,11 @@ export default {
           return IterableSkillTrees[treeType][skillIdx];
         })
         .forEach(skill => effects.push(...skill.effects));
-      console.log(effects);
       return effects;
     },
 
     abilities() {
       const abilities = [];
-      console.log(this.$user.inventory);
       this.$user.inventory.forEach(item => abilities.push(...item.abilities));
       this.$user.skills
         .map(id => {
@@ -127,7 +124,6 @@ export default {
           return IterableSkillTrees[treeType][skillIdx];
         })
         .forEach(skill => abilities.push(...skill.abilities));
-      console.log(abilities);
       return abilities;
     },
   },

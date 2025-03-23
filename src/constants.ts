@@ -124,7 +124,7 @@ export const SkillTrees: { [key: string]: Skill } = {
   [ResourceTypes.power]: {
     name: 'Сила 1',
     abilities: [],
-    buffs: [],
+    buffs: {},
     effects: [],
     cost: 1,
     description: 'Pretty description',
@@ -134,7 +134,7 @@ export const SkillTrees: { [key: string]: Skill } = {
       {
         name: 'Сила 1-1',
         abilities: [],
-        buffs: [],
+        buffs: {},
         effects: [],
         cost: 3,
         description: 'Левое поддерево',
@@ -144,7 +144,7 @@ export const SkillTrees: { [key: string]: Skill } = {
           {
             name: 'Сила 1-1-1',
             abilities: [],
-            buffs: [],
+            buffs: {},
             effects: [],
             cost: 3,
             description: 'Левое левое поддерево',
@@ -155,7 +155,7 @@ export const SkillTrees: { [key: string]: Skill } = {
           {
             name: 'Сила 1-1-2',
             abilities: [],
-            buffs: [],
+            buffs: {},
             effects: [],
             cost: 4,
             description: 'Левое правое поддерево',
@@ -165,7 +165,7 @@ export const SkillTrees: { [key: string]: Skill } = {
               {
                 name: 'Сила 1-1-1-1',
                 abilities: [],
-                buffs: [],
+                buffs: {},
                 effects: [],
                 cost: 15,
                 description: 'Левое левое поддерево',
@@ -176,7 +176,7 @@ export const SkillTrees: { [key: string]: Skill } = {
               {
                 name: 'Сила 1-1-2-2',
                 abilities: [],
-                buffs: [],
+                buffs: {},
                 effects: [],
                 cost: 20,
                 description: 'Левое правое поддерево',
@@ -191,7 +191,7 @@ export const SkillTrees: { [key: string]: Skill } = {
       {
         name: 'Сила 1-2',
         abilities: [],
-        buffs: [],
+        buffs: {},
         effects: [],
         cost: 4,
         description: 'Правое поддерево',
@@ -201,7 +201,7 @@ export const SkillTrees: { [key: string]: Skill } = {
           {
             name: 'Сила 1-2-1',
             abilities: [],
-            buffs: [],
+            buffs: {},
             effects: [],
             cost: 30,
             description: 'Правое левое поддерево',
@@ -212,7 +212,7 @@ export const SkillTrees: { [key: string]: Skill } = {
           {
             name: 'Сила 1-2-2',
             abilities: [],
-            buffs: [],
+            buffs: {},
             effects: [],
             cost: 45,
             description: 'Правое правое поддерево',
@@ -228,7 +228,7 @@ export const SkillTrees: { [key: string]: Skill } = {
   [ResourceTypes.agility]: {
     name: 'Ловкость 1',
     abilities: [],
-    buffs: [],
+    buffs: {},
     effects: [],
     cost: 1,
     description: 'Pretty description',
@@ -238,7 +238,7 @@ export const SkillTrees: { [key: string]: Skill } = {
       {
         name: 'Ловкость 1-1',
         abilities: [],
-        buffs: [],
+        buffs: {},
         effects: [],
         cost: 3,
         description: 'Левое поддерево',
@@ -248,7 +248,7 @@ export const SkillTrees: { [key: string]: Skill } = {
           {
             name: 'Ловкость 1-1-1',
             abilities: [],
-            buffs: [],
+            buffs: {},
             effects: [],
             cost: 3,
             description: 'Левое левое поддерево',
@@ -259,7 +259,7 @@ export const SkillTrees: { [key: string]: Skill } = {
           {
             name: 'Ловкость 1-1-2',
             abilities: [],
-            buffs: [],
+            buffs: {},
             effects: [],
             cost: 4,
             description: 'Левое правое поддерево',
@@ -272,7 +272,7 @@ export const SkillTrees: { [key: string]: Skill } = {
       {
         name: 'Ловкость 1-2',
         abilities: [],
-        buffs: [],
+        buffs: {},
         effects: [],
         cost: 4,
         description: 'Правое поддерево',
@@ -282,7 +282,7 @@ export const SkillTrees: { [key: string]: Skill } = {
           {
             name: 'Ловкость 1-2-1',
             abilities: [],
-            buffs: [],
+            buffs: {},
             effects: [],
             cost: 30,
             description: 'Правое левое поддерево',
@@ -293,7 +293,7 @@ export const SkillTrees: { [key: string]: Skill } = {
           {
             name: 'Ловкость 1-2-2',
             abilities: [],
-            buffs: [],
+            buffs: {},
             effects: [],
             cost: 45,
             description: 'Правое правое поддерево',
@@ -309,7 +309,7 @@ export const SkillTrees: { [key: string]: Skill } = {
   [ResourceTypes.intelligence]: {
     name: 'Интелект 1',
     abilities: [],
-    buffs: [],
+    buffs: {},
     effects: [],
     cost: 1,
     description: 'Pretty description',
@@ -319,7 +319,7 @@ export const SkillTrees: { [key: string]: Skill } = {
       {
         name: 'Интелект 1-2-1',
         abilities: [],
-        buffs: [],
+        buffs: {},
         effects: [],
         cost: 30,
         description: 'Правое левое поддерево',
@@ -330,7 +330,7 @@ export const SkillTrees: { [key: string]: Skill } = {
       {
         name: 'Интелект 1-2-2',
         abilities: [],
-        buffs: [],
+        buffs: {},
         effects: [],
         cost: 45,
         description: 'Правое правое поддерево',

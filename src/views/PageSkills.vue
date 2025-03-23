@@ -234,7 +234,6 @@ export default {
   },
 
   mounted() {
-    console.log(this.$user.skills);
   },
 
   methods: {},
