@@ -6,10 +6,10 @@
 @import '../styles/animations.styl'
 
 .root-cell
-  background radial-gradient(#AA4C01, #622C01)
   width var(--size)
   height var(--size)
   padding 10px
+  background radial-gradient(#aa4c01, #622c01)
   border-radius borderRadiusS
   img
     width 100%
@@ -19,7 +19,7 @@
 <template>
   <div class="root-cell" :style="{'--size': size}">
     <img v-if="src" :src="src" alt="">
-    <slot></slot>
+    <slot />
   </div>
 </template>
 

@@ -93,7 +93,7 @@ input-border = 2px solid border-color
         opacity 1
 
   .submit
-    button-submit()
+    button()
 
     margin-top 10px
     margin-bottom 10px

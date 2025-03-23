@@ -1,18 +1,18 @@
 <style scoped lang="stylus">
-@require '../styles/constants.styl'
-@require '../styles/buttons.styl'
-@require '../styles/fonts.styl'
+@import '../styles/constants.styl'
+@import '../styles/buttons.styl'
+@import '../styles/fonts.styl'
 
 .root-draggable-component
   overflow hidden
   width 100%
   height 100%
-  //cursor grab
+  // cursor grab
 
   &.in-drag
     cursor grabbing
 
-  //&.in-scale
+  // &.in-scale
   //  cursor move
 
   .scale-compensating-translate-container
@@ -23,12 +23,12 @@
     transform translate(var(--transformTranslateX), var(--transformTranslateY))
 
   .scale-container
-    transform scaleX(var(--scaleX)) scaleY(var(--scaleY))
+    position relative
     transform-origin 0 0
-    transition transform 0.2s ease
+    transform scaleX(var(--scaleX)) scaleY(var(--scaleY))
     width fit-content
     height fit-content
-    position relative
+    transition transform 0.2s ease
 </style>
 
 <template>
@@ -41,20 +41,23 @@
     @mousedown.prevent.stop="onDragStart"
     @mouseup.prevent="onMouseupSelf"
     @touchstart="onDragStart"
-    @wheel.prevent.stop="onScroll"
-    @wheel.ctrl.prevent>
+    @wheel.prevent.stop.exact="onScroll"
+    @wheel.ctrl.prevent
+  >
     <div
       class="translate-container"
       :style="{
         '--transformTranslateX': dragTotalOffsetX + 'px',
         '--transformTranslateY': dragTotalOffsetY + 'px',
-      }">
+      }"
+    >
       <div
         class="scale-compensating-translate-container"
         :style="{
           '--transformTranslateX': scaleCompensatingOffsetX + 'px',
           '--transformTranslateY': scaleCompensatingOffsetY + 'px',
-        }">
+        }"
+      >
         <div
           class="scale-container"
           :style="{
@@ -62,8 +65,9 @@
             '--scaleX': scalableX ? scale : 1,
             '--scaleY': scalableY ? scale : 1,
           }"
-          ref="innerElement">
-          <slot></slot>
+          ref="innerElement"
+        >
+          <slot />
         </div>
       </div>
     </div>
@@ -84,7 +88,10 @@ export default {
   ],
 
   props: {
-    uniqueName: String,
+    uniqueName: {
+      type: String,
+      default: undefined,
+    },
     scalableX: {
       type: Boolean,
       default: true,
@@ -118,15 +125,42 @@ export default {
       default: DEFAULT_MIN_SCALE,
     },
     minScaleFullSize: Boolean,
-    innerElementWidth: Number,
-    innerElementHeight: Number,
-    minXOffset: Number,
-    maxXOffset: Number,
-    minYOffset: Number,
-    maxYOffset: Number,
-    defaultOffsetX: Number,
-    defaultOffsetY: Number,
-    defaultScale: Number,
+    innerElementWidth: {
+      type: Number,
+      default: undefined,
+    },
+    innerElementHeight: {
+      type: Number,
+      default: undefined,
+    },
+    minXOffset: {
+      type: Number,
+      default: undefined,
+    },
+    maxXOffset: {
+      type: Number,
+      default: undefined,
+    },
+    minYOffset: {
+      type: Number,
+      default: undefined,
+    },
+    maxYOffset: {
+      type: Number,
+      default: undefined,
+    },
+    defaultOffsetX: {
+      type: Number,
+      default: undefined,
+    },
+    defaultOffsetY: {
+      type: Number,
+      default: undefined,
+    },
+    defaultScale: {
+      type: Number,
+      default: undefined,
+    },
     noResetOnChangeSizes: Boolean,
   },
 
@@ -141,12 +175,12 @@ export default {
       dragTotalOffsetY: 0,
       dragOffsetX: 0,
       dragOffsetY: 0,
-      _dragStartX: undefined,
-      _dragStartY: undefined,
-      _dragCurrentDeltaX: 0,
-      _dragCurrentDeltaY: 0,
-      _savedDragOffsetX: undefined,
-      _savedDragOffsetY: undefined,
+      dragStartX: undefined,
+      dragStartY: undefined,
+      dragCurrentDeltaX: 0,
+      dragCurrentDeltaY: 0,
+      savedDragOffsetX: undefined,
+      savedDragOffsetY: undefined,
 
       scaleTimeoutObject: undefined,
 
@@ -244,14 +278,14 @@ export default {
       // console.log("Dragstart:", e, e.target, this.$el);
       this.addOffsetsToTouchEvent(e);
       this.isInDrag = true;
-      this._dragStartPageX = e.pageX;
-      this._dragStartPageY = e.pageY;
-      this._savedDragOffsetX = this.totalOffsetX;
-      this._savedDragOffsetY = this.totalOffsetY;
+      this.dragStartPageX = e.pageX;
+      this.dragStartPageY = e.pageY;
+      this.savedDragOffsetX = this.totalOffsetX;
+      this.savedDragOffsetY = this.totalOffsetY;
     },
     onMouseupSelf(e) {
       // console.log("CLICK SELF", e.target, this.$el, e)
-      if (this.isInDrag && this._dragCurrentDeltaX === 0 && this._dragCurrentDeltaY === 0) {
+      if (this.isInDrag && this.dragCurrentDeltaX === 0 && this.dragCurrentDeltaY === 0) {
         this.isInDrag = false;
         this.$emit('clickClean', e); // emit just click
         return;
@@ -261,17 +295,17 @@ export default {
     onMouseupOther(e) {
       // console.log("CLICK OTHER", e.target, this.$el)
       this.isInDrag = false;
-      if (this._dragCurrentDeltaX === 0 && this._dragCurrentDeltaY === 0) {
+      if (this.dragCurrentDeltaX === 0 && this.dragCurrentDeltaY === 0) {
         return;
       }
       this.addOffsetsToTouchEvent(e);
 
-      this.dragOffsetX += this._dragCurrentDeltaX;
-      this.dragOffsetY += this._dragCurrentDeltaY;
-      this._dragStartX = undefined;
-      this._dragStartY = undefined;
-      this._dragCurrentDeltaX = 0;
-      this._dragCurrentDeltaY = 0;
+      this.dragOffsetX += this.dragCurrentDeltaX;
+      this.dragOffsetY += this.dragCurrentDeltaY;
+      this.dragStartX = undefined;
+      this.dragStartY = undefined;
+      this.dragCurrentDeltaX = 0;
+      this.dragCurrentDeltaY = 0;
     },
     onMouseMove(e) {
       // console.log("Move", e)
@@ -280,16 +314,16 @@ export default {
       }
       this.addOffsetsToTouchEvent(e);
 
-      let deltaX = e.pageX - this._dragStartPageX;
-      let deltaY = e.pageY - this._dragStartPageY;
+      let deltaX = e.pageX - this.dragStartPageX;
+      let deltaY = e.pageY - this.dragStartPageY;
       const { x: allowedDeltaX, y: allowedDeltaY } = this.isCanMoveBy(
         deltaX,
         deltaY,
-        this._savedDragOffsetX,
-        this._savedDragOffsetY,
+        this.savedDragOffsetX,
+        this.savedDragOffsetY,
       );
-      this._dragCurrentDeltaX = allowedDeltaX;
-      this._dragCurrentDeltaY = allowedDeltaY;
+      this.dragCurrentDeltaX = allowedDeltaX;
+      this.dragCurrentDeltaY = allowedDeltaY;
 
       if (this.draggable && (this.movableX || this.movableY)) {
         this.$emit('drag', deltaX, deltaY);
@@ -342,8 +376,8 @@ export default {
     },
     updateTotalDragOffset() {
       // console.log("Update total:", this.dragTotalOffsetX)
-      this.dragTotalOffsetX = this.dragOffsetX + this._dragCurrentDeltaX;
-      this.dragTotalOffsetY = this.dragOffsetY + this._dragCurrentDeltaY;
+      this.dragTotalOffsetX = this.dragOffsetX + this.dragCurrentDeltaX;
+      this.dragTotalOffsetY = this.dragOffsetY + this.dragCurrentDeltaY;
       if (this.uniqueName) {
         localStorage.setItem(this.LocalStorageNames.totalOffsetX, this.dragTotalOffsetX);
         localStorage.setItem(this.LocalStorageNames.totalOffsetY, this.dragTotalOffsetY);
@@ -428,12 +462,12 @@ export default {
     scale(to) {
       this.scale = to;
     },
-    innerElementWidth(to) {
+    innerElementWidth() {
       if (!this.noResetOnChangeSizes) {
         this.reset();
       }
     },
-    innerElementHeight(to) {
+    innerElementHeight() {
       if (!this.noResetOnChangeSizes) {
         this.reset();
       }

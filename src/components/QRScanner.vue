@@ -9,18 +9,19 @@
   .section-scanner
     .header
       font-large()
+
       color colorSec1
     video
       max-width 100%
     .camera-buttons-container
-      display flex
-      width 100%
-      justify-content space-between
-      gap 20px
       overflow-x auto
+      display flex
+      gap 20px
+      justify-content space-between
+      width 100%
       .camera-button
-        padding 5px
         min-width 150px
+        padding 5px
         button()
 
 </style>
@@ -61,14 +62,14 @@ export default {
     return {
       active: false,
       existingCameras: [],
-      _scanner: null,
+      scanner: null,
     };
   },
 
   async mounted() {
     this.existingCameras = await QrScanner.listCameras(true);
 
-    this._scanner = new QrScanner(this.$refs.video, (result) => {
+    this.scanner = new QrScanner(this.$refs.video, (result) => {
       this.$emit('scan', result.data);
     }, {
       highlightScanRegion: true,
@@ -79,28 +80,27 @@ export default {
   },
 
   unmounted() {
-    this._scanner.destroy();
+    this.scanner.destroy();
   },
 
   methods: {
-    start() {
+    async start() {
       if (!this.active) {
-        this._scanner.start().then(
-            () => {},
-            (error) => {
-              this.$modal.alert("Не предоставлены права доступа к камере", "Настройте доступ к камере для этого сайта в браузере");
-            }
-        );
+        try {
+          await this.scanner.start()
+        } catch {
+          this.$modal.alert("Не предоставлены права доступа к камере", "Настройте доступ к камере для этого сайта в браузере");
+        }
         this.active = true;
       }
     },
 
     selectCamera(camera) {
-      this._scanner.setCamera(camera.id);
+      this.scanner.setCamera(camera.id);
     },
 
     stop() {
-      this._scanner.stop();
+      this.scanner.stop();
       this.active = false;
     },
   }

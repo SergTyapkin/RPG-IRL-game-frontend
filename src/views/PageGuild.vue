@@ -26,9 +26,9 @@
     margin-top 60px
 
     header
+      margin-bottom 15px
       color colorText2
       font-bold()
-      margin-bottom 15px
 
   .section-members
     margin-top 30px
@@ -65,7 +65,8 @@
           { name: 'Участник какой-то', level: 5 },
           { name: 'Участник какой-то', level: 5 },
           { name: 'Участник какой-то', level: 5 },
-        ]" />
+        ]"
+      />
     </section>
 
     <section class="section-inventory">
@@ -76,7 +77,6 @@
 </template>
 
 <script>
-import CircleLoading from '~/components/loaders/CircleLoading.vue';
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import LevelComponent from '~/components/LevelComponent.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
@@ -85,12 +85,10 @@ import Inventory from '~/components/Inventory.vue';
 import UsersList from '~/components/UsersList.vue';
 
 export default {
-  components: { UsersList, Inventory, ValueBadge, LevelComponent, UserProfileInfo, CircleLoading },
+  components: { UsersList, Inventory, ValueBadge, LevelComponent, UserProfileInfo },
 
   data() {
     return {
-      loading: false,
-
       ResourceTypes,
       GuildLevels,
     };

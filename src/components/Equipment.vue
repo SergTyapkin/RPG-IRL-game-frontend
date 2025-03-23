@@ -8,8 +8,8 @@
 .root-equipment
   display flex
   gap 15px
-  width 100%
   justify-content space-between
+  width 100%
   > *
     aspect-ratio 1/1
 </style>

@@ -1,6 +1,7 @@
 import DefaultKnifeImage from '#/images/knife-example.png';
 import DefaultAbilityImage from '#/images/ability-image-example.png';
 import DefaultAvatarImage from '#/images/user-avatar-example.png';
+import { type Skill } from '~/types/types';
 
 export {DefaultKnifeImage, DefaultAbilityImage, DefaultAvatarImage};
 
@@ -80,6 +81,11 @@ export const QRTypes = {
   sync: 'S',
 }
 
+export type ResourceType = typeof ResourceTypes[keyof typeof ResourceTypes];
+export type ItemType = typeof ItemTypes[keyof typeof ItemTypes];
+export type BuffType = typeof BuffsTypes[keyof typeof BuffsTypes];
+export type QRType = typeof QRTypes[keyof typeof QRTypes];
+
 export const UserLevels: {[key: number]: {experience: number}} = {
   1: {
     experience: 500,
@@ -120,7 +126,7 @@ export const GuildLevels: {[key: number]: {experience: number}} = {};
   }
 });
 
-export const SkillTrees: { [key: string]: Skill } = {
+export const SkillTrees: { [key in ResourceType]: Skill } = {
   [ResourceTypes.power]: {
     name: 'Сила 1',
     abilities: [],
@@ -342,11 +348,11 @@ export const SkillTrees: { [key: string]: Skill } = {
   },
 };
 
-export const IterableSkillTrees: { [key: string]: Skill[] } = {};
+export const IterableSkillTrees: { [key in ResourceType]: Skill[] } = {};
 
 function addItemAndChildren(
   targetArray: any[],
-  currentTreeKey: string,
+  currentTreeKey: ResourceType,
   item: Skill,
   parent: Skill | undefined = undefined,
 ) {
@@ -386,7 +392,7 @@ function addItemAndChildren(
   item.children.forEach(child => addItemAndChildren(targetArray, currentTreeKey, child, item));
 }
 
-Object.keys(SkillTrees).forEach(key => {
+Object.keys(SkillTrees).forEach((key: ResourceType) => {
   IterableSkillTrees[key] = [];
   addItemAndChildren(IterableSkillTrees[key], key, SkillTrees[key]);
 });

@@ -7,10 +7,10 @@
 
 .root-inventory
   display flex
-  gap 15px
-  width 100%
-  justify-content space-between
   flex-wrap wrap
+  gap 15px
+  justify-content space-between
+  width 100%
   > *
     aspect-ratio 1/1
     width calc((100% - 30px) / 3)
@@ -18,8 +18,8 @@
 
 <template>
   <div class="root-inventory">
-    <Cell v-for="item in items" class="cell" :src="DefaultSlotImage" />
-    <Cell v-for="_ in (3 - items.length % 3)" class="cell" />
+    <Cell v-for="item in items" :key="item.id" class="cell" :src="DefaultSlotImage" />
+    <Cell v-for="i in (3 - items.length % 3)" :key="i" class="cell" />
   </div>
 </template>
 

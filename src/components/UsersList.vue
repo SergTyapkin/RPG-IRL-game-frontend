@@ -11,28 +11,28 @@
   gap 5px
   .user
     display flex
-    align-items center
     gap 15px
+    align-items center
     .avatar
-      aspect-ratio 1/1
-      border 1px solid colorBorder
       position relative
+      aspect-ratio 1/1
       width 50px
       height 50px
+      border 1px solid colorBorder
       img
-        border-radius borderRadiusMax
         width 100%
         height 100%
+        border-radius borderRadiusMax
       .level
         position absolute
         right -9px
         bottom -5px
         width 26px
         height 26px
-        centered-flex-container()
-        border-radius borderRadiusMax
         background colorEmp1
+        border-radius borderRadiusMax
         box-shadow -1px 1px black
+        centered-flex-container()
         font-small()
     .text-block
       .name

@@ -11,12 +11,12 @@
   &.small
     flex-direction column
   .avatar
-    border-radius borderRadiusMax
-    aspect-ratio 1/1
     overflow hidden
-    border 2px solid colorBorder
+    aspect-ratio 1/1
     width 100px
     height 100px
+    border 2px solid colorBorder
+    border-radius borderRadiusMax
     img
       width 100%
       height 100%
@@ -26,8 +26,8 @@
       font-bold()
     .guild-info
       display flex
-      align-items center
       gap 5px
+      align-items center
       .guild-image
         width 40px
         height 40px
@@ -36,9 +36,10 @@
         font-small()
       .guild-xp-badge
         font-small-extra()
+
         padding 5px
-        border-radius borderRadiusS
         background colorEmp1
+        border-radius borderRadiusS
 </style>
 
 <template>
@@ -51,7 +52,7 @@
         <div class="guild-name"> {{ $user.guild?.name }} </div>
         <div class="guild-xp-badge"> {{ $user.guild?.experience }} xp</div>
       </div>
-      <slot></slot>
+      <slot />
     </div>
   </div>
 </template>

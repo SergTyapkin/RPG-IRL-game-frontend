@@ -6,33 +6,33 @@
 @import '../styles/animations.styl'
 
 .root-effect
-  background colorBgLight
-  width var(--size)
-  height var(--size)
+  overflow hidden
   display flex
   flex-direction column
+  width var(--size)
+  height var(--size)
+  background colorBgLight
   border-radius borderRadiusS
-  overflow hidden
   hover-effect()
   .image-container
     position relative
     img.ability-bg
-      width 100%
-      aspect-ratio 1/1
       display block
+      aspect-ratio 1/1
+      width 100%
     .stats
       position absolute
-      left 10px
       top 10px
+      left 10px
       display flex
       flex-direction column
       gap 5px
       .stat
-        background colorSec1
-        border-radius borderRadiusMax
         width 30px
         height 30px
         white-space nowrap
+        background colorSec1
+        border-radius borderRadiusMax
         centered-flex-container()
         font-medium()
         &.damage
@@ -44,6 +44,7 @@
     padding 10px
     .name
       font-medium()
+
       margin-bottom 7px
     .description
       margin-bottom 7px
@@ -51,8 +52,9 @@
       font-thin()
     .reload-info
       font-small-extra()
-      color colorSec1
+
       width 100%
+      color colorSec1
       text-align right
 </style>
 

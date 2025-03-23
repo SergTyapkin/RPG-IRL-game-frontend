@@ -7,23 +7,23 @@
 
 .root-map
   overflow hidden
-  padding 0
   max-height 100vh
+  padding 0
   .draggable-element
     background linear-gradient(165deg, black, mix(mix(colorEmp1, black, 40%), transparent, 40%))
     &::before
       content ""
       position absolute
       inset 0
+      opacity 0.3
       background linear-gradient(-20deg, colorBg, transparent), url(/static/icons/earth_icon.svg)
       background-size 100% 100%, 300px 300px
-      opacity .3
     .maps
       .image.blured
         position absolute
-        transform scale(1.07)
-        filter brightness(.2) blur(40px) !important
         z-index -1
+        transform scale(1.07)
+        filter brightness(0.2) blur(40px) !important
 </style>
 
 <template>
@@ -48,16 +48,10 @@
 </template>
 
 <script>
-import CircleLoading from '~/components/loaders/CircleLoading.vue';
-import UserProfileInfo from '~/components/UserProfileInfo.vue';
-import LevelComponent from '~/components/LevelComponent.vue';
-import ValueBadge from '~/components/ValueBadge.vue';
-import Equipment from '~/components/Equipment.vue';
-import Inventory from '~/components/Inventory.vue';
 import DraggableComponent from '~/components/DraggableComponent.vue';
 
 export default {
-  components: { DraggableComponent, Inventory, Equipment, ValueBadge, LevelComponent, UserProfileInfo, CircleLoading },
+  components: { DraggableComponent },
 
   data() {
     return {

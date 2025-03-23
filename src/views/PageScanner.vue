@@ -12,14 +12,16 @@
       margin-top 30px
       margin-bottom 10px
       font-medium()
+
       color colorSec1
     .result
       font-small()
+
+      box-sizing content-box
+      min-height 1lh
+      padding 3px
       color colorSec1
       border 1px solid colorSec1
-      padding 3px
-      min-height 1lh
-      box-sizing content-box
       border-radius borderRadiusS
 </style>
 
@@ -36,19 +38,17 @@
 </template>
 
 <script lang="ts">
-import CircleLoading from '~/components/loaders/CircleLoading.vue';
 import QRScanner from '~/components/QRScanner.vue';
 import { QRTypes, ResourceTypes } from '~/constants';
 import validateModel from '@sergtyapkin/models-validator';
 import { GuildModel, ItemModel } from '~/utils/APIModels';
+import { type Guild, type Item } from '~/types/types';
 
 export default {
-  components: { QRScanner, CircleLoading },
+  components: { QRScanner },
 
   data() {
     return {
-      loading: false,
-
       scanResult: '',
     };
   },

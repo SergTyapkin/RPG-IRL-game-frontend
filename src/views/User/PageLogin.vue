@@ -41,14 +41,6 @@
     <div class="form">
       ВХОД<br>
       <FormWithErrors ref="form" :fields="fields" submit-text="Вход" :loading="loading" @success="login" />
-      <!--      <router-link class="profile-link" :to="{ name: 'signup' }">-->
-      <!--        <button class="profile-button">Зарегистрироваться</button>-->
-      <!--      </router-link>-->
-
-      <!--      <div class="signin-links">-->
-      <!--        &lt;!&ndash;<router-link class="signin-by-name-link" :to="{name: 'signInByname'}">Войти по почте</router-link>&ndash;&gt;-->
-      <!--        <router-link class="restore-password-link" :to="{name: 'restorePassword'}">Восстановить пароль</router-link>-->
-      <!--      </div>-->
     </div>
   </div>
 </template>

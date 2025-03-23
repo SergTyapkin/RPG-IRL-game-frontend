@@ -6,73 +6,76 @@
 @import '../styles/animations.styl'
 
 .root-effect
-  background mix(colorBgLight, transparent)
+  position relative
+  display flex
   width var(--size)
   height var(--size)
-  display flex
+  background mix(colorBgLight, transparent)
   border-radius borderRadiusM
-  position relative
   .text-container
-    border-radius borderRadiusM 0 0 borderRadiusM
+    position relative
     overflow hidden
     flex 1
-    position relative
     padding 10px
     padding-top 15px
+    border-radius borderRadiusM 0 0 borderRadiusM
     .effect-bg
-      z-index -1
       position absolute
+      z-index -1
       inset 0
-      object-fit cover
       width 100%
       height 100%
+      object-fit cover
     .name
       font-medium()
+
       margin-bottom 10px
     .description
       font-small()
   .source-container
-    flex 0.3
     position relative
+    overflow hidden
+    flex 0.3
     background colorSec1
     border-radius 0 borderRadiusM borderRadiusM 0
-    overflow hidden
     img.source-img
-      width 100%
-      object-fit contain
-      padding 5px 15px 0 15px
       display block
+      width 100%
+      padding 5px 15px 0 15px
+      object-fit contain
     .source-name
       font-small-extra()
-      text-align center
-      padding 5px
+
       margin 2px
+      padding 5px
+      text-align center
       background colorBgLight
       border-radius borderRadiusM
       border-bottom-left-radius 0
 
   .buffs
     position absolute
-    left -5px
     top -17px
+    left -5px
     display flex
     gap 5px
     .buff
+      gap 4px
+      // width 30px
+      height 30px
+      padding 5px
+      white-space nowrap
       background colorSec1
       border-radius borderRadiusMax
-      padding 5px
-      //width 30px
-      height 30px
-      white-space nowrap
       centered-flex-container()
-      gap 4px
       img
         width 100%
         height 100%
       .value
         font-small()
-        color colorBg
+
         display inline-block
+        color colorBg
 </style>
 
 <template>

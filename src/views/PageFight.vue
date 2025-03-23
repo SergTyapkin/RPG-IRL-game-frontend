@@ -7,17 +7,17 @@
 
 .root-page-fight
   .section-badges
-    width 100%
     display flex
-    justify-content space-between
     align-items center
+    justify-content space-between
+    width 100%
     margin-top 20px
 
   .section-buttons
-    margin-top 40px
     display flex
-    justify-content space-between
     gap 15px
+    justify-content space-between
+    margin-top 40px
     .button-finish-fight
       button-no-styles()
       button()
@@ -28,10 +28,10 @@
   .section-effects
   .section-abilities
     header
+      margin-bottom 30px
       color colorSec1
       font-large()
       font-bold()
-      margin-bottom 30px
 
   .section-effects
     margin-top 40px
@@ -69,14 +69,14 @@
     <section class="section-effects">
       <header>Эффекты</header>
       <div class="effects-container">
-        <Effect v-for="effect in effects" :effect="effect" />
+        <Effect v-for="effect in effects" :key="effect.id" :effect="effect" />
       </div>
     </section>
 
     <section class="section-abilities">
       <header>Способности</header>
       <div class="abilities-container">
-        <Ability v-for="ability in abilities" :ability="ability" />
+        <Ability v-for="ability in abilities" :key="ability.id" :ability="ability" />
       </div>
     </section>
   </div>
@@ -94,8 +94,6 @@ export default {
 
   data() {
     return {
-      loading: false,
-
       ResourceTypes,
     };
   },

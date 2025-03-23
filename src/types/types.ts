@@ -1,4 +1,6 @@
-interface User {
+import { BuffType } from '~/constants';
+
+export interface User {
   id: string;
   name: string;
   level: number;
@@ -30,7 +32,7 @@ interface User {
   isSignedIn: boolean;
 }
 
-interface Ability {
+export interface Ability {
   id: string;
   name: string;
   description: string;
@@ -42,10 +44,10 @@ interface Ability {
   damageTargets: number;
   heal: number;
   reload: number;
-  buffs: {[key: string]: number};
+  buffs: {[key in BuffType]: number};
 }
 
-interface Effect {
+export interface Effect {
   id: string;
   name: string;
   description: string;
@@ -53,14 +55,14 @@ interface Effect {
   sourceType: 'skill' | 'item'
   source: Skill | Item;
 
-  buffs: {[key: string]: number};
+  buffs: {[key in BuffType]: number};
 }
 
-interface Skill {
+export interface Skill {
   name: string;
   description: string;
   abilities: Ability[];
-  buffs: {[key: string]: number};
+  buffs: {[key in BuffType]: number};
   effects: Effect[];
   cost: number;
   position: [number, number];
@@ -71,7 +73,7 @@ interface Skill {
   parentId?: string;
 }
 
-interface Guild {
+export interface Guild {
   id: string;
   name: string;
   description: string;
@@ -84,10 +86,10 @@ interface Guild {
   members: string[];
 }
 
-interface Item {
+export interface Item {
   id: string;
   name: string;
-  type: ItemTypes;
+  type: string;
   abilities: Ability[];
   effects: Effect[],
   description: string;

@@ -21,13 +21,13 @@
     padding 60px 15px 120px 15px
 
   .bottom-interface
+    pointer-events none
     position fixed
     bottom 0
     transform translateX(-2px)
     width 100%
     max-width 400px
     padding 0
-    pointer-events none
     .bottom-line-bg
       position absolute
       bottom 0
@@ -38,8 +38,8 @@
     .buttons
       > *
         button-no-styles()
-        pointer-events all
 
+        pointer-events all
         position absolute
         bottom 28px
         transform translate(-50%, 50%)

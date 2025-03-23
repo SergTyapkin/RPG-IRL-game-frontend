@@ -39,8 +39,8 @@
   .section-equipment
     .top-string
       display flex
-      justify-content space-between
       align-items center
+      justify-content space-between
       margin-bottom 15px
 
   .section-inventory
@@ -58,7 +58,12 @@
     </section>
 
     <section class="section-level">
-      <LevelComponent :level="$user.level" :cur-synced-xp="$user.stats?.experience" :cur-not-synced-xp="$user.notSyncedStats?.experience" :max-xp="UserLevels[$user.level].experience" />
+      <LevelComponent
+        :level="$user.level"
+        :cur-synced-xp="$user.stats?.experience"
+        :cur-not-synced-xp="$user.notSyncedStats?.experience"
+        :max-xp="UserLevels[$user.level].experience"
+      />
     </section>
 
     <section class="section-HP-Money">
@@ -69,7 +74,11 @@
     <section class="section-equipment">
       <div class="top-string">
         <header>Экипировка</header>
-        <ValueBadge :type="ResourceTypes.protection" :value="$user.stats?.protection" :not-synced-value="$user.notSyncedStats?.protection" />
+        <ValueBadge
+          :type="ResourceTypes.protection"
+          :value="$user.stats?.protection"
+          :not-synced-value="$user.notSyncedStats?.protection"
+        />
       </div>
       <Equipment />
     </section>
@@ -90,7 +99,6 @@
 </template>
 
 <script>
-import CircleLoading from '~/components/loaders/CircleLoading.vue';
 import Validators from '~/utils/validators';
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import LevelComponent from '~/components/LevelComponent.vue';
@@ -100,7 +108,7 @@ import Equipment from '~/components/Equipment.vue';
 import Inventory from '~/components/Inventory.vue';
 
 export default {
-  components: { Inventory, Equipment, ValueBadge, LevelComponent, UserProfileInfo, CircleLoading },
+  components: { Inventory, Equipment, ValueBadge, LevelComponent, UserProfileInfo },
 
   data() {
     return {
