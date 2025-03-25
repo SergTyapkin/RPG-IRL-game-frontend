@@ -146,6 +146,23 @@ export const UserModel = {
       type: Object,
       fields: ItemModel,
     },
+  },
+  equipment: {
+    type: Object,
+    fields: {
+      hat: {
+        type: Object,
+        fields: ItemModel,
+      },
+      main: {
+        type: Object,
+        fields: ItemModel,
+      },
+      boots: {
+        type: Object,
+        fields: ItemModel,
+      },
+    },
   }
 };
 
@@ -166,6 +183,11 @@ export const UserModelMockData = validateModel(UserModel, {
   },
   role: 'user',
   inventory: [ItemModelMockData, ItemModelMockData, ItemModelMockData, ItemModelMockData],
+  equipment: {
+    hat: ItemModelMockData,
+    main: ItemModelMockData,
+    boots: ItemModelMockData,
+  },
   guild: GuildModelMockData,
   skills: ['P0', 'P1'],
 });

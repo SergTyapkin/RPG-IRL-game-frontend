@@ -84,6 +84,7 @@
           width 10px
           height 10px
           background colorEmp1
+          z-index -1
         .not-synced-label
           position absolute
           top -5px
@@ -118,7 +119,7 @@
 
         <div class="current-value-info">
           <div>{{ curSyncedXp }}xp<span v-if="curNotSyncedXp"> + {{ curNotSyncedXp }}xp</span></div>
-          <div class="not-synced-label"><img src="/static/icons/cloud-sync.svg" alt="sync"></div>
+          <div class="not-synced-label" v-if="curNotSyncedXp"><img src="/static/icons/cloud-sync.svg" alt="sync"></div>
         </div>
       </div>
     </div>

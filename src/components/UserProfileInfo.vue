@@ -8,8 +8,6 @@
 .root-user-profile-info
   display flex
   gap 15px
-  &.small
-    flex-direction column
   .avatar
     overflow hidden
     aspect-ratio 1/1
@@ -40,6 +38,11 @@
         padding 5px
         background colorEmp1
         border-radius borderRadiusS
+
+  &.small
+    .avatar
+      width 70px
+      height 70px
 </style>
 
 <template>
@@ -47,11 +50,11 @@
     <div class="avatar"><img :src="overrideAvatar || $user.imageUrl" alt="avatar"></div>
     <div class="text-block">
       <strong class="name">{{ overrideName || $user.name }}</strong>
-      <div class="guild-info" v-if="showGuild">
+      <router-link :to="{ name: 'guild' }" class="guild-info" v-if="showGuild">
         <img class="guild-image" :src="$user.guild.imageUrl" alt="">
         <div class="guild-name"> {{ $user.guild?.name }} </div>
         <div class="guild-xp-badge"> {{ $user.guild?.experience }} xp</div>
-      </div>
+      </router-link>
       <slot />
     </div>
   </div>

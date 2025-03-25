@@ -27,6 +27,11 @@ export interface User {
   guild: Guild;
   skills: string[];
   inventory: Item[];
+  equipment: {
+    hat: Item;
+    main: Item;
+    boots: Item;
+  };
   role: 'admin' | 'user';
 
   isSignedIn: boolean;

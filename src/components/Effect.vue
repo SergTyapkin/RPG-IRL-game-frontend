@@ -38,16 +38,21 @@
     flex 0.3
     background colorSec1
     border-radius 0 borderRadiusM borderRadiusM 0
+    display flex
+    flex-direction column
+    justify-content space-between
+    align-items center
     img.source-img
       display block
       width 100%
-      padding 5px 15px 0 15px
+      max-width 50px
       object-fit contain
     .source-name
       font-small-extra()
 
       margin 2px
       padding 5px
+      width calc(100% - 4px)
       text-align center
       background colorBgLight
       border-radius borderRadiusM

@@ -52,9 +52,6 @@
   <div class="root-profile">
     <section class="section-user-info">
       <UserProfileInfo show-guild />
-      <router-link :to="{ name: 'guild' }" class="guild-button">
-        <img src="/static/icons/guild.svg" alt="">
-      </router-link>
     </section>
 
     <section class="section-level">

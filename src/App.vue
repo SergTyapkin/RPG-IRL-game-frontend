@@ -9,8 +9,9 @@
   width 100%
   max-width 400px
   min-height 100vh
-  border 2px solid colorSec1
-  border-radius borderRadiusL
+  border solid colorSec1
+  border-width 0 1px
+  //border-radius borderRadiusL
   centered-margin()
   // overflow hidden
 
@@ -18,13 +19,12 @@
     position absolute
     width 100%
     min-height 100vh
-    padding 60px 15px 120px 15px
+    padding 30px 15px 120px 15px
 
   .bottom-interface
     pointer-events none
     position fixed
     bottom 0
-    transform translateX(-2px)
     width 100%
     max-width 400px
     padding 0

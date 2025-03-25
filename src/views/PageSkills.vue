@@ -124,7 +124,7 @@
 <template>
   <div class="root-page-skills">
     <section class="section-user-info">
-      <UserProfileInfo />
+      <UserProfileInfo small />
     </section>
 
     <section class="section-resources">
