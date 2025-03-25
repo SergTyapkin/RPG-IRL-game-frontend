@@ -18,17 +18,19 @@
 
 <template>
   <div class="root-inventory">
-    <Cell v-for="item in items" :key="item.id" class="cell" :src="item.imageUrl" />
+    <Cell v-for="item in items" :key="item.id" class="cell" :src="item.imageUrl" @click="selectItem(item)" />
     <Cell v-for="i in (3 - items.length % 3)" :key="i" class="cell" />
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import Cell from '~/components/Cell.vue';
 
 
 export default {
   components: { Cell },
+
+  emits: ['select'],
 
   props: {
     items: {
@@ -46,6 +48,9 @@ export default {
   },
 
   methods: {
+    selectItem(item: any) {
+      this.$emit('select', item);
+    }
   },
 };
 </script>

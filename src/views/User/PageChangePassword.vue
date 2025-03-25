@@ -55,7 +55,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import FormWithErrors from '~/components/FormWithErrors.vue';
 import Validators from '~/utils/validators';
 

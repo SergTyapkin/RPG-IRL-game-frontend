@@ -6,7 +6,7 @@
   <input v-model="modelValue" @input="onInput">
 </template>
 
-<script>
+<script lang="ts">
 export default {
   props: {
     modelValue: undefined,

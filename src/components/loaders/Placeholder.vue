@@ -35,7 +35,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import CircleLoading from "~/components/loaders/CircleLoading.vue";
 
 export default {

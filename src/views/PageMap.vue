@@ -47,7 +47,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import DraggableComponent from '~/components/DraggableComponent.vue';
 
 export default {

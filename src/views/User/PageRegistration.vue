@@ -160,7 +160,7 @@ export default {
     },
 
     async chooseClass(classObj: Class) {
-      if (!(await this.$modal.confirm(`Выбираем класс "${classObj.name}"`, 'Вы уверены? Выбранный класс нельзя будет изменить!'))) {
+      if (!(await this.$modals.confirm(`Выбираем класс "${classObj.name}"`, 'Вы уверены? Выбранный класс нельзя будет изменить!'))) {
         return;
       }
       this.loading = true;

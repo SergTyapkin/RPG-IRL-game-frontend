@@ -58,7 +58,7 @@ export default class API extends REST_API {
 
   // Api configuration
   // User
-  getUser = () => this.#GET(`/user`, {}, UserModel, {ok: false, data: {}, status: 401}) as MyResponse<User>;
+  getUser = () => this.#GET(`/user`, {}, UserModel, Response200(UserModelMockData)) as MyResponse<User>;
   updateProfile = (id: string, profileData: { username?: string; password?: string }) =>
     this.#PUT(`/user/${id}`, profileData, UserModel) as MyResponse<User>;
   updatePassword = (id: string, oldPassword: string, newPassword: string) =>

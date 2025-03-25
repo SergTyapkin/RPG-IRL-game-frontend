@@ -112,7 +112,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { BuffsTypes } from '~/constants/constants';
 
 export default {

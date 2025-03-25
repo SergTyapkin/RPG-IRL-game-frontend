@@ -139,7 +139,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { ResourceTypes } from '~/constants/constants';
 
 export default {

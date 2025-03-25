@@ -17,13 +17,13 @@
 
 <template>
   <div class="root-equipment">
-    <Cell class="hat" :src="$user.equipment?.hat?.imageUrl" :bg-image="DefaultHatImage" />
-    <Cell class="main" :src="$user.equipment?.main?.imageUrl" :bg-image="DefaultMainImage" />
-    <Cell class="boots" :src="$user.equipment?.boots?.imageUrl" :bg-image="DefaultBootsImage" />
+    <Cell class="hat" :src="$user.equipment?.hat?.imageUrl" :bg-image="DefaultHatImage" @click="selectItem($user.equipment?.hat)" />
+    <Cell class="main" :src="$user.equipment?.main?.imageUrl" :bg-image="DefaultMainImage" @click="selectItem($user.equipment?.main)" />
+    <Cell class="boots" :src="$user.equipment?.boots?.imageUrl" :bg-image="DefaultBootsImage" @click="selectItem($user.equipment?.boots)" />
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import Cell from '~/components/Cell.vue';
 
 import DefaultHatImage from '#/icons/guild.svg';
@@ -32,6 +32,9 @@ import DefaultBootsImage from '#/icons/guild.svg';
 
 export default {
   components: { Cell },
+
+  emits: ['select'],
+
   props: {},
 
   data() {
@@ -45,6 +48,12 @@ export default {
   mounted() {
   },
 
-  methods: {},
+  methods: {
+    selectItem(item: any) {
+      if (item) {
+        this.$emit('select', item);
+      }
+    }
+  },
 };
 </script>

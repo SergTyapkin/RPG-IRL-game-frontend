@@ -16,6 +16,7 @@ export default new Vuex.Store({
       state.user.name = String(userData.name);
       state.user.level = Number(userData.level);
       state.user.imageUrl = String(userData.imageUrl);
+      state.user.classType = String(userData.classType);
       state.user.stats.hp = Number(userData.stats.hp);
       state.user.stats.experience = Number(userData.stats.experience);
       state.user.stats.money = Number(userData.stats.money);
@@ -52,7 +53,6 @@ export default new Vuex.Store({
   actions: {
     async GET_USER_OR_LOAD(this: Store, state: State) {
       let userData = this.$app.$localStorageManager.loadUser();
-      console.log(userData);
       if (!userData) {
         const { data, ok }: { data: any; ok: boolean } = await this.$app.$api.getUser();
         userData = data;

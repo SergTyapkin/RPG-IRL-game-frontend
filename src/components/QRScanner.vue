@@ -44,7 +44,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import QrScanner from "qr-scanner";
 
 export default {
@@ -89,7 +89,7 @@ export default {
         try {
           await this.scanner.start()
         } catch {
-          this.$modal.alert("Не предоставлены права доступа к камере", "Настройте доступ к камере для этого сайта в браузере");
+          this.$modals.alert("Не предоставлены права доступа к камере", "Настройте доступ к камере для этого сайта в браузере");
         }
         this.active = true;
       }

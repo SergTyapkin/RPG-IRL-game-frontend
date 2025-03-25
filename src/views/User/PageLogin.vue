@@ -45,7 +45,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import FormWithErrors from '~/components/FormWithErrors.vue';
 import { detectBrowser, detectOS } from '~/utils/utils';
 import Validators from '~/utils/validators';

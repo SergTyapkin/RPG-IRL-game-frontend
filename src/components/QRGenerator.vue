@@ -141,7 +141,7 @@ thumb-size = 15px
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import qrcode from "qrcode-generator-es6";
 import FloatingInput from "./FloatingInput.vue";
 

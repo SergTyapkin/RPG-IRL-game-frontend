@@ -74,7 +74,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 const SCALE_SENSITIVITY = 0.003;
 const DEFAULT_MAX_SCALE = 15;
 const DEFAULT_MIN_SCALE = 0.05;

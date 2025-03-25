@@ -54,7 +54,7 @@ export const Items: {[key: string]: Item} = {
     id: String(),
     name: 'Кинжал дешевой силы',
     description: 'Описание предмета',
-    type: ItemTypes.boots,
+    type: ItemTypes.weapon,
     protection: 0,
     imageUrl: ImgDagger,
     effects: [
@@ -68,14 +68,14 @@ export const Items: {[key: string]: Item} = {
     id: String(),
     name: 'Длинный меч удачи',
     description: 'Описание предмета',
-    type: ItemTypes.boots,
+    type: ItemTypes.weapon,
     protection: 0,
     imageUrl: ImgLongSword,
     effects: [
       Effects.luck,
     ],
     abilities: [
-      Abilities.longSwordHit
+      Abilities.longSwordHit,
     ],
   },
 }

@@ -79,7 +79,7 @@ image-width = 30px
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   props: {
     title: {
