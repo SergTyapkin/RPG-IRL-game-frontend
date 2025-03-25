@@ -58,14 +58,15 @@ bg = colorBgDark
   <div class="root-register">
     <transition mode="out-in" name="opacity">
       <section v-if="!textFieldsFilledState" class="form-section">
-        РЕГИСТРАЦИЯ<br />
+        РЕГИСТРАЦИЯ<br>
         <div class="info">В гильдию: {{ guildName }} #{{ guildId }}</div>
         <FormWithErrors
           ref="form"
           :fields="fields"
           submit-text="Зарегистрироваться"
           :loading="loading"
-          @success="saveTextAndGoToChooseClasses" />
+          @success="saveTextAndGoToChooseClasses"
+        />
         <router-link class="signin-link" :to="{ name: 'login' }">
           <button class="signin-button">Войти в имеющийся профиль</button>
         </router-link>
@@ -79,7 +80,8 @@ bg = colorBgDark
             :key="classObj.type"
             class="class-card"
             :class-obj="classObj"
-            @click="chooseClass(classObj)" />
+            @click="chooseClass(classObj)"
+          />
         </ul>
       </section>
     </transition>
@@ -158,6 +160,9 @@ export default {
     },
 
     async chooseClass(classObj: Class) {
+      if (!(await this.$modal.confirm(`Выбираем класс "${classObj.name}"`, 'Вы уверены? Выбранный класс нельзя будет изменить!'))) {
+        return;
+      }
       this.loading = true;
       const { ok } = await this.$api.register(
         this.savedTextData.name,
