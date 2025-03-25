@@ -1,7 +1,6 @@
 import { IterableSkillTrees } from '~/constants/skills';
-import { Effect, User } from '~/types/types';
+import type { Effect, Item, Skill, User } from '~/types/types';
 import { BuffsTypes, DEFAULT_USER_PROTECTION, ItemTypes } from '~/constants/constants';
-import inventory from '~/components/Inventory.vue';
 
 export function getCookie(name: string) {
   const matches = document.cookie.match(
@@ -97,10 +96,39 @@ export function deepClone<T>(obj: T): T {
 }
 
 
-export function getAllUserEffects($user: User): Effect[] {
-  const effects: Effect[] = [];
+interface ExtendedEffect extends Effect {
+  source: Skill | Item,
+  sourceType: 'skill' | 'item',
+}
+export function getAllUserEffects($user: User): ExtendedEffect[] {
+  const effects: ExtendedEffect[] = [];
+  if ($user.equipment.hat) {
+    $user.equipment.hat.effects.forEach(e => {
+      e.source = $user.equipment.hat;
+      e.sourceType = 'item';
+      effects.push(e)
+    });
+  }
+  if ($user.equipment.main) {
+    $user.equipment.main.effects.forEach(e => {
+      e.source = $user.equipment.main;
+      e.sourceType = 'item';
+      effects.push(e)
+    });
+  }
+  if ($user.equipment.boots) {
+    $user.equipment.boots.effects.forEach(e => {
+      e.source = $user.equipment.boots;
+      e.sourceType = 'item';
+      effects.push(e)
+    });
+  }
   $user.inventory.forEach(item => {
     if (![ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(item.type)) {
+      item.effects.forEach(e => {
+        e.source = item;
+        e.sourceType = 'item';
+      });
       effects.push(...item.effects)
     }
   });
@@ -110,7 +138,13 @@ export function getAllUserEffects($user: User): Effect[] {
       const skillIdx = Number(id.slice(1));
       return IterableSkillTrees[treeType][skillIdx];
     })
-    .forEach(skill => effects.push(...skill.effects));
+    .forEach(skill => {
+      skill.effects.forEach(e => {
+        e.source = skill;
+        e.sourceType = 'skill';
+      });
+      effects.push(...skill.effects)
+    });
   return effects;
 }
 

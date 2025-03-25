@@ -45,7 +45,7 @@
     img.source-img
       display block
       width 100%
-      max-width 50px
+      max-width 60px
       object-fit contain
     .source-name
       font-small-extra()
@@ -103,7 +103,7 @@
         <img v-else-if="buff === BuffsTypes.moneyModifier" src="/static/icons/buff-dmg.svg" alt="money">
         <img v-else-if="buff === BuffsTypes.powerCostDecrease" src="/static/icons/buff-dmg.svg" alt="power">
         <img v-else-if="buff === BuffsTypes.agilityCostDecrease" src="/static/icons/buff-dmg.svg" alt="agility">
-        <img v-else-if="buff === BuffsTypes.intelligenceModifier" src="/static/icons/buff-dmg.svg" alt="intelligence">
+        <img v-else-if="buff === BuffsTypes.intelligenceCostDecrease" src="/static/icons/buff-dmg.svg" alt="intelligence">
         <img v-else-if="buff === BuffsTypes.damageDoneModifier" src="/static/icons/buff-dmg.svg" alt="damage">
 
         <div class="value">{{ value }}</div>

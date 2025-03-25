@@ -76,7 +76,7 @@
     <section class="section-abilities">
       <header>Способности</header>
       <div class="abilities-container">
-        <Ability v-for="ability in abilities" :key="ability.id" :ability="ability" />
+        <Ability @click="playAbility(ability)" v-for="ability in abilities" :key="ability.id" :ability="ability" />
       </div>
     </section>
   </div>
@@ -119,8 +119,16 @@ export default {
     },
   },
 
-  mounted() {},
+  mounted() {
+    console.log(this.effects);
+  },
 
-  methods: {},
+  methods: {
+    async playAbility(ability: Ability) {
+      if (!(await this.$modals.confirm('Разыграть способность', `Точно используем "${ability.name}"?`))) {
+        return;
+      }
+    }
+  },
 };
 </script>

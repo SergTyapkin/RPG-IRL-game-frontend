@@ -23,8 +23,12 @@
 
 <template>
   <div class="root-cell" :style="{'--size': size}">
-    <img class="bg" v-if="bgImage" :src="bgImage" alt="">
-    <img v-if="src" :src="src" alt="">
+    <transition name="opacity">
+      <img class="bg" v-if="bgImage" :src="bgImage" alt="">
+    </transition>
+    <transition name="opacity">
+      <img v-if="src" :src="src" alt="">
+    </transition>
     <slot />
   </div>
 </template>

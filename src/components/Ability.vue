@@ -28,8 +28,8 @@
       flex-direction column
       gap 5px
       .stat
-        width 30px
         height 30px
+        padding 0 5px
         white-space nowrap
         background colorSec1
         border-radius borderRadiusMax
@@ -39,6 +39,9 @@
           background colorEmpPower
         &.heal
           background colorEmpAgility
+        img
+          height 1lh
+          margin-right 3px
 
   .text-container
     padding 10px
@@ -68,8 +71,8 @@
       <img class="ability-bg" :src="ability.imageUrl" alt="">
 
       <section class="stats">
-        <div v-if="ability.damage" class="stat damage">{{ ability.damage }}</div>
-        <div v-if="ability.heal" class="stat heal">{{ ability.heal }}</div>
+        <div v-if="ability.damage" class="stat damage"><img src="/static/icons/fight.svg" alt="">{{ ability.damage }}</div>
+        <div v-if="ability.heal" class="stat heal"><img src="/static/icons/close.svg" alt="">{{ ability.heal }}</div>
       </section>
     </section>
     <section class="text-container">
