@@ -1,10 +1,10 @@
 import validateModel from "@sergtyapkin/models-validator";
-import { BuffsTypes, DefaultAbilityImage, DefaultAvatarImage, DefaultKnifeImage } from '~/constants';
+import { BuffsTypes, ClassTypes, DefaultAbilityImage, DefaultAvatarImage, DefaultKnifeImage } from '~/constants/constants';
+import { Items } from '~/constants/items';
 
 export const EffectModel = {
   id: String,
   name: String,
-  type: String,
   description: String,
   imageUrl: String,
   buffs: Object,
@@ -13,12 +13,11 @@ export const EffectModel = {
 export const EffectModelMockData = validateModel(EffectModel,     {
   id: 'EFF_ID_1',
   name: 'Название эффекта',
-  type: 'EffectType some',
   description: 'Какое-то описание эффекта',
   imageUrl: DefaultAbilityImage,
   buffs: {
-    [BuffsTypes.protection]: 2,
-    [BuffsTypes.hp]: 5,
+    [BuffsTypes.protectionIncrease]: 2,
+    [BuffsTypes.maxHpIncrease]: 5,
   }
 });
 
@@ -51,6 +50,7 @@ export const ItemModel = {
   id: String,
   name: String,
   type: String,
+  protection: Number,
   imageUrl: String,
   effects: {
     type: Array,
@@ -73,6 +73,7 @@ export const ItemModelMockData = validateModel(ItemModel, {
   id: 'PP_ID_1',
   name: 'Предмет',
   type: 'boots',
+  protection: 2,
   imageUrl: DefaultKnifeImage,
   effects: [
     EffectModelMockData,
@@ -119,13 +120,12 @@ export const UserModel = {
   imageUrl: String,
   level: Number,
   role: new Set(['admin', 'user']),
+  classType: String,
   stats: {
     type: Object,
     fields: {
-      maxHp: Number,
       hp: Number,
       experience: Number,
-      protection: Number,
       money: Number,
       power: Number,
       agility: Number,
@@ -153,14 +153,17 @@ export const UserModel = {
       hat: {
         type: Object,
         fields: ItemModel,
+        optional: true,
       },
       main: {
         type: Object,
         fields: ItemModel,
+        optional: true,
       },
       boots: {
         type: Object,
         fields: ItemModel,
+        optional: true,
       },
     },
   }
@@ -171,22 +174,21 @@ export const UserModelMockData = validateModel(UserModel, {
   name: 'Сергей Тяпкин',
   imageUrl: DefaultAvatarImage,
   level: 2,
+  classType: ClassTypes.agility,
   stats: {
-    maxHp: 15,
     hp: 13,
     experience: 400,
-    protection: 3,
     money: 500,
     power: 4,
     agility: 5,
     intelligence: 2,
   },
   role: 'user',
-  inventory: [ItemModelMockData, ItemModelMockData, ItemModelMockData, ItemModelMockData],
+  inventory: [Items.mainBerserk, Items.longSword, Items.bootsBerserk, Items.helmetBerserk, Items.dagger],
   equipment: {
-    hat: ItemModelMockData,
-    main: ItemModelMockData,
-    boots: ItemModelMockData,
+    hat: Items.helmetBerserk,
+    main: undefined,
+    boots: undefined,
   },
   guild: GuildModelMockData,
   skills: ['P0', 'P1'],

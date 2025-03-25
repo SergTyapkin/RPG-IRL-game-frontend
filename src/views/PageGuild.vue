@@ -80,9 +80,10 @@
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import LevelComponent from '~/components/LevelComponent.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { GuildLevels, ResourceTypes } from '~/constants';
+import { ResourceTypes } from '~/constants/constants';
 import Inventory from '~/components/Inventory.vue';
 import UsersList from '~/components/UsersList.vue';
+import { GuildLevels } from '~/constants/levels';
 
 export default {
   components: { UsersList, Inventory, ValueBadge, LevelComponent, UserProfileInfo },

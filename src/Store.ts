@@ -1,20 +1,12 @@
 import Vuex from 'vuex';
 import { type State, type Store } from '~/types/store';
-import { type Guild, type Item, type User } from '~/types/types';
+import { type Guild, type User } from '~/types/types';
 
 export default new Vuex.Store({
   state: {
     user: {
       stats: {},
-      notSyncedStats: {
-        hp: 0,
-        experience: 0,
-        protection: 0,
-        money: 0,
-        power: 0,
-        agility: 0,
-        intelligence: 0,
-      },
+      notSyncedStats: {},
       guild: {},
     },
   },
@@ -26,13 +18,18 @@ export default new Vuex.Store({
       state.user.imageUrl = String(userData.imageUrl);
       state.user.stats.hp = Number(userData.stats.hp);
       state.user.stats.experience = Number(userData.stats.experience);
-      state.user.stats.protection = Number(userData.stats.protection);
       state.user.stats.money = Number(userData.stats.money);
       state.user.stats.power = Number(userData.stats.power);
       state.user.stats.agility = Number(userData.stats.agility);
       state.user.stats.intelligence = Number(userData.stats.intelligence);
+      state.user.notSyncedStats.experience = Number(userData.notSyncedStats?.experience);
+      state.user.notSyncedStats.money = Number(userData.notSyncedStats?.money);
+      state.user.notSyncedStats.power = Number(userData.notSyncedStats?.power);
+      state.user.notSyncedStats.agility = Number(userData.notSyncedStats?.agility);
+      state.user.notSyncedStats.intelligence = Number(userData.notSyncedStats?.intelligence);
       state.user.skills = userData.skills;
       state.user.inventory = userData.inventory;
+      state.user.equipment = userData.equipment;
       state.user.role = String(userData.role) as 'admin' | 'user';
 
       state.user.isSignedIn = true;
@@ -53,29 +50,36 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    async GET_USER_OR_LOAD(this: Store, state: State) {
+      let userData = this.$app.$localStorageManager.loadUser();
+      console.log(userData);
+      if (!userData) {
+        const { data, ok }: { data: any; ok: boolean } = await this.$app.$api.getUser();
+        userData = data;
+        if (!ok) {
+          state.commit('DELETE_USER');
+          return;
+        }
+        this.$app.$localStorageManager.saveUser(userData);
+      }
+      state.commit('SET_USER', userData);
+      state.commit('SET_GUILD', userData.guild);
+    },
     async GET_USER(this: Store, state: State) {
-      const { data, ok }: { data: any; ok: boolean } = await this.$app.$api.getUser();
+      const { data: userData, ok }: { data: any; ok: boolean } = await this.$app.$api.getUser();
       if (!ok) {
         state.commit('DELETE_USER');
         return;
       }
-      data.inventory.forEach((item: Item) => {
-        item.effects.forEach(effect => {
-          effect.sourceType = 'item';
-          effect.source = item;
-        });
-        item.abilities.forEach(ability => {
-          ability.sourceType = 'item';
-          ability.source = item;
-        });
-      });
-      state.commit('SET_USER', data);
-      state.commit('SET_GUILD', data.guild);
+      this.$app.$localStorageManager.saveUser(userData);
+      state.commit('SET_USER', userData);
+      state.commit('SET_GUILD', userData.guild);
     },
     SET_GUILD(this: Store, state: State, guild: Guild) {
       state.commit('SET_GUILD', guild);
     },
-    DELETE_USER(state: State) {
+    DELETE_USER(this: Store, state: State) {
+      this.$app.$localStorageManager.removeUser();
       state.commit('DELETE_USER');
     },
   },

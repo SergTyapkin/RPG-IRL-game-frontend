@@ -51,7 +51,7 @@
 <template>
   <div class="root-profile">
     <section class="section-user-info">
-      <UserProfileInfo show-guild />
+      <UserProfileInfo show-guild @contextmenu.prevent="logout" />
     </section>
 
     <section class="section-level">
@@ -73,8 +73,8 @@
         <header>Экипировка</header>
         <ValueBadge
           :type="ResourceTypes.protection"
-          :value="$user.stats?.protection"
-          :not-synced-value="$user.notSyncedStats?.protection"
+          :value="userProtection"
+          :not-synced-value="0"
         />
       </div>
       <Equipment />
@@ -82,7 +82,7 @@
 
     <section class="section-inventory">
       <header>Инвентарь</header>
-      <Inventory :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]" />
+      <Inventory :items="$user.inventory" />
     </section>
 
     <!--    <div class="buttons-row">-->
@@ -96,13 +96,14 @@
 </template>
 
 <script>
-import Validators from '~/utils/validators';
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import LevelComponent from '~/components/LevelComponent.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { ResourceTypes, UserLevels } from '~/constants';
+import { BuffsTypes, DEFAULT_USER_PROTECTION, ResourceTypes } from '~/constants/constants';
 import Equipment from '~/components/Equipment.vue';
 import Inventory from '~/components/Inventory.vue';
+import { UserLevels } from '~/constants/levels';
+import { getAllUserEffects, getTotalUserProtection } from '~/utils/utils';
 
 export default {
   components: { Inventory, Equipment, ValueBadge, LevelComponent, UserProfileInfo },
@@ -115,51 +116,19 @@ export default {
       UserLevels,
     };
   },
+  computed: {
+    userProtection() {
+      return getTotalUserProtection(this.$user);
+    },
+  },
 
   async mounted() {},
 
   methods: {
-    async changeUserParam(fieldName, fieldNameUser = fieldName, overrideHavingValue = null) {
-      const newUserData = {
-        name: this.$user.name,
-        group: this.$user.group,
-        telegram: this.$user.tg,
-        vk: this.$user.vk,
-        email: this.$user.email,
-        phone_number: this.$user.phone,
-      };
-      const inputValue = await this.$modals.prompt(
-        overrideHavingValue ? 'Неверный формат' : 'Изменить значение поля',
-        'Введите новое значение',
-        overrideHavingValue || newUserData[fieldName],
-      );
-      if (!inputValue) {
-        return;
-      }
-      if (!Validators[fieldNameUser].validate(inputValue)) {
-        this.changeUserParam(fieldName, fieldNameUser, inputValue);
-        return;
-      }
-
-      newUserData[fieldName] = Validators[fieldNameUser].prettifyResult(inputValue);
-      this.loading = true;
-      const { ok } = await this.$api.editProfile(
-        newUserData.name,
-        newUserData.group,
-        newUserData.telegram,
-        newUserData.vk,
-        newUserData.email,
-        newUserData.phone_number,
-      );
-      this.loading = false;
-      if (!ok) {
-        this.$popups.error(`Не удалось изменить значение поля ${fieldName}`);
-        return;
-      }
-      this.$user[fieldNameUser] = newUserData[fieldName];
-    },
-
     async logout() {
+      if (!(await this.$modal.confirm("Вы уверены, что хотите выйти из профиля?"))) {
+        return;
+      }
       this.loading = true;
       const { ok } = await this.$api.logout();
       this.loading = true;
@@ -170,11 +139,6 @@ export default {
       }
       this.$store.dispatch('DELETE_USER');
       this.$router.push({ name: 'login' });
-    },
-
-    copyToClipboard(str, description) {
-      navigator.clipboard.writeText(str);
-      this.$popups.success('Скопировано', `${description} скопировано в буфер обмена`);
     },
   },
 };

@@ -1,3 +1,8 @@
+import { IterableSkillTrees } from '~/constants/skills';
+import { Effect, User } from '~/types/types';
+import { BuffsTypes, DEFAULT_USER_PROTECTION, ItemTypes } from '~/constants/constants';
+import inventory from '~/components/Inventory.vue';
+
 export function getCookie(name: string) {
   const matches = document.cookie.match(
     new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)'),
@@ -89,4 +94,34 @@ export function deepClone<T>(obj: T): T {
     ret[key] = val;
   }
   return ret;
+}
+
+
+export function getAllUserEffects($user: User): Effect[] {
+  const effects: Effect[] = [];
+  $user.inventory.forEach(item => {
+    if (![ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(item.type)) {
+      effects.push(...item.effects)
+    }
+  });
+  $user.skills
+    .map(id => {
+      const treeType = id[0];
+      const skillIdx = Number(id.slice(1));
+      return IterableSkillTrees[treeType][skillIdx];
+    })
+    .forEach(skill => effects.push(...skill.effects));
+  return effects;
+}
+
+export function getTotalUserProtection($user: User): number {
+  let res = DEFAULT_USER_PROTECTION;
+  res += $user.equipment.hat?.protection ?? 0;
+  res += $user.equipment.main?.protection ?? 0;
+  res += $user.equipment.boots?.protection ?? 0;
+  const effects = getAllUserEffects($user);
+  effects.forEach(effect => {
+    res += effect.buffs[BuffsTypes.protectionIncrease] ?? 0;
+  });
+  return res;
 }

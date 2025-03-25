@@ -12,8 +12,9 @@
   width var(--size)
   height var(--size)
   background colorBgLight
-  border-radius borderRadiusS
+  border-radius borderRadiusL
   hover-effect()
+  position relative
   .image-container
     position relative
     img.ability-bg
@@ -28,23 +29,27 @@
       flex-direction column
       gap 5px
       .stat
-        width 30px
-        height 30px
+        padding 5px 10px
         white-space nowrap
         background colorSec1
         border-radius borderRadiusMax
         centered-flex-container()
-        font-medium()
-        &.damage
+        font-small-extra()
+        &.power
           background colorEmpPower
-        &.heal
+        &.agility
           background colorEmpAgility
+        &.intelligence
+          background colorEmpIntelligence
 
   .text-container
     padding 10px
     display flex
     flex-direction column
-    height 100%
+    position absolute
+    bottom 0
+    width 100%
+    background mix(colorBg, transparent, 50%)
     .name
       font-medium()
 
@@ -54,28 +59,22 @@
       margin-bottom 7px
       font-small-extra()
       font-thin()
-    .reload-info
-      font-small-extra()
-
-      width 100%
-      color colorSec1
-      text-align right
 </style>
 
 <template>
   <div class="root-effect">
     <section class="image-container">
-      <img class="ability-bg" :src="ability.imageUrl" alt="">
+      <img class="ability-bg" :src="classObj.imageUrl" alt="">
 
       <section class="stats">
-        <div v-if="ability.damage" class="stat damage">{{ ability.damage }}</div>
-        <div v-if="ability.heal" class="stat heal">{{ ability.heal }}</div>
+        <div class="stat power">Сила +{{ classObj.statsPerLevel.power }}</div>
+        <div class="stat agility">Ловкость +{{ classObj.statsPerLevel.agility }}</div>
+        <div class="stat intelligence">Интеллект +{{ classObj.statsPerLevel.intelligence }}</div>
       </section>
     </section>
     <section class="text-container">
-      <header class="name">{{ ability.name }}</header>
-      <div class="description">{{ ability.description }}</div>
-      <div class="reload-info">{{ ability.reload }} хода на перезарядку</div>
+      <header class="name">{{ classObj.name }}</header>
+      <div class="description">{{ classObj.description }}</div>
     </section>
   </div>
 </template>
@@ -83,7 +82,7 @@
 <script>
 export default {
   props: {
-    ability: {
+    classObj: {
       type: Object,
       required: true,
     },

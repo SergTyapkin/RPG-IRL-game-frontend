@@ -18,15 +18,13 @@
 
 <template>
   <div class="root-inventory">
-    <Cell v-for="item in items" :key="item.id" class="cell" :src="DefaultSlotImage" />
+    <Cell v-for="item in items" :key="item.id" class="cell" :src="item.imageUrl" />
     <Cell v-for="i in (3 - items.length % 3)" :key="i" class="cell" />
   </div>
 </template>
 
 <script>
 import Cell from '~/components/Cell.vue';
-
-import DefaultSlotImage from '#/images/knife-example.png';
 
 
 export default {
@@ -41,7 +39,6 @@ export default {
 
   data() {
     return {
-      DefaultSlotImage,
     }
   },
 

@@ -140,7 +140,7 @@
 </template>
 
 <script>
-import { ResourceTypes } from '~/constants';
+import { ResourceTypes } from '~/constants/constants';
 
 export default {
   props: {

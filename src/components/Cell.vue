@@ -8,16 +8,22 @@
 .root-cell
   width var(--size)
   height var(--size)
-  padding 10px
   background radial-gradient(#aa4c01, #622c01)
   border-radius borderRadiusS
+  position relative
   img
-    width 100%
-    height 100%
+    position absolute
+    padding = 10px
+    size = 'calc(100% - %s)' % (padding * 2)
+    left padding
+    top padding
+    width size
+    heigth size
 </style>
 
 <template>
   <div class="root-cell" :style="{'--size': size}">
+    <img class="bg" v-if="bgImage" :src="bgImage" alt="">
     <img v-if="src" :src="src" alt="">
     <slot />
   </div>
@@ -27,6 +33,10 @@
 export default {
   props: {
     src: {
+      type: String,
+      default: undefined,
+    },
+    bgImage: {
       type: String,
       default: undefined,
     },

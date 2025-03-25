@@ -97,12 +97,12 @@
 
     <section class="buffs">
       <div v-for="(value, buff) in effect.buffs" class="buff">
-        <img v-if="buff === BuffsTypes.hp" src="/static/icons/buff-dmg.svg" alt="hp">
-        <img v-else-if="buff === BuffsTypes.protection" src="/static/icons/buff-dmg.svg" alt="protection">
+        <img v-if="buff === BuffsTypes.maxHpIncrease" src="/static/icons/buff-dmg.svg" alt="hp">
+        <img v-else-if="buff === BuffsTypes.protectionIncrease" src="/static/icons/buff-dmg.svg" alt="protection">
         <img v-else-if="buff === BuffsTypes.experienceModifier" src="/static/icons/buff-dmg.svg" alt="experience">
         <img v-else-if="buff === BuffsTypes.moneyModifier" src="/static/icons/buff-dmg.svg" alt="money">
-        <img v-else-if="buff === BuffsTypes.powerModifier" src="/static/icons/buff-dmg.svg" alt="power">
-        <img v-else-if="buff === BuffsTypes.agilityModifier" src="/static/icons/buff-dmg.svg" alt="agility">
+        <img v-else-if="buff === BuffsTypes.powerCostDecrease" src="/static/icons/buff-dmg.svg" alt="power">
+        <img v-else-if="buff === BuffsTypes.agilityCostDecrease" src="/static/icons/buff-dmg.svg" alt="agility">
         <img v-else-if="buff === BuffsTypes.intelligenceModifier" src="/static/icons/buff-dmg.svg" alt="intelligence">
         <img v-else-if="buff === BuffsTypes.damageDoneModifier" src="/static/icons/buff-dmg.svg" alt="damage">
 
@@ -113,7 +113,7 @@
 </template>
 
 <script>
-import { BuffsTypes } from '~/constants';
+import { BuffsTypes } from '~/constants/constants';
 
 export default {
   props: {

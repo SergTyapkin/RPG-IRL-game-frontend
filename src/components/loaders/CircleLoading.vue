@@ -16,13 +16,13 @@
   position absolute
   width 7%
   height 7%
-  background #00000080
+  background #ffffffE0
   border-radius 50%
   animation lds-default 1.2s linear infinite
 
 
-.lds-default.light div
-  background #ffffff80
+.lds-default.dark div
+  background #ffffffE0
 
 
 .lds-default div:nth-child(1)
@@ -114,7 +114,7 @@
 
 <template>
   <div class="circle-loading" :style="{ '--size': size }">
-    <div class="lds-default" :class="{ light }">
+    <div class="lds-default" :class="{ dark }">
       <div />
       <div />
       <div />
@@ -138,7 +138,7 @@ export default {
       type: String,
       default: '60px',
     },
-    light: {
+    dark: {
       type: Boolean,
       default: false,
     },

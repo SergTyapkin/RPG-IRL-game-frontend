@@ -26,6 +26,7 @@
       display flex
       gap 5px
       align-items center
+      hover-effect()
       .guild-image
         width 40px
         height 40px

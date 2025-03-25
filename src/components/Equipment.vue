@@ -1,4 +1,4 @@
- <style lang="stylus" scoped>
+<style lang="stylus" scoped>
 @import '../styles/constants.styl'
 @import '../styles/buttons.styl'
 @import '../styles/fonts.styl'
@@ -10,44 +10,41 @@
   gap 15px
   justify-content space-between
   width 100%
+
   > *
-    aspect-ratio 1/1
+    aspect-ratio 1 / 1
 </style>
 
 <template>
   <div class="root-equipment">
-    <Cell class="hat" :src="DefaultHatImage" />
-    <Cell class="main" :src="DefaultMainImage" />
-    <Cell class="boots" :src="DefaultBootsImage" />
+    <Cell class="hat" :src="$user.equipment?.hat?.imageUrl" :bg-image="DefaultHatImage" />
+    <Cell class="main" :src="$user.equipment?.main?.imageUrl" :bg-image="DefaultMainImage" />
+    <Cell class="boots" :src="$user.equipment?.boots?.imageUrl" :bg-image="DefaultBootsImage" />
   </div>
 </template>
 
 <script>
 import Cell from '~/components/Cell.vue';
 
-import DefaultHatImage from '#/images/knife-example.png';
-import DefaultMainImage from '#/images/knife-example.png';
-import DefaultBootsImage from '#/images/knife-example.png';
-
+import DefaultHatImage from '#/icons/guild.svg';
+import DefaultMainImage from '#/icons/guild.svg';
+import DefaultBootsImage from '#/icons/guild.svg';
 
 export default {
   components: { Cell },
-  props: {
-
-  },
+  props: {},
 
   data() {
     return {
       DefaultHatImage,
       DefaultMainImage,
       DefaultBootsImage,
-    }
+    };
   },
 
   mounted() {
   },
 
-  methods: {
-  },
+  methods: {},
 };
 </script>

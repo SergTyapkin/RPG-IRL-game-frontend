@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import QRScanner from '~/components/QRScanner.vue';
-import { QRTypes, ResourceTypes } from '~/constants';
+import { QRTypes, ResourceTypes } from '~/constants/constants';
 import validateModel from '@sergtyapkin/models-validator';
 import { GuildModel, ItemModel } from '~/utils/APIModels';
 import { type Guild, type Item } from '~/types/types';
@@ -77,10 +77,6 @@ export default {
               this.$user.notSyncedStats.money += value;
               this.$popups.success('QR отсканирован', `Добавлено ${value} монет`)
               break;
-            case ResourceTypes.hp:
-              this.$user.notSyncedStats.maxHp += value;
-              this.$popups.success('QR отсканирован', `Добавлено ${value} максимального здоровья`)
-              break;
             case ResourceTypes.experience:
               this.$user.notSyncedStats.experience += value;
               this.$popups.success('QR отсканирован', `Добавлено ${value} опыта`)
@@ -92,10 +88,6 @@ export default {
             case ResourceTypes.agility:
               this.$user.notSyncedStats.agility += value;
               this.$popups.success('QR отсканирован', `Добавлено ${value} очков ловкости`)
-              break;
-            case ResourceTypes.protection:
-              this.$user.notSyncedStats.protection += value;
-              this.$popups.success('QR отсканирован', `Добавлено ${value} очков защиты`)
               break;
             case ResourceTypes.intelligence:
               this.$user.notSyncedStats.intelligence += value;

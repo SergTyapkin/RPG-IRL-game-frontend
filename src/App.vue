@@ -15,11 +15,13 @@
   centered-margin()
   // overflow hidden
 
-  > *
+  > *:not(.loading)
     position absolute
     width 100%
     min-height 100vh
     padding 30px 15px 120px 15px
+  .loading
+    centered-absolute-transform()
 
   .bottom-interface
     pointer-events none
@@ -126,6 +128,7 @@
       <transition name="scale-in">
         <component :is="Component" />
       </transition>
+      <CircleLoading class="loading" v-if="!Component" />
     </router-view>
 
     <div class="bottom-interface">
@@ -149,9 +152,11 @@
 import { getCurrentInstance } from 'vue';
 import { Modals, Popups } from '@sergtyapkin/modals-popups';
 import API from '~/utils/API';
+import LocalStorageManager from '~/utils/localStorageManager';
+import CircleLoading from '~/components/loaders/CircleLoading.vue';
 
 export default {
-  components: { Modals, Popups },
+  components: { CircleLoading, Modals, Popups },
 
   data(): {
     transitionName: string;
@@ -168,6 +173,7 @@ export default {
 
     this.global.$user = this.$store.state.user;
     this.global.$modal = this.$refs.modals;
+    this.global.$localStorageManager = new LocalStorageManager();
     this.global.$popups = this.$refs.popups;
     this.global.$app = this;
     this.global.$api = new API(`/api`);

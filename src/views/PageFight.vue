@@ -67,7 +67,7 @@
     </section>
 
     <section class="section-effects">
-      <header>Эффекты</header>
+      <header>Действующие эффекты</header>
       <div class="effects-container">
         <Effect v-for="effect in effects" :key="effect.id" :effect="effect" />
       </div>
@@ -85,9 +85,11 @@
 <script>
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { IterableSkillTrees, ResourceTypes } from '~/constants';
+import { ResourceTypes } from '~/constants/constants';
 import Effect from '~/components/Effect.vue';
 import Ability from '~/components/Ability.vue';
+import { IterableSkillTrees } from '~/constants/skills';
+import { getAllUserEffects } from '~/utils/utils';
 
 export default {
   components: { Ability, Effect, ValueBadge, UserProfileInfo },
@@ -100,16 +102,7 @@ export default {
 
   computed: {
     effects() {
-      const effects = [];
-      this.$user.inventory.forEach(item => effects.push(...item.effects));
-      this.$user.skills
-        .map(id => {
-          const treeType = id[0];
-          const skillIdx = id.slice(1);
-          return IterableSkillTrees[treeType][skillIdx];
-        })
-        .forEach(skill => effects.push(...skill.effects));
-      return effects;
+      return getAllUserEffects(this.$user);
     },
 
     abilities() {

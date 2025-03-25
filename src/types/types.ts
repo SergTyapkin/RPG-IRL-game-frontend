@@ -1,4 +1,4 @@
-import { BuffType } from '~/constants';
+import { BuffType, ClassType } from '~/constants/constants';
 
 export interface User {
   id: string;
@@ -6,24 +6,21 @@ export interface User {
   level: number;
   imageUrl: string;
   stats: {
-    maxHp: number;
     hp: number;
     experience: number;
-    protection: number;
     money: number;
     power: number;
     agility: number;
     intelligence: number;
   };
   notSyncedStats: {
-    maxHp: number;
     experience: number;
-    protection: number;
     money: number;
     power: number;
     agility: number;
     intelligence: number;
   };
+  classType: ClassType;
   guild: Guild;
   skills: string[];
   inventory: Item[];
@@ -37,13 +34,23 @@ export interface User {
   isSignedIn: boolean;
 }
 
+export interface Class {
+  type: ClassType;
+  name: string;
+  description: string;
+  imageUrl: string;
+  statsPerLevel: {
+    power: number,
+    agility: number,
+    intelligence: number,
+  }
+}
+
 export interface Ability {
   id: string;
   name: string;
   description: string;
   imageUrl: string;
-  sourceType: 'skill' | 'item'
-  source: Skill | Item;
 
   damage: number;
   damageTargets: number;
@@ -57,8 +64,6 @@ export interface Effect {
   name: string;
   description: string;
   imageUrl: string;
-  sourceType: 'skill' | 'item'
-  source: Skill | Item;
 
   buffs: {[key in BuffType]: number};
 }
@@ -95,6 +100,7 @@ export interface Item {
   id: string;
   name: string;
   type: string;
+  protection: number;
   abilities: Ability[];
   effects: Effect[],
   description: string;

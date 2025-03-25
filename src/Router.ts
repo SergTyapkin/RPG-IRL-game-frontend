@@ -29,15 +29,15 @@ export default function createVueRouter(Store: Store): Router {
     { path: '/', name: 'default', component: Page },
 
     { path: '/profile', name: 'profile', component: PageProfile, meta: {loginRequired: true}},
-    { path: '/login', name: 'login', component: PageLogin },
-    { path: '/signup', name: 'signup', component: PageRegistration },
-    { path: '/password/change', name: 'changePassword', component: PageChangePassword },
+    { path: '/login', name: 'login', component: PageLogin, meta: {noLoginRequired: true}},
+    { path: '/signup', name: 'signup', component: PageRegistration, meta: {noLoginRequired: true} },
+    { path: '/password/change', name: 'changePassword', component: PageChangePassword, meta: {loginRequired: true} },
 
-    { path: '/fight', name: 'fight', component: PageFight },
-    { path: '/skills', name: 'skillsTree', component: PageSkills },
-    { path: '/map', name: 'map', component: PageMap },
-    { path: '/qr-scanner', name: 'qrScanner', component: PageScanner },
-    { path: '/guild', name: 'guild', component: PageGuild },
+    { path: '/fight', name: 'fight', component: PageFight, meta: {loginRequired: true} },
+    { path: '/skills', name: 'skillsTree', component: PageSkills, meta: {loginRequired: true} },
+    { path: '/map', name: 'map', component: PageMap, meta: {loginRequired: true} },
+    { path: '/qr-scanner', name: 'qrScanner', component: PageScanner, meta: {loginRequired: true} },
+    { path: '/guild', name: 'guild', component: PageGuild, meta: {loginRequired: true} },
 
     { path: '/:pathMatch(.*)*', name: 'page404', component: Page404 },
   ];
@@ -50,7 +50,7 @@ export default function createVueRouter(Store: Store): Router {
   let router_got_user = false;
   Router.beforeEach(async (to: RouteLocationNormalized, _, next: NavigationGuardNext) => {
     if (!router_got_user) {
-      await Store.dispatch('GET_USER');
+      await Store.dispatch('GET_USER_OR_LOAD');
       router_got_user = true;
     }
 

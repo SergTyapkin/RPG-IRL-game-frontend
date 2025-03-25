@@ -227,10 +227,11 @@
 <script lang="ts">
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { IterableSkillTrees, ResourceTypes } from '~/constants';
+import { ResourceTypes } from '~/constants/constants';
 import DraggableComponent from '~/components/DraggableComponent.vue';
 import Cell from '~/components/Cell.vue';
 import { type Skill } from '~/types/types';
+import { IterableSkillTrees } from '~/constants/skills';
 
 export default {
   components: { Cell, DraggableComponent, ValueBadge, UserProfileInfo },

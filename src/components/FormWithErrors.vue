@@ -3,7 +3,7 @@
 @import '../styles/constants.styl'
 @import '../styles/fonts.styl'
 
-border-color = colorText1
+border-color = colorEmp1
 input-border = 2px solid border-color
 
 .root-form
@@ -23,6 +23,8 @@ input-border = 2px solid border-color
       opacity 0.5
       transition all 0.2s ease
       font-medium()
+    .placeholder
+      font-small()
     label
       opacity 1
 
@@ -37,7 +39,7 @@ input-border = 2px solid border-color
       text-align left
       border input-border
       border-top-width 0
-      border-radius borderRadiusL
+      border-radius borderRadiusM
       outline input-border
       outline-offset -2px
       transition all 0.2s ease, background-size 0.1s ease
@@ -94,6 +96,7 @@ input-border = 2px solid border-color
 
   .submit
     button()
+    border-width 2px
 
     margin-top 10px
     margin-bottom 10px
