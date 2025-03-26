@@ -9,18 +9,21 @@
   overflow hidden
   display flex
   flex-direction column
-  width var(--size)
-  height var(--size)
   background colorBgLight
   border-radius borderRadiusL
   hover-effect()
   position relative
+  height 520px
   .image-container
     position relative
+    width 100%
+    height 100%
     img.ability-bg
       display block
       aspect-ratio 1/1
       width 100%
+      height 100%
+      object-fit cover
     .stats
       position absolute
       top 10px
@@ -34,7 +37,7 @@
         background colorSec1
         border-radius borderRadiusMax
         centered-flex-container()
-        font-small-extra()
+        font-small()
         &.power
           background colorEmpPower
         &.agility
@@ -53,11 +56,12 @@
     .name
       font-medium()
 
-      margin-bottom 7px
+      margin-bottom 10px
       flex 1
     .description
       margin-bottom 7px
-      font-small-extra()
+      white-space pre-wrap
+      font-small()
       font-thin()
 </style>
 

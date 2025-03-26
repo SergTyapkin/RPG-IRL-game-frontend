@@ -82,17 +82,17 @@
         :level="$user.level"
         :cur-synced-xp="$user.stats?.experience"
         :cur-not-synced-xp="$user.notSyncedStats?.experience"
-        :max-xp="UserLevels[$user.level].experience"
-      />
+        :max-xp="UserLevels[$user.level].experience" />
     </section>
 
     <section class="section-HP-Money">
-      <ValueBadge :type="ResourceTypes.hp" :value="$user.stats?.hp" />
+      <ValueBadge :type="ResourceTypes.hp" :value="`${$user.stats?.hp}/${userMaxHp}`" />
       <ValueBadge
         :type="ResourceTypes.money"
         :value="$user.stats?.money"
         :not-synced-value="$user.notSyncedStats?.money"
-      />
+        @click="tradeMoney"
+        class="money-badge" />
     </section>
 
     <section class="section-equipment">
@@ -123,8 +123,7 @@
         @click="
           selectedItem = undefined;
           selectedEquippedItem = undefined;
-        "
-      >
+        ">
         <transition mode="out-in" name="opacity">
           <ItemInfo
             class="modal"
@@ -133,13 +132,14 @@
             @click.stop
             @close="selectedItem = undefined"
             image-with-shadow
-            closable
-          >
+            closable>
             <template #buttons>
               <button
                 @click="equipItem(selectedItem)"
                 class="equip"
-                v-if="[ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(selectedItem.type) && !selectedItem.notSynced"
+                v-if="
+                  [ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(selectedItem.type) && !selectedItem.notSynced
+                "
               >
                 Экипировать
               </button>
@@ -154,8 +154,7 @@
             @click.stop
             @close="selectedEquippedItem = undefined"
             image-with-shadow
-            closable
-          >
+            closable>
             <template #buttons>
               <button @click="unequipItem(selectedEquippedItem)" class="equip">Снять</button>
             </template>
@@ -170,11 +169,11 @@
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import LevelComponent from '~/components/LevelComponent.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { ItemTypes, ResourceTypes } from '~/constants/constants';
+import { ItemTypes, QRTypes, ResourceTypes } from '~/constants/constants';
 import Equipment from '~/components/Equipment.vue';
 import Inventory from '~/components/Inventory.vue';
 import { UserLevels } from '~/constants/levels';
-import { getTotalUserProtection } from '~/utils/utils';
+import { getTotalUserMaxHP, getTotalUserProtection } from '~/utils/utils';
 import { type Item } from '~/types/types';
 import ItemInfo from '~/components/ItemInfo.vue';
 
@@ -184,9 +183,10 @@ export default {
   data() {
     return {
       loading: false,
-      selectedItem: undefined as Item,
-      selectedEquippedItem: undefined as Item,
+      selectedItem: undefined as Item | undefined,
+      selectedEquippedItem: undefined as Item | undefined,
       userProtection: 0,
+      userMaxHp: 0,
 
       ResourceTypes,
       UserLevels,
@@ -195,7 +195,7 @@ export default {
   },
 
   mounted() {
-    this.recalculateUserProtection();
+    this.recalculateUserStats();
     window.addEventListener('keydown', this.onKeyPress);
   },
 
@@ -213,8 +213,9 @@ export default {
       this.selectedItem = undefined;
       this.selectedEquippedItem = undefined;
     },
-    recalculateUserProtection() {
+    recalculateUserStats() {
       this.userProtection = getTotalUserProtection(this.$user);
+      this.userMaxHp = getTotalUserMaxHP(this.$user);
     },
 
     selectEquippedItem(item: Item) {
@@ -267,7 +268,7 @@ export default {
       this.$user.equipment[item.type] = item.id;
       const idx = this.$user.inventory.findIndex(i => i === item.id);
       if (idx === -1) {
-        console.error("Wrong idx");
+        console.error('Wrong idx');
         return;
       }
       this.$user.inventory.splice(idx, 1);
@@ -277,14 +278,17 @@ export default {
     },
     saveAndUpdateInventories() {
       this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
-      this.recalculateUserProtection();
+      this.recalculateUserStats();
       this.$refs.inventory.update();
       this.$refs.equipment.update();
     },
 
     tradeItem(item: Item) {
-      this.$router.push({name: 'trade', query: {itemId: item.id}});
-    }
+      this.$router.push({ name: 'trade', query: { qrValue: item.id, qrType: QRTypes.item } });
+    },
+    tradeMoney() {
+      this.$router.push({ name: 'trade', query: { qrType: QRTypes.resource } });
+    },
   },
 };
 </script>

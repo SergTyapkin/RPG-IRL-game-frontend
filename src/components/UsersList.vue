@@ -41,10 +41,10 @@
 
 <template>
   <ul class="root-users-list">
-    <li v-for="user in users" class="user">
+    <li v-for="user in users" :key="user.id" class="user">
       <div class="avatar">
-        <img src="/static/images/user-avatar-example.png" alt="avatar">
-        <div class="level">{{ user.level || 5 }}</div>
+        <img :src="user.imageUrl" alt="avatar" />
+        <div class="level">{{ user.level }}</div>
       </div>
 
       <div class="text-block">
@@ -60,7 +60,10 @@ export default {
     users: {
       type: Array,
       required: true,
-    }
+    },
+  },
+
+  mounted() {
   },
 };
 </script>

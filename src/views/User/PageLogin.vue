@@ -5,6 +5,9 @@
 .root-signin
   width 100%
   padding 20px
+  .info
+    font-small()
+    color colorText5
   .form
     max-width 600px
     margin 20px auto
@@ -40,7 +43,13 @@
   <div class="root-signin">
     <div class="form">
       ВХОД<br>
-      <FormWithErrors ref="form" :fields="fields" submit-text="Вход" :loading="loading" @success="login" />
+      <FormWithErrors v-if="!NO_SERVER_MODE" ref="form" :fields="fields" submit-text="Вход" :loading="loading" @success="login" />
+      <div v-else class="info">
+        <br>
+        Сайт работает в безсерверном режиме и входа нет. Выхода тоже :) <br>
+        <br>
+        Чтобы начать играть, нужно зарегистрироваться по QR-коду гильдии
+      </div>
     </div>
   </div>
 </template>
@@ -49,6 +58,7 @@
 import FormWithErrors from '~/components/FormWithErrors.vue';
 import { detectBrowser, detectOS } from '~/utils/utils';
 import Validators from '~/utils/validators';
+import { NO_SERVER_MODE } from '~/constants/constants';
 
 export default {
   components: { FormWithErrors },
@@ -75,17 +85,19 @@ export default {
         },
       },
       loading: false,
+
+      NO_SERVER_MODE,
     };
   },
 
   methods: {
-    async login(data) {
+    async login(data: {name: string, password: string}) {
       this.loading = true;
       const { ok } = await this.$api.login(data.name, data.password, detectBrowser(), detectOS());
       this.loading = false;
 
       if (!ok) {
-        this.$refs.form.setError([this.fields.name, this.fields.password], 'Неверные имя или пароль');
+        (this.$refs.form as typeof FormWithErrors).setError([this.fields.name, this.fields.password], 'Неверные имя или пароль');
         return;
       }
       this.loading = true;

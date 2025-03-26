@@ -1,6 +1,6 @@
 import { IterableSkillTrees } from '~/constants/skills';
 import type { Ability, Effect, Item, Skill, User } from '~/types/types';
-import { BuffsTypes, DEFAULT_USER_PROTECTION, ItemTypes } from '~/constants/constants';
+import { BuffsTypes, DEFAULT_USER_MAX_UP, DEFAULT_USER_PROTECTION, ItemTypes, QRSource, QRType, ResourceType } from '~/constants/constants';
 import { Items } from '~/constants/items';
 import { Abilities } from '~/constants/abilities';
 import { Effects } from '~/constants/effects';
@@ -100,19 +100,19 @@ export function deepClone<T>(obj: T): T {
 
 
 // ------------------------------
-interface ExtendedEffect extends Effect {
+export interface ExtendedEffect extends Effect {
   source: ExtendedSkill | ExtendedItem,
   sourceType: 'skill' | 'item',
 }
-interface ExtendedAbility extends Ability {
+export interface ExtendedAbility extends Ability {
   source: ExtendedSkill | ExtendedItem,
   sourceType: 'skill' | 'item',
 }
-interface ExtendedItem extends Omit<Omit<Item, 'effects'>, 'abilities'> {
+export interface ExtendedItem extends Omit<Omit<Item, 'effects'>, 'abilities'> {
   effects: Effect[],
   abilities: Ability[],
 }
-interface ExtendedSkill extends Omit<Omit<Skill, 'effects'>, 'abilities'> {
+export interface ExtendedSkill extends Omit<Omit<Skill, 'effects'>, 'abilities'> {
   effects: Effect[],
   abilities: Ability[],
 }
@@ -268,5 +268,32 @@ export function getTotalUserProtection($user: User): number {
     res += effect.buffs[BuffsTypes.protectionIncrease] ?? 0;
   });
   return res;
+}
+export function getTotalUserMaxHP($user: User): number {
+  let res = DEFAULT_USER_MAX_UP;
+  const effects = getAllUserEffects($user);
+  effects.forEach(effect => {
+    res += effect.buffs[BuffsTypes.maxHpIncrease] ?? 0;
+  });
+  return res;
+}
+
+
+// -----------------
+export function generateQRText(QRType: QRType, QRSubType: ResourceType | '_', QRSource: QRSource, QRValue: string) {
+  return btoa(`${QRType}${QRSubType}${QRSource}${QRValue}`);
+}
+export function parseQRText(text: string) {
+  try {
+    text = atob(text);
+    return {
+      QRType: text[0] as QRType,
+      QRSubType: text[1] as ResourceType | '_',
+      QRSource: text[2] as QRSource,
+      QRValue: text.slice(3),
+    };
+  } catch {
+    return null;
+  }
 }
 

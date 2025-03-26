@@ -33,6 +33,7 @@
 
     <section class="section-scanner">
       <QRScanner @scan="onScan" />
+      <CircleLoading v-if="loading" />
       <div class="result-container">
         <div class="info">Результат сканирования:</div>
         <div class="result">{{ scanResult }}</div>
@@ -43,18 +44,20 @@
 
 <script lang="ts">
 import QRScanner from '~/components/QRScanner.vue';
-import { QRTypes, ResourceTypes } from '~/constants/constants';
+import { NO_SERVER_MODE, QRTypes, ResourceTypes } from '~/constants/constants';
+import UserProfileInfo from '~/components/UserProfileInfo.vue';
+import { getTotalUserMaxHP, itemIdToItem, parseQRText } from '~/utils/utils';
+import CircleLoading from '~/components/loaders/CircleLoading.vue';
 import validateModel from '@sergtyapkin/models-validator';
 import { GuildModel } from '~/utils/APIModels';
-import { type Guild } from '~/types/types';
-import UserProfileInfo from '~/components/UserProfileInfo.vue';
-import { itemIdToItem } from '~/utils/utils';
 
 export default {
-  components: { UserProfileInfo, QRScanner },
+  components: { CircleLoading, UserProfileInfo, QRScanner },
 
   data() {
     return {
+      loading: false,
+
       scanResult: '',
     };
   },
@@ -64,70 +67,83 @@ export default {
   mounted() {},
 
   methods: {
-    onScan(text: string) {
-      try {
-        this.scanResult = atob(text);
-      } catch {
+    async onScan(text: string) {
+      const QRResult = parseQRText(text);
+      if (!QRResult) {
         this.$popups.error('Отсканирован неизвестный QR', 'Проверьте, действительно ли этот QR от этой игры');
         return;
       }
-      const qrType = text[0];
-      text = text.slice(1);
+      const {QRType, QRSubType, QRSource, QRValue} = QRResult;
 
       let scanError = false;
-      switch (qrType) {
+      switch (QRType) {
         case QRTypes.resource: {
-          const resourceType = text[0];
-          text = text.slice(1);
-          const value = Number(text);
-          switch (resourceType) {
+          switch (QRSubType) {
             case ResourceTypes.money:
-              this.$user.notSyncedStats.money += value;
-              this.$popups.success('QR отсканирован', `Добавлено ${value} монет`);
+              this.$user.notSyncedStats.money += Number(QRValue);
+              this.$popups.success('QR отсканирован', `Добавлено ${QRValue} монет`);
               break;
             case ResourceTypes.experience:
-              this.$user.notSyncedStats.experience += value;
-              this.$popups.success('QR отсканирован', `Добавлено ${value} опыта`);
+              this.$user.notSyncedStats.experience += Number(QRValue);
+              this.$popups.success('QR отсканирован', `Добавлено ${QRValue} опыта`);
               break;
             case ResourceTypes.power:
-              this.$user.notSyncedStats.power += value;
-              this.$popups.success('QR отсканирован', `Добавлено ${value} очков силы`);
+              this.$user.notSyncedStats.power += Number(QRValue);
+              this.$popups.success('QR отсканирован', `Добавлено ${QRValue} очков силы`);
               break;
             case ResourceTypes.agility:
-              this.$user.notSyncedStats.agility += value;
-              this.$popups.success('QR отсканирован', `Добавлено ${value} очков ловкости`);
+              this.$user.notSyncedStats.agility += Number(QRValue);
+              this.$popups.success('QR отсканирован', `Добавлено ${QRValue} очков ловкости`);
               break;
             case ResourceTypes.intelligence:
-              this.$user.notSyncedStats.intelligence += value;
-              this.$popups.success('QR отсканирован', `Добавлено ${value} очков интеллекта`);
+              this.$user.notSyncedStats.intelligence += Number(QRValue);
+              this.$popups.success('QR отсканирован', `Добавлено ${QRValue} очков интеллекта`);
               break;
           }
           break;
         }
         case QRTypes.damage: {
-          const value = Number(text);
-          this.$user.stats.hp -= value;
-          this.$popups.success('QR отсканирован', `Нанесено ${value} урона`);
+          this.$user.stats.hp -= Number(QRValue);
+          this.$popups.success('QR отсканирован', `Нанесено ${QRValue} урона`);
           break;
         }
         case QRTypes.heal: {
-          const value = Number(text);
-          this.$user.stats.hp += value;
-          this.$user.stats.hp = Math.min(this.$user.stats.hp, this.$user.stats.maxHp);
-          this.$popups.success('QR отсканирован', `Вылечено ${value} здоровья`);
+          this.$user.stats.hp += Number(QRValue);
+          this.$user.stats.hp = Math.min(this.$user.stats.hp, getTotalUserMaxHP(this.$user));
+          this.$popups.success('QR отсканирован', `Вылечено ${QRValue} здоровья`);
           break;
         }
         case QRTypes.item: {
-          const itemId = text;
-          this.$user.inventory.push(itemId);
-          const item = itemIdToItem(itemId);
+          this.$user.inventory.push(QRValue);
+          const item = itemIdToItem(QRValue);
           this.$popups.success('QR отсканирован', `Получен предмет "${item.name}"`);
           break;
         }
         case QRTypes.sync: {
-          const guild = validateModel(GuildModel, text) as Guild;
-          this.$store.dispatch('SET_GUILD', guild);
-          this.$popups.success('QR отсканирован', 'Данные гильдии обновлены. Ваши предметы синхронизированы');
+          if (!NO_SERVER_MODE) {
+            this.loading = true;
+            await this.$api.syncAllData(
+              this.$user.stats.experience + this.$user.notSyncedStats.experience,
+              this.$user.stats.money + this.$user.notSyncedStats.money,
+              this.$user.inventory,
+              {
+                hat: this.$user.equipment.hat,
+                main: this.$user.equipment.main,
+                boots: this.$user.equipment.boots,
+              },
+              this.$user.skills,
+              this.$user.stats.power + this.$user.notSyncedStats.power,
+              this.$user.stats.agility + this.$user.notSyncedStats.agility,
+              this.$user.stats.intelligence + this.$user.notSyncedStats.intelligence,
+            );
+            await this.$store.dispatch('GET_USER');
+            this.loading = false;
+            this.$popups.success('QR отсканирован', 'Ваши предметы и данные, а также данные гильдии синхронизированы');
+          } else {
+            const guildData = validateModel(GuildModel, QRValue);
+            await this.$store.commit('SET_GUILD', guildData);
+            this.$popups.success('QR отсканирован', 'Данные гильдии обновлены');
+          }
           break;
         }
         default: {

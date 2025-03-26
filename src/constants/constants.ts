@@ -4,6 +4,8 @@ import DefaultAvatarImage from '#/images/user-avatar-example.png';
 
 export {DefaultKnifeImage, DefaultAbilityImage, DefaultAvatarImage};
 
+export const NO_SERVER_MODE = true;
+
 export const DEFAULT_USER_MAX_UP = 10;
 export const DEFAULT_USER_PROTECTION = 0;
 
@@ -54,8 +56,15 @@ export const QRTypes = {
   sync: 'S',
 }
 
+export const QRSources = {
+  quest: 'Q',
+  world: 'W',
+  user: 'U',
+}
+
 export type ResourceType = typeof ResourceTypes[keyof typeof ResourceTypes];
 export type ItemType = typeof ItemTypes[keyof typeof ItemTypes];
 export type BuffType = typeof BuffsTypes[keyof typeof BuffsTypes];
 export type QRType = typeof QRTypes[keyof typeof QRTypes];
+export type QRSource = typeof QRSources[keyof typeof QRSources];
 export type ClassType = typeof ClassTypes[keyof typeof ClassTypes];

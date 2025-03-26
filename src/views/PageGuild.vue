@@ -19,6 +19,8 @@
     display flex
     justify-content space-between
     margin-top 20px
+    .money-badge
+      hover-effect()
 
   .section-leader
   .section-members
@@ -52,26 +54,17 @@
 
     <section class="section-leader">
       <header>Лидер гильдии</header>
-      <UsersList :users="[{ name: 'Крутой глава', level: 55 }]" />
+      <UsersList :users="guildLeader ? [guildLeader] : []" />
     </section>
 
     <section class="section-members">
       <header>Участники гильдии</header>
-      <UsersList
-        :users="[
-          { name: 'Участник какой-то', level: 5 },
-          { name: 'Участник какой-то', level: 5 },
-          { name: 'Участник какой-то', level: 5 },
-          { name: 'Участник какой-то', level: 5 },
-          { name: 'Участник какой-то', level: 5 },
-          { name: 'Участник какой-то', level: 5 },
-        ]"
-      />
+      <UsersList :users="$guild.members" />
     </section>
 
     <section class="section-inventory">
       <header>Инвентарь</header>
-      <Inventory :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]" />
+      <Inventory :items-ids="$guild.inventory" />
     </section>
   </div>
 </template>
@@ -93,6 +86,12 @@ export default {
       ResourceTypes,
       GuildLevels,
     };
+  },
+
+  computed: {
+    guildLeader() {
+      return this.$guild.members.find(m => m.id === this.$guild.leaderId)
+    }
   },
 
   mounted() {},

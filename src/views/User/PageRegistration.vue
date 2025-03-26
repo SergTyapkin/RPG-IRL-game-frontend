@@ -94,19 +94,21 @@ import { detectBrowser, detectOS } from '~/utils/utils';
 import Validators from '~/utils/validators';
 import { Classes } from '~/constants/classes';
 import ClassComponent from '~/components/Class.vue';
-import { type Class } from '~/types/types';
+import { type Class, Guild, User } from '~/types/types';
+import { DEFAULT_USER_MAX_UP, DefaultAbilityImage, DefaultAvatarImage, NO_SERVER_MODE } from '~/constants/constants';
+import { v4 as uuidv4 } from 'uuid';
 
 export default {
   components: { Class: ClassComponent, FormWithErrors },
   data() {
     return {
-      guildId: this.$route.query.guildId,
-      guildName: this.$route.query.guildName,
+      guildId: this.$route.query.guildId as string,
+      guildName: this.$route.query.guildName as string,
 
       textFieldsFilledState: false,
-      savedTextData: {},
+      savedTextData: {} as {name: string, password: string, passwordAgain: string},
 
-      fields: {
+      fields: Object.assign({
         name: {
           title: 'Имя',
           name: 'name',
@@ -116,6 +118,8 @@ export default {
           prettifyResult: Validators.name.prettifyResult,
           autocomplete: 'name',
         },
+      },
+        NO_SERVER_MODE ? {} : {
         password: {
           title: 'Пароль',
           name: 'password',
@@ -134,7 +138,7 @@ export default {
           validationRegExp: Validators.password.regExp,
           prettifyResult: Validators.password.prettifyResult,
         },
-      },
+      }),
       loading: false,
 
       Classes,
@@ -149,9 +153,9 @@ export default {
   },
 
   methods: {
-    saveTextAndGoToChooseClasses(data) {
-      if (data.password !== data.passwordAgain) {
-        this.$refs.form.setError([this.fields.password, this.fields.passwordAgain], 'Пароли не совпадают');
+    saveTextAndGoToChooseClasses(data: {name: string, password: string, passwordAgain: string}) {
+      if (!NO_SERVER_MODE && (data.password !== data.passwordAgain)) {
+        (this.$refs.form as typeof FormWithErrors).setError([this.fields.password, this.fields.passwordAgain], 'Пароли не совпадают');
         return;
       }
 
@@ -163,21 +167,66 @@ export default {
       if (!(await this.$modals.confirm(`Выбираем класс "${classObj.name}"`, 'Вы уверены? Выбранный класс нельзя будет изменить!'))) {
         return;
       }
-      this.loading = true;
-      const { ok } = await this.$api.register(
-        this.savedTextData.name,
-        this.savedTextData.password,
-        classObj.type,
-        this.guildId,
-        detectBrowser(),
-        detectOS(),
-      );
-      this.loading = false;
+      if (!NO_SERVER_MODE) {
+        this.loading = true;
+        const { ok } = await this.$api.register(
+          this.savedTextData.name,
+          this.savedTextData.password,
+          classObj.type,
+          this.guildId,
+          detectBrowser(),
+          detectOS(),
+        );
+        this.loading = false;
 
-      if (!ok) {
-        this.textFieldsFilledState = false;
-        this.$refs.form.setError([this.fields.email], 'Неизвестная ошибка. Проверьте подключение к сети');
-        return;
+        if (!ok) {
+          this.textFieldsFilledState = false;
+          (this.$refs.form as typeof FormWithErrors).setError([this.fields.name], 'Неизвестная ошибка. Проверьте подключение к сети');
+          return;
+        }
+      } else {
+        const newUser: User = {
+          id: uuidv4(),
+          name: this.savedTextData.name,
+          level: 1,
+          imageUrl: DefaultAvatarImage,
+          stats: {
+            hp: DEFAULT_USER_MAX_UP,
+            experience: 0,
+            money: 0,
+            power: 0,
+            agility: 0,
+            intelligence: 0,
+          },
+          notSyncedStats: {
+            experience: 0,
+            money: 0,
+            power: 0,
+            agility: 0,
+            intelligence: 0,
+          },
+          classType: classObj.type,
+          guildId: String(this.guildId),
+          skills: [],
+          inventory: [],
+          equipment: {},
+          role: 'user',
+
+          isSignedIn: true,
+        };
+        await this.$store.commit('SET_USER', newUser);
+        const newGuild: Guild = {
+          id: this.guildId,
+          name: this.guildName,
+          description: '',
+          money: 0,
+          experience: 0,
+          level: 1,
+          imageUrl: DefaultAbilityImage,
+          leaderId: '',
+          members: [],
+        };
+        await this.$store.commit('SET_GUILD', newGuild);
       }
       this.loading = true;
       await this.$store.dispatch('GET_USER');

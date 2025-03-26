@@ -1,6 +1,7 @@
 import Vuex from 'vuex';
 import { type State, type Store } from '~/types/store';
 import { type Guild, type User } from '~/types/types';
+import { NO_SERVER_MODE } from '~/constants/constants';
 
 export default new Vuex.Store({
   state: {
@@ -25,11 +26,11 @@ export default new Vuex.Store({
       state.user.stats.power = Number(userData.stats.power);
       state.user.stats.agility = Number(userData.stats.agility);
       state.user.stats.intelligence = Number(userData.stats.intelligence);
-      state.user.notSyncedStats.experience = Number(userData.notSyncedStats?.experience);
-      state.user.notSyncedStats.money = Number(userData.notSyncedStats?.money);
-      state.user.notSyncedStats.power = Number(userData.notSyncedStats?.power);
-      state.user.notSyncedStats.agility = Number(userData.notSyncedStats?.agility);
-      state.user.notSyncedStats.intelligence = Number(userData.notSyncedStats?.intelligence);
+      state.user.notSyncedStats.experience = Number(userData.notSyncedStats?.experience || 0);
+      state.user.notSyncedStats.money = Number(userData.notSyncedStats?.money || 0);
+      state.user.notSyncedStats.power = Number(userData.notSyncedStats?.power || 0);
+      state.user.notSyncedStats.agility = Number(userData.notSyncedStats?.agility || 0);
+      state.user.notSyncedStats.intelligence = Number(userData.notSyncedStats?.intelligence || 0);
       state.user.skills = userData.skills;
       state.user.inventory = userData.inventory;
       state.user.equipment = userData.equipment;
@@ -45,6 +46,7 @@ export default new Vuex.Store({
       state.guild.imageUrl = String(guildData.imageUrl);
       state.guild.experience = Number(guildData.experience);
       state.guild.level = Number(guildData.level);
+      state.guild.inventory = guildData.inventory;
       state.guild.leaderId = String(guildData.leaderId);
       state.guild.members = guildData.members;
     },
@@ -53,29 +55,48 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async GET_USER_OR_LOAD(this: Store, state: State) {
-      let syncedData = this.$app.$localStorageManager.loadSyncedData();
+    GET_USER_OR_LOAD(this: Store, state: State) {
+      const syncedData = this.$app.$localStorageManager.loadSyncedData();
       if (!syncedData) {
-        const { data, ok } = await this.$app.$api.getSyncedData();
-        syncedData = data;
-        if (!ok) {
-          state.commit('DELETE_USER');
-          return;
-        }
-        this.$app.$localStorageManager.saveSyncedData(syncedData.user, syncedData.guild);
+        this.dispatch('GET_USER');
+        return;
       }
       state.commit('SET_USER', syncedData.user);
       state.commit('SET_GUILD', syncedData.guild);
     },
     async GET_USER(this: Store, state: State) {
-      const { data: syncedData, ok } = await this.$app.$api.getSyncedData();
-      if (!ok) {
-        state.commit('DELETE_USER');
-        return;
+      let user = null;
+      let guild = null;
+      if (!NO_SERVER_MODE) {
+        const { data: syncedData, ok } = await this.$app.$api.getSyncedData();
+        if (!ok) {
+          state.commit('DELETE_USER');
+          return;
+        }
+        user = syncedData.user;
+        guild = syncedData.guild;
+      } else {
+        user = this.state.user;
+        if (!user?.isSignedIn) {
+          console.log("User not gotten already. Cannot sync");
+          return;
+        }
+        user.stats.experience += user.notSyncedStats.experience;
+        user.stats.money += user.notSyncedStats.money;
+        user.stats.power += user.notSyncedStats.power;
+        user.stats.agility += user.notSyncedStats.agility;
+        user.stats.intelligence += user.notSyncedStats.intelligence;
+        user.notSyncedStats.experience = 0;
+        user.notSyncedStats.money = 0;
+        user.notSyncedStats.power = 0;
+        user.notSyncedStats.agility = 0;
+        user.notSyncedStats.intelligence = 0;
+        guild = this.state.guild;
       }
-      this.$app.$localStorageManager.saveSyncedData(syncedData.user, syncedData.guild);
-      state.commit('SET_USER', syncedData.user);
-      state.commit('SET_GUILD', syncedData.guild);
+      console.log(user, guild);
+      this.$app.$localStorageManager.saveSyncedData(user, guild);
+      state.commit('SET_USER', user);
+      state.commit('SET_GUILD', guild);
     },
     SET_GUILD(this: Store, state: State, guild: Guild) {
       state.commit('SET_GUILD', guild);

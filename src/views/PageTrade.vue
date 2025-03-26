@@ -6,6 +6,7 @@
 @import '../styles/animations.styl'
 
 .root-page-trade
+  .section-money
   .section-item
   .section-qr
     header
@@ -18,8 +19,12 @@
     .confirm-button
       button-emp()
 
+  .section-money
+    .range
+      margin-bottom 10px
+
   .section-confirm
-    margin-top 20px
+    margin-top 30px
 
     .info
       font-small()
@@ -42,26 +47,43 @@
 <template>
   <div class="root-page-trade">
     <UserProfileInfo small />
-    <section class="section-item">
-      <header>Предмет для передачи</header>
-      <ItemInfo :obj="item" />
-    </section>
+
+    <transition name="opacity">
+      <section class="section-item" v-if="qrType === QRTypes.item">
+        <header>Предмет для передачи</header>
+        <ItemInfo :obj="item" />
+      </section>
+      <section class="section-money" v-else-if="qrType === QRTypes.resource">
+        <header>Выберите количество денег для передачи</header>
+        <Range class="range" :min="0" :max="$user.stats.money" :step="10" v-model="moneyToTrade" :disabled="confirmed" />
+        <ValueBadge class="money" override-title="Останется" :value="$user.stats.money - (confirmed ? 0 : moneyToTrade)" :type="ResourceTypes.money" />
+      </section>
+    </transition>
 
     <transition name="opacity">
       <section class="section-confirm" v-if="!confirmed">
         <ul class="info">
-          <li>
+          <li v-if="qrType === QRTypes.item">
             После подтверждения передачи этот предмет сразу же
             <mark>пропадет из вашего инвентаря</mark>
             и превратится в QR-код
+          </li>
+          <li v-else-if="qrType === QRTypes.resource">
+            После подтверждения передачи деньги сразу же
+            <mark>будут списаны с вашего счета</mark>
+            и превратятся в QR-код
           </li>
           <li>
             <mark>Обновлять страницу и закрывать браузер будет нельзя</mark>
             , пока другой человек не отсканирует этот QR-код
           </li>
-          <li>
+          <li v-if="qrType === QRTypes.item">
             Если вы закроете страницу, а другой человек не отсканирует QR-код,
             <mark>предмет не будет передан и просто пропадет!</mark>
+          </li>
+          <li v-else-if="qrType === QRTypes.resource">
+            Если вы закроете страницу, а другой человек не отсканирует QR-код,
+            <mark>деньги не будут переданы и просто пропадут!</mark>
           </li>
         </ul>
         <button class="confirm-button" @click="confirm">Передать</button>
@@ -70,7 +92,7 @@
 
     <transition name="opacity">
       <section class="section-qr" v-show="confirmed">
-        <header>QR-код для передачи предмета</header>
+        <header>QR-код для передачи</header>
         <QRGenerator ref="qr" />
         <button class="confirm-button" @click="finish">QR-код отсканировали</button>
       </section>
@@ -80,60 +102,83 @@
 
 <script lang="ts">
 import QRGenerator from '~/components/QRGenerator.vue';
-import { type Item } from '~/types/types';
 import ItemInfo from '~/components/ItemInfo.vue';
-import { itemIdToItem } from '~/utils/utils';
+import { ExtendedItem, generateQRText, itemIdToItem } from '~/utils/utils';
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
-import { QRTypes } from '~/constants/constants';
+import { QRSources, QRTypes, ResourceTypes } from '~/constants/constants';
+import Range from '~/components/Range.vue';
+import ValueBadge from '~/components/ValueBadge.vue';
 
 export default {
-  components: { UserProfileInfo, ItemInfo, QRGenerator },
+  components: { ValueBadge, Range, UserProfileInfo, ItemInfo, QRGenerator },
 
   data() {
     return {
-      itemId: this.$route.query.itemId,
+      qrValue: this.$route.query.qrValue as string | undefined,
+      qrType: this.$route.query.qrType as string | undefined,
       itemIdxInInventory: -1,
 
-      item: {} as Item,
+      item: {} as ExtendedItem,
+      moneyToTrade: Math.min(100, this.$user.stats.money),
       confirmed: false,
+
+      QRTypes,
     };
   },
 
-  computed: {},
+  computed: {
+    ResourceTypes() {
+      return ResourceTypes
+    }
+  },
 
   mounted() {
-    this.itemId = this.itemId ? String(this.itemId) : null;
-
-    if (!this.itemId) {
-      this.$popups.error('Ошибка', `Нет id предмета для передачи!`);
-      this.$router.push({ name: 'default' });
+    if (!this.qrType) {
+      this.$popups.error('Ошибка', `Нет типа передачи!`);
       return;
-    }
+    } else if (this.qrType === QRTypes.item) {
+      if (!this.qrValue) {
+        this.$popups.error('Ошибка', `Нет id предмета для передачи!`);
+        this.$router.push({ name: 'default' });
+        return;
+      }
 
-    this.item = itemIdToItem(this.itemId);
-    if (!this.item) {
-      this.$popups.error('Ошибка', `Нет передмета с таким id: ${this.itemId}`);
-      this.$router.push({ name: 'default' });
-      return;
-    }
+      this.item = itemIdToItem(this.qrValue);
+      if (!this.item) {
+        this.$popups.error('Ошибка', `Нет передмета с таким id: ${this.qrValue}`);
+        this.$router.push({ name: 'default' });
+        return;
+      }
 
-    this.itemIdxInInventory = this.$user.inventory.findIndex(i => i === this.itemId);
-    if (this.itemIdxInInventory === -1) {
-      this.$popups.error('Ошибка', `Предмета с таким id нет в инвентаре: ${this.itemId}`);
-      this.$router.push({ name: 'default' });
-      return;
+      this.itemIdxInInventory = this.$user.inventory.findIndex(i => i === this.qrValue);
+      if (this.itemIdxInInventory === -1) {
+        this.$popups.error('Ошибка', `Предмета с таким id нет в инвентаре: ${this.qrValue}`);
+        this.$router.push({ name: 'default' });
+        return;
+      }
+    } else if (this.qrType === QRTypes.resource) {
+
     }
   },
 
   methods: {
     async confirm() {
-      if (!(await this.$modals.confirm('Передать предмет?', 'Предмет сразу же будет списан из вашего инвентаря'))) {
+      if (!(await this.$modals.confirm('Передать предмет?', 'Предмет сразу же будет списан c вашего профиля'))) {
         return;
       }
 
       this.confirmed = true;
-      this.$refs.qr.regenerate(btoa(`${QRTypes.item}${this.itemId}`));
-      this.$user.inventory.splice(this.itemIdxInInventory);
+      if (this.qrType === QRTypes.item) {
+        (this.$refs.qr as typeof QRGenerator).regenerate(
+          generateQRText(QRTypes.item, '_', QRSources.user, this.qrValue!)
+        );
+        this.$user.inventory.splice(this.itemIdxInInventory);
+      } else if (this.qrType === QRTypes.resource) {
+        (this.$refs.qr as typeof QRGenerator).regenerate(
+          generateQRText(QRTypes.resource, ResourceTypes.money, QRSources.user, String(this.moneyToTrade))
+        );
+        this.$user.stats.money -= this.moneyToTrade;
+      }
       this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
     },
     finish() {

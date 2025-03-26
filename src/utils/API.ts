@@ -81,7 +81,7 @@ export default class API extends REST_API {
   syncAllData = (
     experience: number,
     money: number,
-    items: Item[],
+    inventory: Item[],
     equipment: {
       hat: Item;
       main: Item;
@@ -94,7 +94,7 @@ export default class API extends REST_API {
   ) => this.#POST(`/user`, {
     experience,
     money,
-    items,
+    inventory,
     equipment,
     skills,
     power,

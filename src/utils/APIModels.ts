@@ -88,6 +88,10 @@ export const GuildModel = {
   money: Number,
   level:  Number,
   imageUrl: String,
+  inventory: {
+    type: Array,
+    item: String,
+  },
 
   leaderId: String,
   members: {
@@ -114,6 +118,7 @@ export const GuildModelMockData = validateModel(GuildModel, {
   imageUrl: DefaultAbilityImage,
 
   leaderId: 'Some_Gamer_ID',
+  inventory: [Items.longSword.id, Items.longSword.id, Items.longSword.id, Items.dagger.id, Items.dagger.id],
   members: [
     {
       id: 'GMR_1',

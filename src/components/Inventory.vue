@@ -19,14 +19,13 @@
 <template>
   <div class="root-inventory">
     <Cell v-for="item in items" :key="item.id" class="cell" :src="item.imageUrl" @click="selectItem(item)" />
-    <Cell v-for="i in (((items.length % 3) * 2) % 3)" :key="i" class="cell" />
+    <Cell v-for="i in (!items.length ? 3 : ((items.length % 3) * 2) % 3)" :key="i" class="cell" />
   </div>
 </template>
 
 <script lang="ts">
 import Cell from '~/components/Cell.vue';
-import { itemsIdsToItems } from '~/utils/utils';
-import { Item } from '~/types/types';
+import { ExtendedItem, itemsIdsToItems } from '~/utils/utils';
 
 
 export default {
@@ -43,7 +42,7 @@ export default {
 
   data() {
     return {
-      items: [] as Item[],
+      items: [] as ExtendedItem[],
     }
   },
 
@@ -52,12 +51,11 @@ export default {
 
   mounted() {
     this.update();
-    console.log(this.items);
   },
 
   methods: {
     update() {
-      this.items = itemsIdsToItems(this.itemsIds);
+      this.items = itemsIdsToItems(this.itemsIds as string[]);
     },
     selectItem(item: any) {
       this.$emit('select', item);

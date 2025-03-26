@@ -91,6 +91,7 @@ export interface Guild {
   experience: number;
   level: number;
   imageUrl: string;
+  inventory: string[];
 
   leaderId: string;
   members: {
@@ -98,7 +99,7 @@ export interface Guild {
     name: string,
     imageUrl: string,
     level: number,
-  };
+  }[];
 }
 
 export interface Item {
