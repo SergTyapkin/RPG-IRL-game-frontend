@@ -1,6 +1,6 @@
 import REST_API from '@sergtyapkin/rest-api';
 import validateModel, { type Model } from '@sergtyapkin/models-validator';
-import { SyncDataModel, SyncDataModelMockData, UserModel, UserModelMockData } from '~/utils/APIModels';
+import { SyncDataModel, SyncDataModelMockData, UserModel } from '~/utils/APIModels';
 import { Item, SyncedData, type User } from '~/types/types';
 
 type RequestFunc = (url: string, data?: object) => Promise<{ data: object; status: number; ok: boolean }>;
