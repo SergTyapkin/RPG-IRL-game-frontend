@@ -1,4 +1,4 @@
-import { type Skill } from '~/types/types';
+import { type Ability, type Skill } from '~/types/types';
 import { BuffsTypes, DefaultKnifeImage, ResourceType, ResourceTypes } from '~/constants/constants';
 import { abilitiesIdsToAbilities, deepClone, effectsIdsToEffects, ExtendedSkill } from '~/utils/utils';
 import { Effects } from '~/constants/effects';
@@ -267,7 +267,7 @@ function setIdParentIdLinesForItemAndChildren(
   item.id = `${currentTreeKey}${targetArray.length}`;
   const extItem = deepClone(item) as unknown as ExtendedSkill;
   extItem.effects = effectsIdsToEffects(item.effects);
-  extItem.abilities = abilitiesIdsToAbilities(item.abilities);
+  extItem.abilities = abilitiesIdsToAbilities(item.abilities) as unknown as Ability[];
 
   targetArray.push(extItem);
   extItem.children.forEach(child => setIdParentIdLinesForItemAndChildren(targetArray, currentTreeKey, child, item));

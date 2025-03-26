@@ -163,7 +163,7 @@ export function itemIdToItem(itemId: string): ExtendedItem {
   }
   const extItem = deepClone(item) as unknown as ExtendedItem;
   extItem.effects = effectsIdsToEffects(item.effects);
-  extItem.abilities = abilitiesIdsToAbilities(item.abilities);
+  extItem.abilities = abilitiesIdsToAbilities(item.abilities) as unknown as Ability[];
   return extItem;
 }
 export function getUserInventory($user: User): ExtendedItem[] {
