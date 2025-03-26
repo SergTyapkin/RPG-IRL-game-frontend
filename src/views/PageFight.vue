@@ -116,7 +116,7 @@ export default {
 
   methods: {
     async playAbility(ability: Ability) {
-      if (!(await this.$modals.confirm('Разыграть способность', `Точно используем "${ability.name}"?`))) {
+      if (!(await this.$modals.confirm('Разыграть способность?', `Точно используем "${ability.name}"?`))) {
         return;
       }
     }
