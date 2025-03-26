@@ -435,6 +435,11 @@ export default {
     recalculateUserStats() {
       this.userProtection = getTotalUserProtection(this.$user);
       this.userMaxHp = getTotalUserMaxHP(this.$user);
+
+      this.fightEffects.forEach(e => {
+        this.userProtection += e.buffs[BuffsTypes.protectionIncrease] ?? 0;
+        this.userMaxHp += e.buffs[BuffsTypes.maxHpIncrease] ?? 0;
+      });
     },
 
     async startFight() {
@@ -477,6 +482,7 @@ export default {
       this.fightEffects = [];
       this.$localStorageManager.removeFightEffects();
       this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
+
       this.abilities.forEach(ability => (ability.reloadLeft = 0));
       this.$forceUpdate();
     },
@@ -505,6 +511,10 @@ export default {
         damage += e.buffs[BuffsTypes.damageDoneIncrease] ?? 0;
         damageModifier *= e.buffs[BuffsTypes.damageDoneModifier] ?? 1;
       });
+      this.fightEffects.forEach(e => {
+        damage += e.buffs[BuffsTypes.damageDoneIncrease] ?? 0;
+        damageModifier *= e.buffs[BuffsTypes.damageDoneModifier] ?? 1;
+      });
       damage *= damageModifier;
       damage = Math.round(damage);
       // Calculate heal
@@ -515,15 +525,15 @@ export default {
       // Inform user
       if (damage > 0) {
         await this.$modals.alert(
-          `Вы наносите ${damage} урона ${damageTargets} противнику(ам)`,
-          'Выберите противников и громко скажите им, от чего и сколько урона они получают. Они должны ввести его себе сами',
+          `Вы наносите ${damage} урона по ${damageTargets} противнику(ам)`,
+          'Выберите противников и громко скажите им, от какой способности и сколько урона они получают. Они должны ввести его себе сами',
         );
       }
       if (effectsToTargets.length > 0) {
         const effectsToTargetsNames = effectsToTargets.map(e => `"${e.name}"`).join(', ');
         await this.$modals.alert(
           `Вы накладываете эффект(ы): ${effectsToTargetsNames} на ${damageTargets} противника(ов)`,
-          'Выберите противников и громко скажите им, от чего и сколько урона они получают. Они должны ввести его себе сами',
+          'Выберите противников и громко скажите им, от какой способноси и сколько урона они получают. Они должны ввести его себе сами',
         );
       }
       if (effectsForMe.length > 0) {
@@ -552,6 +562,18 @@ export default {
         abilitiesReloads[ability.id] = ability.reloadLeft;
       });
 
+      this.fightEffects.forEach(effect => {
+        switch (effect.id) {
+          case Effects.bleeding.id:
+            this.takeDamage(1);
+            break;
+          case Effects.regeneration.id:
+            this.takeHeal(1);
+            break;
+        }
+      });
+
+      this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
       this.$localStorageManager.saveAbilitiesReloads(abilitiesReloads);
       this.$forceUpdate();
     },
@@ -601,6 +623,7 @@ export default {
 
       this.modalState = this.ModalStates.none;
       this.selectedEffect = undefined;
+      this.recalculateUserStats();
       this.$forceUpdate();
     },
   },

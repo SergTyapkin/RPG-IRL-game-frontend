@@ -219,6 +219,7 @@ export default {
         this.$user.notSyncedStats.power = 0;
         this.$user.notSyncedStats.agility = 0;
         this.$user.notSyncedStats.intelligence = 0;
+        this.$user.isInFight = false;
 
         const expNeedsToLevel = UserLevels[this.$user.level].experience;
         if (this.$user.stats.experience >= expNeedsToLevel) {

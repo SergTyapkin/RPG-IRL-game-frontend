@@ -34,6 +34,7 @@ export const Effects: { [key: string]: Effect } = {
     onlyForFight: true,
     turns: Infinity,
     buffs: {
+      [BuffsTypes.damageDoneIncrease]: -1,
     },
   },
   weakness: {
@@ -45,6 +46,7 @@ export const Effects: { [key: string]: Effect } = {
     onlyForFight: true,
     turns: Infinity,
     buffs: {
+      [BuffsTypes.damageDoneIncrease]: 1,
     },
   },
 

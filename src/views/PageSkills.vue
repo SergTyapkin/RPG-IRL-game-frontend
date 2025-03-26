@@ -287,7 +287,7 @@
           >
             <template #buttons>
               <ValueBadge :value="String($user.stats[ResourceTypesToStats[selectedTree]])" :type="selectedTree" />
-              <div class="cost">Стоимость навыка: <span class="number">{{ selectedSkill.cost }}</span></div>
+              <div class="cost">Стоимость навыка: <span class="number">{{ selectedSkill.cost - currentDiscounts[selectedTree] }}</span></div>
               <button
                 v-if="!$user.skills.includes(selectedSkill.id) && (selectedSkill.parentId === undefined || $user.skills.includes(selectedSkill.parentId))"
                 @click="learnSkill(selectedSkill)"
@@ -307,13 +307,13 @@
 <script lang="ts">
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { ResourceType, ResourceTypes } from '~/constants/constants';
+import { BuffsTypes, ResourceType, ResourceTypes } from '~/constants/constants';
 import DraggableComponent from '~/components/DraggableComponent.vue';
 import Cell from '~/components/Cell.vue';
 import { type Skill } from '~/types/types';
 import { IterableSkillTrees } from '~/constants/skills';
 import ItemInfo from '~/components/ItemInfo.vue';
-import { ExtendedSkill } from '~/utils/utils';
+import { ExtendedSkill, getAllUserEffects } from '~/utils/utils';
 
 export default {
   components: { ItemInfo, Cell, DraggableComponent, ValueBadge, UserProfileInfo },
@@ -322,6 +322,11 @@ export default {
     return {
       selectedTree: ResourceTypes.power,
       selectedSkill: undefined as ExtendedSkill | undefined,
+      currentDiscounts: {
+        [ResourceTypes.power]: 0,
+        [ResourceTypes.agility]: 0,
+        [ResourceTypes.intelligence]: 0,
+      },
 
       ResourceTypes,
       ResourceTypesToStats: {
@@ -344,9 +349,23 @@ export default {
     },
   },
 
-  mounted() {},
+  mounted() {
+    this.updateDiscounts();
+  },
 
   methods: {
+    updateDiscounts() {
+      const effects = getAllUserEffects(this.$user);
+      this.currentDiscounts[ResourceTypes.power] = 0;
+      this.currentDiscounts[ResourceTypes.agility] = 0;
+      this.currentDiscounts[ResourceTypes.intelligence] = 0;
+      effects.forEach(e => {
+        this.currentDiscounts[ResourceTypes.power] += e.buffs[BuffsTypes.powerCostDecrease];
+        this.currentDiscounts[ResourceTypes.agility] += e.buffs[BuffsTypes.agilityCostDecrease];
+        this.currentDiscounts[ResourceTypes.intelligence] += e.buffs[BuffsTypes.intelligenceCostDecrease];
+      });
+    },
+
     updateSkillPoints() {
       // this.$refs.power.$forceUpdate();
       // this.$refs.agility.$forceUpdate();
@@ -362,10 +381,11 @@ export default {
     },
 
     learnSkill(skill: Skill) {
-      if (this.$user.stats[this.ResourceTypesToStats[this.selectedTree]] < skill.cost) {
+      const skillCost = skill.cost - this.currentDiscounts[this.selectedTree];
+      if (this.$user.stats[this.ResourceTypesToStats[this.selectedTree]] < skillCost) {
         return;
       }
-      this.$user.stats[this.ResourceTypesToStats[this.selectedTree]] -= skill.cost;
+      this.$user.stats[this.ResourceTypesToStats[this.selectedTree]] -= skillCost;
       const idx = this.$user.skills.findIndex(i => i === skill.id!);
       if (idx === -1) {
         this.$user.skills.push(skill.id!);
