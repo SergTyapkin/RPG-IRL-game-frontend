@@ -58,8 +58,8 @@
     </section>
 
     <section class="section-badges">
-      <ValueBadge :type="ResourceTypes.hp" :value="$user.stats?.hp" />
-      <ValueBadge :type="ResourceTypes.protection" :value="$user.stats?.protection" />
+      <ValueBadge :type="ResourceTypes.hp" :value="`${$user.stats?.hp}/${userMaxHp}`" />
+      <ValueBadge :type="ResourceTypes.protection" :value="userProtection" />
     </section>
 
     <section class="section-buttons">
@@ -89,13 +89,16 @@ import ValueBadge from '~/components/ValueBadge.vue';
 import { ResourceTypes } from '~/constants/constants';
 import Effect from '~/components/Effect.vue';
 import Ability from '~/components/Ability.vue';
-import { getAllUserAbilities, getAllUserEffects } from '~/utils/utils';
+import { getAllUserAbilities, getAllUserEffects, getTotalUserMaxHP, getTotalUserProtection } from '~/utils/utils';
 
 export default {
   components: { Ability, Effect, ValueBadge, UserProfileInfo },
 
   data() {
     return {
+      userProtection: 0,
+      userMaxHp: 0,
+
       ResourceTypes,
     };
   },
@@ -111,10 +114,15 @@ export default {
   },
 
   mounted() {
-    console.log(this.effects);
+    this.recalculateUserStats();
   },
 
   methods: {
+    recalculateUserStats() {
+      this.userProtection = getTotalUserProtection(this.$user);
+      this.userMaxHp = getTotalUserMaxHP(this.$user);
+    },
+
     async playAbility(ability: Ability) {
       if (!(await this.$modals.confirm('Разыграть способность?', `Точно используем "${ability.name}"?`))) {
         return;

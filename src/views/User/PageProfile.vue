@@ -82,7 +82,8 @@
         :level="$user.level"
         :cur-synced-xp="$user.stats?.experience"
         :cur-not-synced-xp="$user.notSyncedStats?.experience"
-        :max-xp="UserLevels[$user.level].experience" />
+        :max-xp="UserLevels[$user.level].experience"
+      />
     </section>
 
     <section class="section-HP-Money">
@@ -92,7 +93,8 @@
         :value="$user.stats?.money"
         :not-synced-value="$user.notSyncedStats?.money"
         @click="tradeMoney"
-        class="money-badge" />
+        class="money-badge"
+      />
     </section>
 
     <section class="section-equipment">
@@ -123,7 +125,8 @@
         @click="
           selectedItem = undefined;
           selectedEquippedItem = undefined;
-        ">
+        "
+      >
         <transition mode="out-in" name="opacity">
           <ItemInfo
             class="modal"
@@ -132,7 +135,8 @@
             @click.stop
             @close="selectedItem = undefined"
             image-with-shadow
-            closable>
+            closable
+          >
             <template #buttons>
               <button
                 @click="equipItem(selectedItem)"
@@ -154,7 +158,8 @@
             @click.stop
             @close="selectedEquippedItem = undefined"
             image-with-shadow
-            closable>
+            closable
+          >
             <template #buttons>
               <button @click="unequipItem(selectedEquippedItem)" class="equip">Снять</button>
             </template>
@@ -169,7 +174,7 @@
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import LevelComponent from '~/components/LevelComponent.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { ItemTypes, QRTypes, ResourceTypes } from '~/constants/constants';
+import { ItemTypes, NO_SERVER_MODE, QRTypes, ResourceTypes } from '~/constants/constants';
 import Equipment from '~/components/Equipment.vue';
 import Inventory from '~/components/Inventory.vue';
 import { UserLevels } from '~/constants/levels';
@@ -231,13 +236,15 @@ export default {
       if (!(await this.$modals.confirm('Вы уверены, что хотите выйти из профиля?'))) {
         return;
       }
-      this.loading = true;
-      const { ok } = await this.$api.logout();
-      this.loading = true;
+      if (!NO_SERVER_MODE) {
+        this.loading = true;
+        const { ok } = await this.$api.logout();
+        this.loading = true;
 
-      if (!ok) {
-        this.$popups.error('Не получилось выйти из аккаунта', 'Неизвестная ошибка');
-        return;
+        if (!ok) {
+          this.$popups.error('Не получилось выйти из аккаунта', 'Неизвестная ошибка');
+          return;
+        }
       }
       this.$store.dispatch('DELETE_USER');
       this.$router.push({ name: 'login' });

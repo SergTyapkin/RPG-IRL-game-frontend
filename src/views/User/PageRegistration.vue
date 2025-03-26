@@ -221,6 +221,7 @@ export default {
           description: '',
           money: 0,
           experience: 0,
+          inventory: [],
           level: 1,
           imageUrl: DefaultAbilityImage,
           leaderId: '',

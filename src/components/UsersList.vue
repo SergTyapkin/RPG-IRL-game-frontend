@@ -19,6 +19,7 @@
       width 50px
       height 50px
       border 1px solid colorBorder
+      border-radius borderRadiusMax
       img
         width 100%
         height 100%
@@ -43,7 +44,7 @@
   <ul class="root-users-list">
     <li v-for="user in users" :key="user.id" class="user">
       <div class="avatar">
-        <img :src="user.imageUrl" alt="avatar" />
+        <img :src="user.imageUrl" alt="avatar">
         <div class="level">{{ user.level }}</div>
       </div>
 

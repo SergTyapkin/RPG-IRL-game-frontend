@@ -29,7 +29,7 @@
 
 <template>
   <div class="root-page-qr-scanner">
-    <UserProfileInfo small />
+    <UserProfileInfo small @contextmenu.prevent="syncData(GuildModelMockData)" />
 
     <section class="section-scanner">
       <QRScanner @scan="onScan" />
@@ -49,7 +49,8 @@ import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import { getTotalUserMaxHP, itemIdToItem, parseQRText } from '~/utils/utils';
 import CircleLoading from '~/components/loaders/CircleLoading.vue';
 import validateModel from '@sergtyapkin/models-validator';
-import { GuildModel } from '~/utils/APIModels';
+import { GuildModel, GuildModelMockData } from '~/utils/APIModels';
+import { UserLevels } from '~/constants/levels';
 
 export default {
   components: { CircleLoading, UserProfileInfo, QRScanner },
@@ -59,6 +60,8 @@ export default {
       loading: false,
 
       scanResult: '',
+
+      GuildModelMockData,
     };
   },
 
@@ -73,7 +76,7 @@ export default {
         this.$popups.error('Отсканирован неизвестный QR', 'Проверьте, действительно ли этот QR от этой игры');
         return;
       }
-      const {QRType, QRSubType, QRSource, QRValue} = QRResult;
+      const {QRType, QRSubType, QRValue} = QRResult;
 
       let scanError = false;
       switch (QRType) {
@@ -120,30 +123,7 @@ export default {
           break;
         }
         case QRTypes.sync: {
-          if (!NO_SERVER_MODE) {
-            this.loading = true;
-            await this.$api.syncAllData(
-              this.$user.stats.experience + this.$user.notSyncedStats.experience,
-              this.$user.stats.money + this.$user.notSyncedStats.money,
-              this.$user.inventory,
-              {
-                hat: this.$user.equipment.hat,
-                main: this.$user.equipment.main,
-                boots: this.$user.equipment.boots,
-              },
-              this.$user.skills,
-              this.$user.stats.power + this.$user.notSyncedStats.power,
-              this.$user.stats.agility + this.$user.notSyncedStats.agility,
-              this.$user.stats.intelligence + this.$user.notSyncedStats.intelligence,
-            );
-            await this.$store.dispatch('GET_USER');
-            this.loading = false;
-            this.$popups.success('QR отсканирован', 'Ваши предметы и данные, а также данные гильдии синхронизированы');
-          } else {
-            const guildData = validateModel(GuildModel, QRValue);
-            await this.$store.commit('SET_GUILD', guildData);
-            this.$popups.success('QR отсканирован', 'Данные гильдии обновлены');
-          }
+          await this.syncData(QRValue);
           break;
         }
         default: {
@@ -156,6 +136,55 @@ export default {
         this.$router.push({ name: 'profile' });
       }
     },
+
+    async syncData(QRValue: string) {
+      if (!NO_SERVER_MODE) {
+        this.loading = true;
+        await this.$api.syncAllData(
+          this.$user.stats.experience + this.$user.notSyncedStats.experience,
+          this.$user.stats.money + this.$user.notSyncedStats.money,
+          this.$user.inventory,
+          {
+            hat: this.$user.equipment.hat,
+            main: this.$user.equipment.main,
+            boots: this.$user.equipment.boots,
+          },
+          this.$user.skills,
+          this.$user.stats.power + this.$user.notSyncedStats.power,
+          this.$user.stats.agility + this.$user.notSyncedStats.agility,
+          this.$user.stats.intelligence + this.$user.notSyncedStats.intelligence,
+        );
+        await this.$store.dispatch('GET_USER');
+        this.loading = false;
+        this.$popups.success('QR отсканирован', 'Ваши предметы и данные, а также данные гильдии синхронизированы');
+      } else {
+        const guildData = validateModel(GuildModel, QRValue);
+        await this.$store.commit('SET_GUILD', guildData);
+        this.$popups.success('QR отсканирован', 'Данные гильдии обновлены');
+
+        this.$user.stats.experience += this.$user.notSyncedStats.experience;
+        this.$user.stats.money += this.$user.notSyncedStats.money;
+        this.$user.stats.power += this.$user.notSyncedStats.power;
+        this.$user.stats.agility += this.$user.notSyncedStats.agility;
+        this.$user.stats.intelligence += this.$user.notSyncedStats.intelligence;
+        this.$user.notSyncedStats.experience = 0;
+        this.$user.notSyncedStats.money = 0;
+        this.$user.notSyncedStats.power = 0;
+        this.$user.notSyncedStats.agility = 0;
+        this.$user.notSyncedStats.intelligence = 0;
+
+        const expNeedsToLevel = UserLevels[this.$user.level].experience;
+        if (this.$user.stats.experience >= expNeedsToLevel) {
+          this.$user.stats.experience -= expNeedsToLevel;
+          this.$user.level += 1;
+          const maxLevel = Math.max(...Object.keys(UserLevels).map(Number));
+          this.$modals.alert('Уровень повышен!', `Вы получили уровень ${this.$user.level}!
+${this.$user.level < maxLevel ? `Для уровня ${this.$user.level + 1} понадобится ${UserLevels[this.$user.level + 1].experience}xp` : ''}`);
+        }
+
+        this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
+      }
+    }
   },
 };
 </script>

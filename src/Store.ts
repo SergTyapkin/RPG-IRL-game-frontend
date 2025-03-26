@@ -39,6 +39,7 @@ export default new Vuex.Store({
       state.user.isSignedIn = true;
     },
     SET_GUILD(state: State, guildData: Guild) {
+      console.log(state, guildData);
       state.guild.id = String(guildData.id);
       state.guild.name = String(guildData.name);
       state.guild.description = String(guildData.description);
@@ -81,19 +82,8 @@ export default new Vuex.Store({
           console.log("User not gotten already. Cannot sync");
           return;
         }
-        user.stats.experience += user.notSyncedStats.experience;
-        user.stats.money += user.notSyncedStats.money;
-        user.stats.power += user.notSyncedStats.power;
-        user.stats.agility += user.notSyncedStats.agility;
-        user.stats.intelligence += user.notSyncedStats.intelligence;
-        user.notSyncedStats.experience = 0;
-        user.notSyncedStats.money = 0;
-        user.notSyncedStats.power = 0;
-        user.notSyncedStats.agility = 0;
-        user.notSyncedStats.intelligence = 0;
         guild = this.state.guild;
       }
-      console.log(user, guild);
       this.$app.$localStorageManager.saveSyncedData(user, guild);
       state.commit('SET_USER', user);
       state.commit('SET_GUILD', guild);

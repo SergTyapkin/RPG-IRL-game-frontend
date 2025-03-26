@@ -34,6 +34,30 @@
 
   .section-members
     margin-top 30px
+
+
+  position relative
+
+  .section-modals
+    position fixed
+    inset 0
+    background #00000050
+    backdrop-filter blur(10px)
+    padding-bottom 100px
+    overflow-y auto
+    .modal
+      margin 30px auto
+      background colorBgLight
+      padding 20px
+      width calc(100% - 30px)
+      border-radius borderRadiusM
+      box-shadow 0 0 15px #000
+      max-width 400px
+      button
+        button()
+
+        &.trade
+          button-emp()
 </style>
 
 <template>
@@ -64,8 +88,34 @@
 
     <section class="section-inventory">
       <header>Инвентарь</header>
-      <Inventory :items-ids="$guild.inventory" />
+      <Inventory :items-ids="$guild.inventory" @select="selectItem" />
     </section>
+
+
+    <transition mode="out-in" name="opacity">
+      <section
+        v-if="selectedItem || selectedEquippedItem"
+        class="section-modals"
+        @click="
+          selectedItem = undefined;
+          selectedEquippedItem = undefined;
+        "
+      >
+        <transition mode="out-in" name="opacity">
+          <ItemInfo
+            class="modal"
+            v-if="selectedItem"
+            :obj="selectedItem"
+            @click.stop
+            @close="selectedItem = undefined"
+            image-with-shadow
+            closable
+          >
+            <template #buttons />
+          </ItemInfo>
+        </transition>
+      </section>
+    </transition>
   </div>
 </template>
 
@@ -77,12 +127,16 @@ import { ResourceTypes } from '~/constants/constants';
 import Inventory from '~/components/Inventory.vue';
 import UsersList from '~/components/UsersList.vue';
 import { GuildLevels } from '~/constants/levels';
+import ItemInfo from '~/components/ItemInfo.vue';
+import type { Item } from '~/types/types';
 
 export default {
-  components: { UsersList, Inventory, ValueBadge, LevelComponent, UserProfileInfo },
+  components: { ItemInfo, UsersList, Inventory, ValueBadge, LevelComponent, UserProfileInfo },
 
   data() {
     return {
+      selectedItem: undefined as Item | undefined,
+
       ResourceTypes,
       GuildLevels,
     };
@@ -90,12 +144,16 @@ export default {
 
   computed: {
     guildLeader() {
-      return this.$guild.members.find(m => m.id === this.$guild.leaderId)
-    }
+      return this.$guild.members.find(m => m.id === this.$guild.leaderId);
+    },
   },
 
   mounted() {},
 
-  methods: {},
+  methods: {
+    selectItem(item: Item) {
+      this.selectedItem = item;
+    },
+  },
 };
 </script>

@@ -11,6 +11,7 @@
   padding 0
   .draggable-element
     background linear-gradient(165deg, black, mix(mix(colorEmp1, black, 40%), transparent, 40%))
+    max-height calc(100vh - 90px)
     &::before
       content ""
       position absolute
@@ -30,7 +31,7 @@
   <div class="root-map">
     <DraggableComponent
       ref="draggableEl"
-      :min-scale="0.6"
+      :min-scale="0.3"
       :max-scale="5"
       :min-x-offset="200"
       :max-x-offset="200"
@@ -40,8 +41,8 @@
       class="draggable-element"
     >
       <div class="maps">
-        <img class="image blured" src="/static/images/map_google_3k.png" alt="">
-        <img class="image" src="/static/images/map_google_3k.png" alt="" ref="image">
+        <img class="image blured" src="/static/images/map_google_3k.svg" alt="">
+        <img class="image" src="/static/images/map_google_3k.svg" alt="" ref="image">
       </div>
     </DraggableComponent>
   </div>
