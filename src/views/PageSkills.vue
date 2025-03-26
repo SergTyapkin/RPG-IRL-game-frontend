@@ -174,7 +174,7 @@
         <div class="tree-container">
           <svg :viewBox="`0 0 ${svgMaxWidth} ${svgMaxHeight}`" :width="svgMaxWidth" :height="svgMaxHeight">
             <g class="lines">
-              <g v-for="skill in iterableSkillTree">
+              <g v-for="skill in currentIterableSkillTree">
                 <line
                   class="line"
                   v-for="line in skill.lines"
@@ -188,7 +188,7 @@
             </g>
 
             <g class="skills">
-              <g v-for="skill in iterableSkillTree">
+              <g v-for="skill in currentIterableSkillTree">
                 <foreignObject
                   class="cell-container"
                   :x="skill.position[0]"
@@ -245,20 +245,14 @@ export default {
   },
 
   computed: {
-    iterableSkillTree(): Skill[] {
+    currentIterableSkillTree(): Skill[] {
       return IterableSkillTrees[this.selectedTree];
     },
     svgMaxWidth() {
-      if (!this.iterableSkillTree) {
-        return 0;
-      }
-      return this.iterableSkillTree.reduce((acc, item) => Math.max(acc, item.position[0] + 80), 0);
+      return (this.currentIterableSkillTree || []).reduce((acc, item) => Math.max(acc, item.position[0] + 80), 0);
     },
     svgMaxHeight() {
-      if (!this.iterableSkillTree) {
-        return 0;
-      }
-      return this.iterableSkillTree.reduce((acc, item) => Math.max(acc, item.position[1] + 80), 0);
+      return (this.currentIterableSkillTree || []).reduce((acc, item) => Math.max(acc, item.position[1] + 80), 0);
     },
   },
 

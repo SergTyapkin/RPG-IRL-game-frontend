@@ -1,4 +1,4 @@
- <style lang="stylus" scoped>
+<style lang="stylus" scoped>
 @import '../styles/constants.styl'
 @import '../styles/buttons.styl'
 @import '../styles/fonts.styl'
@@ -58,9 +58,64 @@
       display block
       z-index 2
 
+  .section-stats
+    top 70px
+    display flex
+    flex-direction column
+    gap 5px
+    > *
+      centered-margin()
+      margin-bottom 10px
+      padding 0 10px 0 5px
+      background colorSec1
+      centered-flex-container()
+      gap 5px
+      width min-content
+      border-radius borderRadiusMax
+      color colorBg
+      &.protection
+        background colorEmpProtection
+
   .description
     font-small()
     margin-bottom 20px
+    color colorText4
+
+  .section-effects
+  .section-abilities
+    margin-bottom 15px
+
+    header
+      font-medium()
+      text-align left
+      color colorText2
+      margin-bottom 2px
+
+    .info
+      font-small()
+      text-align left
+      color colorText5
+
+  .section-effects
+    .text-block
+      margin-bottom 25px
+
+    .effects-container
+      display flex
+      flex-direction column
+      gap 20px
+
+  .section-abilities
+    .text-block
+      margin-bottom 10px
+
+    .abilities-container
+      display flex
+      flex-wrap wrap
+      gap 15px
+
+      > *
+        width calc((100% - 15px) / 2)
 
   .buttons-container
     display flex
@@ -77,14 +132,41 @@
 <template>
   <div class="root-modal">
     <button class="close" @click="close">
-      <img src="/static/icons/close.svg" alt="close">
+      <img src="/static/icons/close.svg" alt="close" />
     </button>
-    <header>{{ title }}</header>
-    <div class="image-container" v-if="imageUrl">
+    <header>{{ obj.name }}</header>
+    <div class="image-container" v-if="obj.imageUrl">
       <div v-if="imageWithShadow" class="shadow" />
-      <img :src="imageUrl" alt="">
+      <img :src="obj.imageUrl" alt="" />
     </div>
-    <div class="description">{{ description }}</div>
+    <section class="section-stats">
+      <div v-if="[ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)" class="protection">
+        <img src="/static/icons/shield.svg" alt="" /> {{ obj.protection }}
+      </div>
+    </section>
+    <div class="description">{{ obj.description }}</div>
+    <section class="section-effects">
+      <div class="text-block">
+        <header>Эффекты</header>
+        <div v-if="[ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)" class="info">
+          Действуют только если предмет экипирован!
+        </div>
+      </div>
+      <div class="effects-container">
+        <Effect v-for="effect in obj.effects" :key="effect.id" :effect="effect" without-source />
+      </div>
+    </section>
+    <section class="section-abilities">
+      <div class="text-block">
+        <header>Способности</header>
+        <div v-if="[ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)" class="info">
+          Доступны только если предмет экипирован!
+        </div>
+      </div>
+      <div class="abilities-container">
+        <Ability v-for="ability in obj.abilities" :key="ability.id" :ability="ability" preview />
+      </div>
+    </section>
     <slot />
     <div class="buttons-container">
       <slot name="buttons" />
@@ -93,31 +175,33 @@
 </template>
 
 <script lang="ts">
+import Effect from '~/components/Effect.vue';
+import Ability from '~/components/Ability.vue';
+import { ItemTypes } from '~/constants/constants';
+
 export default {
+  computed: {
+    ItemTypes() {
+      return ItemTypes;
+    },
+  },
+  components: { Ability, Effect },
   emits: ['select', 'close'],
 
   props: {
-    title: {
-      type: String,
-      default: '',
-    },
-    description: {
-      type: String,
-      default: '',
-    },
-    imageUrl: {
-      type: String,
-      default: '',
+    obj: {
+      type: Object,
+      required: true,
     },
     imageWithShadow: Boolean,
   },
 
   data() {
-    return {
-    }
+    return {};
   },
 
   mounted() {
+    console.log(this.obj);
   },
 
   methods: {

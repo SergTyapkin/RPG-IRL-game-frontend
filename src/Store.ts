@@ -1,13 +1,14 @@
 import Vuex from 'vuex';
 import { type State, type Store } from '~/types/store';
-import { type Guild, type User } from '~/types/types';
+import { type Guild, SyncedData, type User } from '~/types/types';
 
 export default new Vuex.Store({
   state: {
     user: {
       stats: {},
       notSyncedStats: {},
-      guild: {},
+    },
+    guild: {
     },
   },
   mutations: {
@@ -17,6 +18,7 @@ export default new Vuex.Store({
       state.user.level = Number(userData.level);
       state.user.imageUrl = String(userData.imageUrl);
       state.user.classType = String(userData.classType);
+      state.user.guildId = String(userData.guildId);
       state.user.stats.hp = Number(userData.stats.hp);
       state.user.stats.experience = Number(userData.stats.experience);
       state.user.stats.money = Number(userData.stats.money);
@@ -36,15 +38,15 @@ export default new Vuex.Store({
       state.user.isSignedIn = true;
     },
     SET_GUILD(state: State, guildData: Guild) {
-      state.user.guild.id = String(guildData.id);
-      state.user.guild.name = String(guildData.name);
-      state.user.guild.description = String(guildData.description);
-      state.user.guild.money = Number(guildData.money);
-      state.user.guild.imageUrl = String(guildData.imageUrl);
-      state.user.guild.experience = Number(guildData.experience);
-      state.user.guild.level = Number(guildData.level);
-      state.user.guild.leader = String(guildData.leader);
-      state.user.guild.members = guildData.members;
+      state.guild.id = String(guildData.id);
+      state.guild.name = String(guildData.name);
+      state.guild.description = String(guildData.description);
+      state.guild.money = Number(guildData.money);
+      state.guild.imageUrl = String(guildData.imageUrl);
+      state.guild.experience = Number(guildData.experience);
+      state.guild.level = Number(guildData.level);
+      state.guild.leaderId = String(guildData.leaderId);
+      state.guild.members = guildData.members;
     },
     DELETE_USER(state: State) {
       state.user.isSignedIn = false;
@@ -52,34 +54,34 @@ export default new Vuex.Store({
   },
   actions: {
     async GET_USER_OR_LOAD(this: Store, state: State) {
-      let userData = this.$app.$localStorageManager.loadUser();
-      if (!userData) {
-        const { data, ok }: { data: any; ok: boolean } = await this.$app.$api.getUser();
-        userData = data;
+      let syncedData = this.$app.$localStorageManager.loadSyncedData();
+      if (!syncedData) {
+        const { data, ok } = await this.$app.$api.getSyncedData();
+        syncedData = data;
         if (!ok) {
           state.commit('DELETE_USER');
           return;
         }
-        this.$app.$localStorageManager.saveUser(userData);
+        this.$app.$localStorageManager.saveSyncedData(syncedData.user, syncedData.guild);
       }
-      state.commit('SET_USER', userData);
-      state.commit('SET_GUILD', userData.guild);
+      state.commit('SET_USER', syncedData.user);
+      state.commit('SET_GUILD', syncedData.guild);
     },
     async GET_USER(this: Store, state: State) {
-      const { data: userData, ok }: { data: any; ok: boolean } = await this.$app.$api.getUser();
+      const { data: syncedData, ok } = await this.$app.$api.getSyncedData();
       if (!ok) {
         state.commit('DELETE_USER');
         return;
       }
-      this.$app.$localStorageManager.saveUser(userData);
-      state.commit('SET_USER', userData);
-      state.commit('SET_GUILD', userData.guild);
+      this.$app.$localStorageManager.saveSyncedData(syncedData.user, syncedData.guild);
+      state.commit('SET_USER', syncedData.user);
+      state.commit('SET_GUILD', syncedData.guild);
     },
     SET_GUILD(this: Store, state: State, guild: Guild) {
       state.commit('SET_GUILD', guild);
     },
     DELETE_USER(this: Store, state: State) {
-      this.$app.$localStorageManager.removeUser();
+      this.$app.$localStorageManager.removeSyncedData();
       state.commit('DELETE_USER');
     },
   },

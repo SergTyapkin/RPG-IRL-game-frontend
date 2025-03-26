@@ -1,6 +1,9 @@
 import { IterableSkillTrees } from '~/constants/skills';
-import type { Effect, Item, Skill, User } from '~/types/types';
+import type { Ability, Effect, Item, Skill, User } from '~/types/types';
 import { BuffsTypes, DEFAULT_USER_PROTECTION, ItemTypes } from '~/constants/constants';
+import { Items } from '~/constants/items';
+import { Abilities } from '~/constants/abilities';
+import { Effects } from '~/constants/effects';
 
 export function getCookie(name: string) {
   const matches = document.cookie.match(
@@ -96,6 +99,61 @@ export function deepClone<T>(obj: T): T {
 }
 
 
+// ------------------------------
+export function listIdsToEntities<T>(ids: string[], allEntities: {[key: string]: T}): T[] {
+  const res: T[] = [];
+  ids.forEach(id => {
+    const entity = allEntities[id];
+    if (entity) {
+      res.push(entity);
+    }
+  });
+  return res;
+}
+export function effectsIdsToEffects(effectsIds: string[]): Ability[] {
+  return listIdsToEntities(effectsIds, Effects);
+}
+export function abilitiesIdsToAbilities(abilitiesIds: string[]): Ability[] {
+  return listIdsToEntities(abilitiesIds, Abilities);
+}
+export function itemsIdsToItems(itemsIds: string[]): Item[] {
+  const res: Item[] = [];
+  itemsIds.forEach(itemId => {
+    const item = itemIdToItem(itemId);
+    if (item) {
+      res.push(item);
+    }
+  });
+  return res;
+}
+export function itemIdToItem(itemId: string): Item {
+  let item = Items[itemId];
+  if (item) {
+    item = deepClone(item)
+    item.effects = effectsIdsToEffects(item.effects);
+    item.abilities = abilitiesIdsToAbilities(item.abilities);
+  }
+  return item;
+}
+export function getUserInventory($user: User): Item[] {
+  return itemsIdsToItems($user.inventory);
+}
+export function getUserSkills($user: User): Skill[] {
+  const res: Skill[] = [];
+  $user.skills.forEach(id => {
+    const treeType = id[0];
+    const skillIdx = id.slice(1);
+    let skill = IterableSkillTrees[treeType][skillIdx];
+    if (skill) {
+      skill = deepClone(skill);
+      skill.effects = effectsIdsToEffects(skill.effects);
+      skill.abilities = effectsIdsToEffects(skill.abilities);
+      res.push(skill);
+    }
+  });
+  return res;
+}
+
 interface ExtendedEffect extends Effect {
   source: Skill | Item,
   sourceType: 'skill' | 'item',
@@ -103,59 +161,110 @@ interface ExtendedEffect extends Effect {
 export function getAllUserEffects($user: User): ExtendedEffect[] {
   const effects: ExtendedEffect[] = [];
   if ($user.equipment.hat) {
-    $user.equipment.hat.effects.forEach(e => {
+    itemIdToItem($user.equipment.hat).effects.forEach(e => {
+      e = deepClone(e);
       e.source = $user.equipment.hat;
       e.sourceType = 'item';
       effects.push(e)
     });
   }
   if ($user.equipment.main) {
-    $user.equipment.main.effects.forEach(e => {
+    itemIdToItem($user.equipment.main).effects.forEach(e => {
+      e = deepClone(e);
       e.source = $user.equipment.main;
       e.sourceType = 'item';
       effects.push(e)
     });
   }
   if ($user.equipment.boots) {
-    $user.equipment.boots.effects.forEach(e => {
+    itemIdToItem($user.equipment.boots).effects.forEach(e => {
+      e = deepClone(e);
       e.source = $user.equipment.boots;
       e.sourceType = 'item';
       effects.push(e)
     });
   }
-  $user.inventory.forEach(item => {
+  getUserInventory($user).forEach(item => {
     if (![ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(item.type)) {
       item.effects.forEach(e => {
+        e = deepClone(e);
         e.source = item;
         e.sourceType = 'item';
       });
       effects.push(...item.effects)
     }
   });
-  $user.skills
-    .map(id => {
-      const treeType = id[0];
-      const skillIdx = Number(id.slice(1));
-      return IterableSkillTrees[treeType][skillIdx];
-    })
-    .forEach(skill => {
-      skill.effects.forEach(e => {
-        e.source = skill;
-        e.sourceType = 'skill';
-      });
-      effects.push(...skill.effects)
+  getUserSkills($user).forEach(skill => {
+    skill.effects.forEach(e => {
+      e = deepClone(e);
+      e.source = skill;
+      e.sourceType = 'skill';
     });
+    effects.push(...skill.effects)
+  });
   return effects;
+}
+interface ExtendedAbiliity extends Ability {
+  source: Skill | Item,
+  sourceType: 'skill' | 'item',
+}
+export function getAllUserAbilities($user: User): ExtendedAbiliity[] {
+  const abilities: ExtendedAbiliity[] = [];
+  if ($user.equipment.hat) {
+    itemIdToItem($user.equipment.hat).abilities.forEach(e => {
+      e = deepClone(e);
+      e.source = $user.equipment.hat;
+      e.sourceType = 'item';
+      abilities.push(e)
+    });
+  }
+  if ($user.equipment.main) {
+    itemIdToItem($user.equipment.main).abilities.forEach(e => {
+      e = deepClone(e);
+      e.source = $user.equipment.main;
+      e.sourceType = 'item';
+      abilities.push(e)
+    });
+  }
+  if ($user.equipment.boots) {
+    itemIdToItem($user.equipment.boots).abilities.forEach(e => {
+      e = deepClone(e);
+      e.source = $user.equipment.boots;
+      e.sourceType = 'item';
+      abilities.push(e)
+    });
+  }
+  getUserInventory($user).forEach(item => {
+    if (![ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(item.type)) {
+      item.abilities.forEach(e => {
+        e = deepClone(e);
+        e.source = item;
+        e.sourceType = 'item';
+      });
+      abilities.push(...item.abilities)
+    }
+  });
+  getUserSkills($user).forEach(skill => {
+    skill.abilities.forEach(e => {
+      e = deepClone(e);
+      e.source = skill;
+      e.sourceType = 'skill';
+    });
+    abilities.push(...skill.abilities)
+  });
+  return abilities;
 }
 
 export function getTotalUserProtection($user: User): number {
   let res = DEFAULT_USER_PROTECTION;
-  res += $user.equipment.hat?.protection ?? 0;
-  res += $user.equipment.main?.protection ?? 0;
-  res += $user.equipment.boots?.protection ?? 0;
+  res += Items[$user.equipment.hat]?.protection ?? 0;
+  res += Items[$user.equipment.main]?.protection ?? 0;
+  res += Items[$user.equipment.boots]?.protection ?? 0;
   const effects = getAllUserEffects($user);
+  console.log(effects);
   effects.forEach(effect => {
     res += effect.buffs[BuffsTypes.protectionIncrease] ?? 0;
   });
   return res;
 }
+

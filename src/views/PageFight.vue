@@ -46,6 +46,7 @@
       display flex
       flex-wrap wrap
       gap 15px
+      hover-effect()
       > *
         width calc((100% - 15px) / 2)
 </style>
@@ -88,8 +89,7 @@ import ValueBadge from '~/components/ValueBadge.vue';
 import { ResourceTypes } from '~/constants/constants';
 import Effect from '~/components/Effect.vue';
 import Ability from '~/components/Ability.vue';
-import { IterableSkillTrees } from '~/constants/skills';
-import { getAllUserEffects } from '~/utils/utils';
+import { getAllUserAbilities, getAllUserEffects } from '~/utils/utils';
 
 export default {
   components: { Ability, Effect, ValueBadge, UserProfileInfo },
@@ -106,16 +106,7 @@ export default {
     },
 
     abilities() {
-      const abilities = [];
-      this.$user.inventory.forEach(item => abilities.push(...item.abilities));
-      this.$user.skills
-        .map(id => {
-          const treeType = id[0];
-          const skillIdx = id.slice(1);
-          return IterableSkillTrees[treeType][skillIdx];
-        })
-        .forEach(skill => abilities.push(...skill.abilities));
-      return abilities;
+      return getAllUserAbilities(this.$user);
     },
   },
 

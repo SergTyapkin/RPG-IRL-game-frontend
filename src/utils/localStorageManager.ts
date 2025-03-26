@@ -1,8 +1,8 @@
 /** @module **/
 
-import { type User } from '~/types/types';
+import { Guild, SyncedData, type User } from '~/types/types';
 import validateModel from '@sergtyapkin/models-validator';
-import { UserModel } from '~/utils/APIModels';
+import { SyncDataModel } from '~/utils/APIModels';
 
 /**
  * @enum _PropertyNames
@@ -10,7 +10,7 @@ import { UserModel } from '~/utils/APIModels';
  * @private
  */
 const _PropertyNames = {
-  user: 'user',
+  syncedData: 'synced-data',
 }
 
 /**
@@ -20,17 +20,17 @@ const _PropertyNames = {
  */
 export default class LocalStorageManager {
   // ---- USER ----
-  saveUser(user: User) {
-    localStorage.setItem(_PropertyNames.user, JSON.stringify(user));
+  saveSyncedData(user: User, guild: Guild) {
+    localStorage.setItem(_PropertyNames.syncedData, JSON.stringify({user, guild}));
   }
-  loadUser(): User | null {
-    const res = localStorage.getItem(_PropertyNames.user);
+  loadSyncedData(): SyncedData | null {
+    const res = localStorage.getItem(_PropertyNames.syncedData);
     if (!res) {
       return null;
     }
-    return validateModel(UserModel, res) as User;
+    return validateModel(SyncDataModel, res) as SyncedData;
   }
-  removeUser() {
-    localStorage.removeItem(_PropertyNames.user);
+  removeSyncedData() {
+    localStorage.removeItem(_PropertyNames.syncedData);
   }
 }

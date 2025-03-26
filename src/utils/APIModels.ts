@@ -54,17 +54,11 @@ export const ItemModel = {
   imageUrl: String,
   effects: {
     type: Array,
-    item: {
-      type: Object,
-      fields: EffectModel,
-    }
+    item: String,
   },
   abilities: {
     type: Array,
-    item: {
-      type: Object,
-      fields: AbilityModel,
-    }
+    item: String,
   },
   description:  String,
 }
@@ -76,10 +70,10 @@ export const ItemModelMockData = validateModel(ItemModel, {
   protection: 2,
   imageUrl: DefaultKnifeImage,
   effects: [
-    EffectModelMockData,
+    EffectModelMockData.id,
   ],
   abilities: [
-    AbilityModelMockData,
+    AbilityModelMockData.id,
   ],
   description: 'Описание предмета',
 });
@@ -94,10 +88,18 @@ export const GuildModel = {
   level:  Number,
   imageUrl: String,
 
-  leader: String,
+  leaderId: String,
   members: {
     type: Array,
-    item: String,
+    item: {
+      type: Object,
+      fields: {
+        id: String,
+        name: String,
+        imageUrl: String,
+        level: Number,
+      }
+    },
   }
 }
 
@@ -110,17 +112,40 @@ export const GuildModelMockData = validateModel(GuildModel, {
   level: 2,
   imageUrl: DefaultAbilityImage,
 
-  leader: 'Some_Gamer_ID',
-  members: ['GMR_1', 'GMR_2', 'GMR_3'],
+  leaderId: 'Some_Gamer_ID',
+  members: [
+    {
+      id: 'GMR_1',
+      name: 'Никита Лаврентьев',
+      imageUrl: DefaultAbilityImage,
+      level: 8,
+    },
+    {
+      id: 'GMR_2',
+      name: 'Аня',
+      imageUrl: DefaultKnifeImage,
+      level: 7,
+    },
+    {
+      id: 'GMR_3',
+      name: 'Катя Сумцова',
+      imageUrl: DefaultAbilityImage,
+      level: 9,
+    },
+  ],
 });
 
 export const UserModel = {
   id: String,
   name: String,
-  imageUrl: String,
+  imageUrl: {
+    type: String,
+  },
   level: Number,
   role: new Set(['admin', 'user']),
-  classType: String,
+  classType: {
+    type: String,
+  },
   stats: {
     type: Object,
     fields: {
@@ -132,9 +157,8 @@ export const UserModel = {
       intelligence: Number,
     }
   },
-  guild: {
-    type: Object,
-    fields: GuildModel,
+  guildId: {
+    type: String,
   },
   skills: {
     type: Array,
@@ -142,32 +166,27 @@ export const UserModel = {
   },
   inventory: {
     type: Array,
-    item: {
-      type: Object,
-      fields: ItemModel,
-    },
+    item: String,
   },
   equipment: {
     type: Object,
     fields: {
       hat: {
-        type: Object,
-        fields: ItemModel,
+        type: String,
         optional: true,
       },
       main: {
-        type: Object,
-        fields: ItemModel,
+        type: String,
         optional: true,
       },
       boots: {
-        type: Object,
-        fields: ItemModel,
+        type: String,
         optional: true,
       },
     },
   }
 };
+
 
 export const UserModelMockData = validateModel(UserModel, {
   id: 'USER_ID',
@@ -184,12 +203,30 @@ export const UserModelMockData = validateModel(UserModel, {
     intelligence: 2,
   },
   role: 'user',
-  inventory: [Items.mainBerserk, Items.longSword, Items.bootsBerserk, Items.helmetBerserk, Items.dagger],
+  inventory: [Items.mainBerserk.id, Items.longSword.id, Items.bootsBerserk.id, Items.helmetBerserk.id, Items.dagger.id],
   equipment: {
-    hat: Items.helmetBerserk,
+    hat: Items.helmetBerserk.id,
     main: undefined,
     boots: undefined,
   },
-  guild: GuildModelMockData,
+  guildId: GuildModelMockData.id,
   skills: ['P0', 'P1'],
 });
+
+
+export const SyncDataModel = {
+  user: {
+    type: Object,
+    fields: UserModel,
+  },
+  guild: {
+    type: Object,
+    fields: GuildModel,
+  },
+};
+
+export const SyncDataModelMockData = {
+  user: UserModelMockData,
+  guild: GuildModelMockData
+}
+

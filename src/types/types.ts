@@ -21,13 +21,13 @@ export interface User {
     intelligence: number;
   };
   classType: ClassType;
-  guild: Guild;
+  guildId: string;
   skills: string[];
-  inventory: Item[];
+  inventory: string[];
   equipment: {
-    hat: Item;
-    main: Item;
-    boots: Item;
+    hat?: string;
+    main?: string;
+    boots?: string;
   };
   role: 'admin' | 'user';
 
@@ -71,9 +71,9 @@ export interface Effect {
 export interface Skill {
   name: string;
   description: string;
-  abilities: Ability[];
+  abilities: string[];
   buffs: {[key in BuffType]: number};
-  effects: Effect[];
+  effects: string[];
   cost: number;
   position: [number, number];
   children: Skill[];
@@ -92,8 +92,13 @@ export interface Guild {
   level: number;
   imageUrl: string;
 
-  leader: string;
-  members: string[];
+  leaderId: string;
+  members: {
+    id: string,
+    name: string,
+    imageUrl: string,
+    level: number,
+  };
 }
 
 export interface Item {
@@ -101,9 +106,14 @@ export interface Item {
   name: string;
   type: string;
   protection: number;
-  abilities: Ability[];
-  effects: Effect[],
+  abilities: string[];
+  effects: string[],
   description: string;
   imageUrl: string;
   notSynced?: boolean;
+}
+
+export interface SyncedData {
+  user: User;
+  guild: Guild;
 }

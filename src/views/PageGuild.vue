@@ -37,16 +37,16 @@
 <template>
   <div class="root-profile">
     <section class="section-user-info">
-      <UserProfileInfo :override-avatar="$user.guild?.imageUrl" :override-name="$user.guild?.name">
-        <ValueBadge class="money-badge" :type="ResourceTypes.money" :value="$user.guild?.money" />
+      <UserProfileInfo :override-avatar="$guild?.imageUrl" :override-name="$guild?.name">
+        <ValueBadge class="money-badge" :type="ResourceTypes.money" :value="$guild?.money" />
       </UserProfileInfo>
     </section>
 
     <section class="section-level">
       <LevelComponent
-        :level="$user.guild?.level"
-        :cur-synced-xp="$user.guild?.experience"
-        :max-xp="GuildLevels[$user.guild?.level].experience"
+        :level="$guild?.level"
+        :cur-synced-xp="$guild?.experience"
+        :max-xp="GuildLevels[$guild?.level].experience"
       />
     </section>
 

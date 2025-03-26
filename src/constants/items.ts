@@ -19,7 +19,7 @@ export const Items: {[key: string]: Item} = {
     protection: 1,
     imageUrl: ImgHelmet,
     effects: [
-      Effects.damage1,
+      Effects.damage1.id,
     ],
     abilities: [
     ],
@@ -32,7 +32,7 @@ export const Items: {[key: string]: Item} = {
     protection: 4,
     imageUrl: ImgMain,
     effects: [
-      Effects.damage1,
+      Effects.damage1.id,
     ],
     abilities: [
     ],
@@ -44,7 +44,7 @@ export const Items: {[key: string]: Item} = {
     protection: 2,
     imageUrl: ImgBoots,
     effects: [
-      Effects.damage1,
+      Effects.damage1.id,
     ],
     abilities: [
     ],
@@ -53,15 +53,19 @@ export const Items: {[key: string]: Item} = {
   dagger: {
     id: String(),
     name: 'Кинжал дешевой силы',
-    description: 'Описание предмета',
+    description: 'Когда-то кинжал был утерян, но потом найден, а вообще изначально выкован какими-то крутыми челами, и вообще это реликвия крутая.',
     type: ItemTypes.weapon,
     protection: 0,
     imageUrl: ImgDagger,
     effects: [
-      Effects.powerLowCost,
+      Effects.powerLowCost.id,
+      Effects.powerLowCost.id,
     ],
     abilities: [
-      Abilities.daggerHit,
+      Abilities.daggerHit.id,
+      Abilities.daggerHit.id,
+      Abilities.daggerHit.id,
+      Abilities.daggerHit.id,
     ],
   },
   longSword: {
@@ -72,10 +76,10 @@ export const Items: {[key: string]: Item} = {
     protection: 0,
     imageUrl: ImgLongSword,
     effects: [
-      Effects.luck,
+      Effects.luck.id,
     ],
     abilities: [
-      Abilities.longSwordHit,
+      Abilities.longSwordHit.id,
     ],
   },
 }

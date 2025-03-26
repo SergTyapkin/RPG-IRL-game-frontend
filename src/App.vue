@@ -172,6 +172,7 @@ export default {
     this.global = getCurrentInstance()!.appContext.config.globalProperties;
 
     this.global.$user = this.$store.state.user;
+    this.global.$guild = this.$store.state.guild;
     this.global.$modals = this.$refs.modals;
     this.global.$localStorageManager = new LocalStorageManager();
     this.global.$popups = this.$refs.popups;

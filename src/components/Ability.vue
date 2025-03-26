@@ -1,19 +1,17 @@
- <style lang="stylus" scoped>
+<style lang="stylus" scoped>
 @import '../styles/constants.styl'
 @import '../styles/buttons.styl'
 @import '../styles/fonts.styl'
 @import '../styles/utils.styl'
 @import '../styles/animations.styl'
 
-.root-effect
+.root-ability
   overflow hidden
   display flex
   flex-direction column
-  width var(--size)
-  height var(--size)
   background colorBgLight
   border-radius borderRadiusS
-  hover-effect()
+  position relative
   .image-container
     position relative
     img.ability-bg
@@ -50,7 +48,6 @@
     height 100%
     .name
       font-medium()
-
       margin-bottom 7px
       flex 1
     .description
@@ -63,16 +60,27 @@
       width 100%
       color colorSec1
       text-align right
+
+  &.preview
+    .text-container
+      position absolute
+      bottom 0
+      left 0
+      width 100%
+      height auto
+      background #00000080
 </style>
 
 <template>
-  <div class="root-effect">
+  <div class="root-ability" :class="{ preview }">
     <section class="image-container">
-      <img class="ability-bg" :src="ability.imageUrl" alt="">
+      <img class="ability-bg" :src="ability.imageUrl" alt="" />
 
       <section class="stats">
-        <div v-if="ability.damage" class="stat damage"><img src="/static/icons/fight.svg" alt="">{{ ability.damage }}</div>
-        <div v-if="ability.heal" class="stat heal"><img src="/static/icons/close.svg" alt="">{{ ability.heal }}</div>
+        <div v-if="ability.damage" class="stat damage">
+          <img src="/static/icons/fight.svg" alt="" />{{ ability.damage }}
+        </div>
+        <div v-if="ability.heal" class="stat heal"><img src="/static/icons/close.svg" alt="" />{{ ability.heal }}</div>
       </section>
     </section>
     <section class="text-container">
@@ -90,17 +98,15 @@ export default {
       type: Object,
       required: true,
     },
+    preview: Boolean,
   },
 
   data() {
-    return {
-    }
+    return {};
   },
 
-  mounted() {
-  },
+  mounted() {},
 
-  methods: {
-  },
+  methods: {},
 };
 </script>

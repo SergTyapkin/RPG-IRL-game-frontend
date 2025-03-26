@@ -19,21 +19,21 @@
   <div class="root-equipment">
     <Cell
       class="hat"
-      :src="$user.equipment?.hat?.imageUrl"
-      :bg-image="$user.equipment?.hat ? undefined : DefaultHatImage"
-      @click="selectItem($user.equipment?.hat)"
+      :src="hat?.imageUrl"
+      :bg-image="hat ? undefined : DefaultHatImage"
+      @click="selectItem(hat)"
     />
     <Cell
       class="main"
-      :src="$user.equipment?.main?.imageUrl"
-      :bg-image="$user.equipment?.main ? undefined : DefaultMainImage"
-      @click="selectItem($user.equipment?.main)"
+      :src="main?.imageUrl"
+      :bg-image="main ? undefined : DefaultMainImage"
+      @click="selectItem(main)"
     />
     <Cell
       class="boots"
-      :src="$user.equipment?.boots?.imageUrl"
-      :bg-image="$user.equipment?.boots ? undefined : DefaultBootsImage"
-      @click="selectItem($user.equipment?.boots)"
+      :src="boots?.imageUrl"
+      :bg-image="boots ? undefined : DefaultBootsImage"
+      @click="selectItem(boots)"
     />
   </div>
 </template>
@@ -44,6 +44,9 @@ import Cell from '~/components/Cell.vue';
 import DefaultHatImage from '#/icons/guild.svg';
 import DefaultMainImage from '#/icons/guild.svg';
 import DefaultBootsImage from '#/icons/guild.svg';
+import { Items } from '~/constants/items';
+import { Item } from '~/types/types';
+import { itemIdToItem } from '~/utils/utils';
 
 export default {
   components: { Cell },
@@ -54,15 +57,26 @@ export default {
 
   data() {
     return {
+      hat: undefined as Item,
+      main: undefined as Item,
+      boots: undefined as Item,
+
       DefaultHatImage,
       DefaultMainImage,
       DefaultBootsImage,
     };
   },
 
-  mounted() {},
+  mounted() {
+    this.update();
+  },
 
   methods: {
+    update() {
+      this.hat = this.$user.equipment.hat ? itemIdToItem(this.$user.equipment.hat) : null;
+      this.main = this.$user.equipment.main ? itemIdToItem(this.$user.equipment.main) : null;
+      this.boots = this.$user.equipment.boots ? itemIdToItem(this.$user.equipment.boots) : null;
+    },
     selectItem(item: any) {
       if (item) {
         this.$emit('select', item);

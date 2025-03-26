@@ -52,9 +52,9 @@
     <div class="text-block">
       <strong class="name">{{ overrideName || $user.name }}</strong>
       <router-link :to="{ name: 'guild' }" class="guild-info" v-if="showGuild">
-        <img class="guild-image" :src="$user.guild.imageUrl" alt="">
-        <div class="guild-name"> {{ $user.guild?.name }} </div>
-        <div class="guild-xp-badge"> {{ $user.guild?.experience }} xp</div>
+        <img class="guild-image" :src="$guild.imageUrl" alt="">
+        <div class="guild-name"> {{ $guild?.name }} </div>
+        <div class="guild-xp-badge"> {{ $guild?.experience }} xp</div>
       </router-link>
       <slot />
     </div>

@@ -54,6 +54,8 @@
     inset 0
     background #00000050
     backdrop-filter blur(10px)
+    padding-bottom 100px
+    overflow-y auto
 
     button
       button()
@@ -96,7 +98,7 @@
 
     <section class="section-inventory">
       <header>Инвентарь</header>
-      <Inventory :items="$user.inventory" @select="selectItem" ref="inventory" />
+      <Inventory :items-ids="$user.inventory" @select="selectItem" ref="inventory" />
     </section>
 
     <!--    <div class="buttons-row">-->
@@ -116,9 +118,7 @@
         <transition mode="out-in" name="opacity">
           <Modal
             v-if="selectedItem"
-            :title="selectedItem.name"
-            :description="selectedItem.description"
-            :image-url="selectedItem.imageUrl"
+            :obj="selectedItem"
             @click.stop
             @close="selectedItem = undefined"
             image-with-shadow
@@ -137,9 +137,7 @@
 
           <Modal
             v-else-if="selectedEquippedItem"
-            :title="selectedEquippedItem.name"
-            :description="selectedEquippedItem.description"
-            :image-url="selectedEquippedItem.imageUrl"
+            :obj="selectedEquippedItem"
             @click.stop
             @close="selectedEquippedItem = undefined"
             image-with-shadow
@@ -226,10 +224,7 @@ export default {
       this.$user.equipment[item.type] = undefined;
 
       this.selectedEquippedItem = undefined;
-      this.$localStorageManager.saveUser(this.$user);
-      this.recalculateUserProtection();
-      this.$refs.inventory.$forceUpdate();
-      this.$refs.equipment.$forceUpdate();
+      this.saveAndUpdateInventories();
     },
 
     async equipItem(item: Item) {
@@ -246,16 +241,23 @@ export default {
         this.$user.inventory.push(this.$user.equipment[item.type]);
       }
 
-      this.$user.equipment[item.type] = item;
-      const idx = this.$user.inventory.findIndex(i => i.id === item.id);
+      this.$user.equipment[item.type] = item.id;
+      const idx = this.$user.inventory.findIndex(i => i === item.id);
+      if (idx === -1) {
+        console.error("Wrong idx");
+        return;
+      }
       this.$user.inventory.splice(idx, 1);
 
       this.selectedItem = undefined;
-      this.$localStorageManager.saveUser(this.$user);
-      this.recalculateUserProtection();
-      this.$refs.inventory.$forceUpdate();
-      this.$refs.equipment.$forceUpdate();
+      this.saveAndUpdateInventories();
     },
+    saveAndUpdateInventories() {
+      this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
+      this.recalculateUserProtection();
+      this.$refs.inventory.update();
+      this.$refs.equipment.update();
+    }
   },
 };
 </script>

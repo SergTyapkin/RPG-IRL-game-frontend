@@ -1,7 +1,7 @@
 import REST_API from '@sergtyapkin/rest-api';
 import validateModel, { type Model } from '@sergtyapkin/models-validator';
-import { UserModel, UserModelMockData } from '~/utils/APIModels';
-import { Item, type User } from '~/types/types';
+import { SyncDataModel, SyncDataModelMockData, UserModel, UserModelMockData } from '~/utils/APIModels';
+import { Item, SyncedData, type User } from '~/types/types';
 
 type RequestFunc = (url: string, data?: object) => Promise<{ data: object; status: number; ok: boolean }>;
 type MyResponse<T> = Promise<{ data: T; status: number; ok: boolean }> | { data: T; status: number; ok: boolean };
@@ -58,7 +58,7 @@ export default class API extends REST_API {
 
   // Api configuration
   // User
-  getUser = () => this.#GET(`/user`, {}, UserModel, Response200(UserModelMockData)) as MyResponse<User>;
+  getSyncedData = () => this.#GET(`/user`, {}, SyncDataModel, Response200(SyncDataModelMockData)) as MyResponse<SyncedData>;
   updateProfile = (id: string, profileData: { username?: string; password?: string }) =>
     this.#PUT(`/user/${id}`, profileData, UserModel) as MyResponse<User>;
   updatePassword = (id: string, oldPassword: string, newPassword: string) =>
