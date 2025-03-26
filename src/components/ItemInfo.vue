@@ -5,14 +5,7 @@
 @import '../styles/utils.styl'
 @import '../styles/animations.styl'
 
-.root-modal
-  margin 30px auto
-  background colorBgLight
-  padding 20px
-  width calc(100% - 30px)
-  border-radius borderRadiusM
-  box-shadow 0 0 15px #000
-  max-width 400px
+.root-item-info
   position relative
 
   button.close
@@ -130,22 +123,22 @@
 </style>
 
 <template>
-  <div class="root-modal">
-    <button class="close" @click="close">
-      <img src="/static/icons/close.svg" alt="close" />
+  <div class="root-item-info">
+    <button v-if="closable" class="close" @click="close">
+      <img src="/static/icons/close.svg" alt="close">
     </button>
     <header>{{ obj.name }}</header>
     <div class="image-container" v-if="obj.imageUrl">
       <div v-if="imageWithShadow" class="shadow" />
-      <img :src="obj.imageUrl" alt="" />
+      <img :src="obj.imageUrl" alt="">
     </div>
     <section class="section-stats">
       <div v-if="[ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)" class="protection">
-        <img src="/static/icons/shield.svg" alt="" /> {{ obj.protection }}
+        <img src="/static/icons/shield.svg" alt=""> {{ obj.protection }}
       </div>
     </section>
     <div class="description">{{ obj.description }}</div>
-    <section class="section-effects">
+    <section v-if="obj.effects?.length" class="section-effects">
       <div class="text-block">
         <header>Эффекты</header>
         <div v-if="[ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)" class="info">
@@ -156,7 +149,7 @@
         <Effect v-for="effect in obj.effects" :key="effect.id" :effect="effect" without-source />
       </div>
     </section>
-    <section class="section-abilities">
+    <section v-if="obj.abilities?.length" class="section-abilities">
       <div class="text-block">
         <header>Способности</header>
         <div v-if="[ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)" class="info">
@@ -180,13 +173,7 @@ import Ability from '~/components/Ability.vue';
 import { ItemTypes } from '~/constants/constants';
 
 export default {
-  computed: {
-    ItemTypes() {
-      return ItemTypes;
-    },
-  },
   components: { Ability, Effect },
-  emits: ['select', 'close'],
 
   props: {
     obj: {
@@ -194,11 +181,18 @@ export default {
       required: true,
     },
     imageWithShadow: Boolean,
+    closable: Boolean,
   },
 
   data() {
     return {};
   },
+  computed: {
+    ItemTypes() {
+      return ItemTypes;
+    },
+  },
+  emits: ['select', 'close'],
 
   mounted() {
     console.log(this.obj);

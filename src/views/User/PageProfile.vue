@@ -56,12 +56,19 @@
     backdrop-filter blur(10px)
     padding-bottom 100px
     overflow-y auto
+    .modal
+      margin 30px auto
+      background colorBgLight
+      padding 20px
+      width calc(100% - 30px)
+      border-radius borderRadiusM
+      box-shadow 0 0 15px #000
+      max-width 400px
+      button
+        button()
 
-    button
-      button()
-
-      &.trade
-        button-emp()
+        &.trade
+          button-emp()
 </style>
 
 <template>
@@ -113,15 +120,20 @@
       <section
         v-if="selectedItem || selectedEquippedItem"
         class="section-modals"
-        @click="selectedItem = undefined; selectedEquippedItem = undefined"
+        @click="
+          selectedItem = undefined;
+          selectedEquippedItem = undefined;
+        "
       >
         <transition mode="out-in" name="opacity">
-          <Modal
+          <ItemInfo
+            class="modal"
             v-if="selectedItem"
             :obj="selectedItem"
             @click.stop
             @close="selectedItem = undefined"
             image-with-shadow
+            closable
           >
             <template #buttons>
               <button
@@ -133,24 +145,21 @@
               </button>
               <button @click="tradeItem(selectedItem)" class="trade">Передать</button>
             </template>
-          </Modal>
+          </ItemInfo>
 
-          <Modal
+          <ItemInfo
+            class="modal"
             v-else-if="selectedEquippedItem"
             :obj="selectedEquippedItem"
             @click.stop
             @close="selectedEquippedItem = undefined"
             image-with-shadow
+            closable
           >
             <template #buttons>
-              <button
-                @click="unequipItem(selectedEquippedItem)"
-                class="equip"
-              >
-                Снять
-              </button>
+              <button @click="unequipItem(selectedEquippedItem)" class="equip">Снять</button>
             </template>
-          </Modal>
+          </ItemInfo>
         </transition>
       </section>
     </transition>
@@ -167,10 +176,10 @@ import Inventory from '~/components/Inventory.vue';
 import { UserLevels } from '~/constants/levels';
 import { getTotalUserProtection } from '~/utils/utils';
 import { type Item } from '~/types/types';
-import Modal from '~/components/Modal.vue';
+import ItemInfo from '~/components/ItemInfo.vue';
 
 export default {
-  components: { Modal, Inventory, Equipment, ValueBadge, LevelComponent, UserProfileInfo },
+  components: { ItemInfo, Inventory, Equipment, ValueBadge, LevelComponent, UserProfileInfo },
 
   data() {
     return {
@@ -185,11 +194,25 @@ export default {
     };
   },
 
-  async mounted() {
+  mounted() {
     this.recalculateUserProtection();
+    window.addEventListener('keydown', this.onKeyPress);
+  },
+
+  unmounted() {
+    window.removeEventListener('keydown', this.onKeyPress);
   },
 
   methods: {
+    onKeyPress(ev: KeyboardEvent) {
+      if (ev.key === 'Escape') {
+        this.closeModal();
+      }
+    },
+    closeModal() {
+      this.selectedItem = undefined;
+      this.selectedEquippedItem = undefined;
+    },
     recalculateUserProtection() {
       this.userProtection = getTotalUserProtection(this.$user);
     },
@@ -257,6 +280,10 @@ export default {
       this.recalculateUserProtection();
       this.$refs.inventory.update();
       this.$refs.equipment.update();
+    },
+
+    tradeItem(item: Item) {
+      this.$router.push({name: 'trade', query: {itemId: item.id}});
     }
   },
 };

@@ -1,6 +1,7 @@
 import validateModel from "@sergtyapkin/models-validator";
 import { BuffsTypes, ClassTypes, DefaultAbilityImage, DefaultAvatarImage, DefaultKnifeImage } from '~/constants/constants';
 import { Items } from '~/constants/items';
+import { Ability, Effect, Guild, Item, SyncedData, User } from '~/types/types';
 
 export const EffectModel = {
   id: String,
@@ -19,7 +20,7 @@ export const EffectModelMockData = validateModel(EffectModel,     {
     [BuffsTypes.protectionIncrease]: 2,
     [BuffsTypes.maxHpIncrease]: 5,
   }
-});
+}) as Effect;
 
 export const AbilityModel = {
   id: String,
@@ -44,7 +45,7 @@ export const AbilityModelMockData = validateModel(AbilityModel,     {
   damageTargets: 2,
   heal: 10,
   reload: 2,
-});
+}) as Ability;
 
 export const ItemModel = {
   id: String,
@@ -76,7 +77,7 @@ export const ItemModelMockData = validateModel(ItemModel, {
     AbilityModelMockData.id,
   ],
   description: 'Описание предмета',
-});
+}) as Item;
 
 
 export const GuildModel = {
@@ -133,7 +134,7 @@ export const GuildModelMockData = validateModel(GuildModel, {
       level: 9,
     },
   ],
-});
+}) as Guild;
 
 export const UserModel = {
   id: String,
@@ -211,7 +212,7 @@ export const UserModelMockData = validateModel(UserModel, {
   },
   guildId: GuildModelMockData.id,
   skills: ['P0', 'P1'],
-});
+}) as User;
 
 
 export const SyncDataModel = {
@@ -228,5 +229,5 @@ export const SyncDataModel = {
 export const SyncDataModelMockData = {
   user: UserModelMockData,
   guild: GuildModelMockData
-}
+} as SyncedData;
 

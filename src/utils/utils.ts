@@ -100,6 +100,24 @@ export function deepClone<T>(obj: T): T {
 
 
 // ------------------------------
+interface ExtendedEffect extends Effect {
+  source: ExtendedSkill | ExtendedItem,
+  sourceType: 'skill' | 'item',
+}
+interface ExtendedAbility extends Ability {
+  source: ExtendedSkill | ExtendedItem,
+  sourceType: 'skill' | 'item',
+}
+interface ExtendedItem extends Omit<Omit<Item, 'effects'>, 'abilities'> {
+  effects: Effect[],
+  abilities: Ability[],
+}
+interface ExtendedSkill extends Omit<Omit<Skill, 'effects'>, 'abilities'> {
+  effects: Effect[],
+  abilities: Ability[],
+}
+
+
 export function listIdsToEntities<T>(ids: string[], allEntities: {[key: string]: T}): T[] {
   const res: T[] = [];
   ids.forEach(id => {
@@ -110,14 +128,14 @@ export function listIdsToEntities<T>(ids: string[], allEntities: {[key: string]:
   });
   return res;
 }
-export function effectsIdsToEffects(effectsIds: string[]): Ability[] {
+export function effectsIdsToEffects(effectsIds: string[]): Effect[] {
   return listIdsToEntities(effectsIds, Effects);
 }
 export function abilitiesIdsToAbilities(abilitiesIds: string[]): Ability[] {
   return listIdsToEntities(abilitiesIds, Abilities);
 }
-export function itemsIdsToItems(itemsIds: string[]): Item[] {
-  const res: Item[] = [];
+export function itemsIdsToItems(itemsIds: string[]): ExtendedItem[] {
+  const res: ExtendedItem[] = [];
   itemsIds.forEach(itemId => {
     const item = itemIdToItem(itemId);
     if (item) {
@@ -126,50 +144,54 @@ export function itemsIdsToItems(itemsIds: string[]): Item[] {
   });
   return res;
 }
-export function itemIdToItem(itemId: string): Item {
-  let item = Items[itemId];
-  if (item) {
-    item = deepClone(item)
-    item.effects = effectsIdsToEffects(item.effects);
-    item.abilities = abilitiesIdsToAbilities(item.abilities);
+export function itemIdToItem(itemId: string): ExtendedItem {
+  const item = Items[itemId];
+  if (!item) {
+    return item;
   }
-  return item;
+  const extItem = deepClone(item) as unknown as ExtendedItem;
+  extItem.effects = effectsIdsToEffects(item.effects);
+  extItem.abilities = abilitiesIdsToAbilities(item.abilities);
+  return extItem;
 }
-export function getUserInventory($user: User): Item[] {
+export function getUserInventory($user: User): ExtendedItem[] {
   return itemsIdsToItems($user.inventory);
 }
-export function getUserSkills($user: User): Skill[] {
-  const res: Skill[] = [];
+export function skillIdToSkill(skillId: string): ExtendedSkill {
+  const treeType = skillId[0];
+  const skillIdx = Number(skillId.slice(1));
+  const skill = IterableSkillTrees[treeType][skillIdx];
+  if (!skill) {
+    return skill;
+  }
+  const extSkill = deepClone(skill) as unknown as ExtendedSkill;
+  extSkill.effects = effectsIdsToEffects(skill.effects);
+  extSkill.abilities = abilitiesIdsToAbilities(skill.abilities);
+  return extSkill;
+}
+export function getUserSkills($user: User): ExtendedSkill[] {
+  const res: ExtendedSkill[] = [];
   $user.skills.forEach(id => {
-    const treeType = id[0];
-    const skillIdx = id.slice(1);
-    let skill = IterableSkillTrees[treeType][skillIdx];
+    const skill = skillIdToSkill(id)
     if (skill) {
-      skill = deepClone(skill);
-      skill.effects = effectsIdsToEffects(skill.effects);
-      skill.abilities = effectsIdsToEffects(skill.abilities);
       res.push(skill);
     }
   });
   return res;
 }
 
-interface ExtendedEffect extends Effect {
-  source: Skill | Item,
-  sourceType: 'skill' | 'item',
-}
 export function getAllUserEffects($user: User): ExtendedEffect[] {
   const effects: ExtendedEffect[] = [];
-  function addEffectsFromItemId(itemId: string) {
+  function addEffectsFromItemId(itemId?: string) {
     if (!itemId) {
       return;
     }
     const item = itemIdToItem(itemId);
     item.effects.forEach(e => {
-      e = deepClone(e);
-      e.source = item;
-      e.sourceType = 'item';
-      effects.push(e);
+      const ext = deepClone(e) as unknown as ExtendedEffect;
+      ext.source = item;
+      ext.sourceType = 'item';
+      effects.push(ext);
     });
   }
   addEffectsFromItemId($user.equipment.hat);
@@ -179,40 +201,36 @@ export function getAllUserEffects($user: User): ExtendedEffect[] {
   getUserInventory($user).forEach(item => {
     if (![ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(item.type)) {
       item.effects.forEach(e => {
-        e = deepClone(e);
-        e.source = item;
-        e.sourceType = 'item';
-        effects.push(e);
+        const ext = deepClone(e) as unknown as ExtendedEffect;
+        ext.source = item;
+        ext.sourceType = 'item';
+        effects.push(ext);
       });
     }
   });
   getUserSkills($user).forEach(skill => {
     skill.effects.forEach(e => {
-      e = deepClone(e);
-      e.source = skill;
-      e.sourceType = 'skill';
-      effects.push(e);
+      const ext = deepClone(e) as unknown as ExtendedEffect;
+      ext.source = skill;
+      ext.sourceType = 'skill';
+      effects.push(ext);
     });
   });
   return effects;
 }
 
-interface ExtendedAbility extends Ability {
-  source: Skill | Item,
-  sourceType: 'skill' | 'item',
-}
 export function getAllUserAbilities($user: User): ExtendedAbility[] {
   const abilities: ExtendedAbility[] = [];
-  function addAbilitiesFromItemId(itemId: string) {
+  function addAbilitiesFromItemId(itemId?: string) {
     if (!itemId) {
       return;
     }
     const item = itemIdToItem(itemId);
     item.abilities.forEach(e => {
-      e = deepClone(e);
-      e.source = item;
-      e.sourceType = 'item';
-      abilities.push(e);
+      const ext = deepClone(e) as unknown as ExtendedAbility;
+      ext.source = item;
+      ext.sourceType = 'item';
+      abilities.push(ext);
     });
   }
   addAbilitiesFromItemId($user.equipment.hat);
@@ -222,19 +240,19 @@ export function getAllUserAbilities($user: User): ExtendedAbility[] {
   getUserInventory($user).forEach(item => {
     if (![ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(item.type)) {
       item.abilities.forEach(e => {
-        e = deepClone(e);
-        e.source = item;
-        e.sourceType = 'item';
-        abilities.push(e);
+        const ext = deepClone(e) as unknown as ExtendedAbility;
+        ext.source = item;
+        ext.sourceType = 'item';
+        abilities.push(ext);
       });
     }
   });
   getUserSkills($user).forEach(skill => {
     skill.abilities.forEach(e => {
-      e = deepClone(e);
-      e.source = skill;
-      e.sourceType = 'skill';
-      abilities.push(e);
+      const ext = deepClone(e) as unknown as ExtendedAbility;
+      ext.source = skill;
+      ext.sourceType = 'skill';
+      abilities.push(ext);
     });
   });
   return abilities;
@@ -242,11 +260,10 @@ export function getAllUserAbilities($user: User): ExtendedAbility[] {
 
 export function getTotalUserProtection($user: User): number {
   let res = DEFAULT_USER_PROTECTION;
-  res += Items[$user.equipment.hat]?.protection ?? 0;
-  res += Items[$user.equipment.main]?.protection ?? 0;
-  res += Items[$user.equipment.boots]?.protection ?? 0;
+  res += $user.equipment.hat ? Items[$user.equipment.hat]?.protection ?? 0 : 0;
+  res += $user.equipment.main ? Items[$user.equipment.main]?.protection ?? 0 : 0;
+  res += $user.equipment.boots ? Items[$user.equipment.boots]?.protection ?? 0 : 0;
   const effects = getAllUserEffects($user);
-  console.log(effects);
   effects.forEach(effect => {
     res += effect.buffs[BuffsTypes.protectionIncrease] ?? 0;
   });

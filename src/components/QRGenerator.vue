@@ -71,10 +71,10 @@ thumb-size = 15px
       background bgColor2
       border-radius thumb-size
       outline none
-      box-shadow inset 0 0 5px empColor1
+      box-shadow inset 0 0 5px colorEmp1
 
       @media ({mobile})
-        background linear-gradient(170deg, bgColor2, bgColor3)
+        background linear-gradient(170deg, colorBg, colorBgLight)
         box-shadow none
     .slider::-webkit-slider-thumb
       cursor pointer
@@ -84,7 +84,7 @@ thumb-size = 15px
       background empColor2
       border 4px solid #333
       border-radius 50%
-      box-shadow (- slider-length - 5px) 0 0 (slider-length) mix(empColor1, transparent, 30%)
+      box-shadow (- slider-length - 5px) 0 0 (slider-length) mix(colorEmp1, transparent, 30%)
     .range-labels
       display flex
       flex-direction row
@@ -112,7 +112,7 @@ thumb-size = 15px
 
 <template>
   <div class="qr-generator">
-    <div v-if="!noText">
+    <div v-if="withText">
       <div class="text-big">Закодировано:</div>
       <div class="text-middle link">{{ text || '???' }}</div>
     </div>
@@ -120,7 +120,7 @@ thumb-size = 15px
     <div class="flex-container">
       <div ref="qr" v-html="html" class="qr-image" :class="{invert, blured: !text}" />
 
-      <div class="range-container container-bg">
+      <div class="range-container container-bg" v-if="withRange">
         <label class="text-big title">Размер</label>
         <div class="slider-container">
           <input type="range" class="slider" min="1" max="3" step="1" v-model="size" @input="onInput">
@@ -132,22 +132,14 @@ thumb-size = 15px
         </div>
       </div>
     </div>
-
-    <div class="switch-container container-bg">
-      <label class="text-big">Белый</label>
-      <FloatingInput type="checkbox" v-model="invert" class="switch" />
-      <label class="text-big">Черный</label>
-    </div>
   </div>
 </template>
 
 <script lang="ts">
-import qrcode from "qrcode-generator-es6";
-import FloatingInput from "./FloatingInput.vue";
+import QRCode from "qrcode-generator-es6";
 
 export default {
-  components: {FloatingInput},
-  emits: ['scan'],
+  components: {},
 
   props: {
     initialText: {
@@ -158,19 +150,17 @@ export default {
       type: String,
       default: 'L',
     },
-    noText: {
-      type: Boolean,
-      default: false,
-    }
+    withText: Boolean,
+    withRange: Boolean,
   },
 
   data() {
     return {
-      qr: null,
+      qr: null as QRCode | null,
       html: '',
       text: this.$props.initialText || '',
 
-      size: 0,
+      size: '0',
       errorCorrectionLevel: this.$props.errorCorrection,
       invert: false,
     };
@@ -187,17 +177,17 @@ export default {
 
   methods: {
     create() {
-      this.qr = new qrcode(0, this.errorCorrectionLevel);
+      this.qr = new QRCode(0, this.errorCorrectionLevel);
     },
     destroy() {
-      delete this.qr;
       this.qr = null;
     },
 
 
-    regenerate(text) {
-      if (!this.qr)
+    regenerate(text?: string) {
+      if (!this.qr) {
         this.create();
+      }
 
       if (text !== undefined)
         this.text = text;
@@ -205,9 +195,9 @@ export default {
         this.text = '';
 
       this.refresh();
-      this.qr.addData(this.text);
-      this.qr.make();
-      this.html = this.qr.createSvgTag({});
+      this.qr!.addData(this.text);
+      this.qr!.make();
+      this.html = this.qr!.createSvgTag({});
     },
     refresh() {
       this.destroy();

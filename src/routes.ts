@@ -12,6 +12,7 @@ export default {
   '/qr-scanner': false,
   '/map': true,
   '/guild': true,
+  '/trade': false,
 
   // Page 404
   '/:pathMatch(.*)*': false,
