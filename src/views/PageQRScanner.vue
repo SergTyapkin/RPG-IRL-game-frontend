@@ -44,9 +44,9 @@
 
 <script lang="ts">
 import QRScanner from '~/components/QRScanner.vue';
-import { NO_SERVER_MODE, QRTypes, ResourceTypes } from '~/constants/constants';
+import { BuffsTypes, NO_SERVER_MODE, QRSources, QRTypes, ResourceTypes } from '~/constants/constants';
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
-import { getTotalUserMaxHP, itemIdToItem, parseQRText } from '~/utils/utils';
+import { getAllUserEffects, getTotalUserMaxHP, itemIdToItem, parseQRText } from '~/utils/utils';
 import CircleLoading from '~/components/loaders/CircleLoading.vue';
 import validateModel from '@sergtyapkin/models-validator';
 import { GuildModel, GuildModelMockData } from '~/utils/APIModels';
@@ -76,7 +76,7 @@ export default {
         this.$popups.error('Отсканирован неизвестный QR', 'Проверьте, действительно ли этот QR от этой игры');
         return;
       }
-      const {QRType, QRSubType, QRValue} = QRResult;
+      const {QRType, QRSource, QRSubType, QRValue} = QRResult;
 
       let scanError = false;
       switch (QRType) {
@@ -86,14 +86,36 @@ export default {
             return;
           }
           switch (QRSubType) {
-            case ResourceTypes.money:
-              this.$user.notSyncedStats.money += Number(QRValue);
-              this.$popups.success('QR отсканирован', `Добавлено ${QRValue} монет`);
+            case ResourceTypes.money: {
+              let value = Number(QRValue);
+              let valueModifier = 1;
+              if (QRSource === QRSources.quest) {
+                getAllUserEffects(this.$user).forEach(e => {
+                  valueModifier *= e.buffs[BuffsTypes.moneyModifier] ?? 1;
+                });
+              }
+              value *= valueModifier;
+              value = Math.round(value);
+
+              this.$user.notSyncedStats.money += value;
+              this.$popups.success('QR отсканирован', `Добавлено ${value} монет`);
               break;
-            case ResourceTypes.experience:
-              this.$user.notSyncedStats.experience += Number(QRValue);
-              this.$popups.success('QR отсканирован', `Добавлено ${QRValue} опыта`);
+            }
+            case ResourceTypes.experience: {
+              let value = Number(QRValue);
+              let valueModifier = 1;
+              if (QRSource === QRSources.quest) {
+                getAllUserEffects(this.$user).forEach(e => {
+                  valueModifier *= e.buffs[BuffsTypes.experienceModifier] ?? 1;
+                });
+              }
+              value *= valueModifier;
+              value = Math.round(value);
+
+              this.$user.notSyncedStats.experience += value;
+              this.$popups.success('QR отсканирован', `Добавлено ${value} опыта`);
               break;
+            }
             case ResourceTypes.power:
               this.$user.notSyncedStats.power += Number(QRValue);
               this.$popups.success('QR отсканирован', `Добавлено ${QRValue} очков силы`);
