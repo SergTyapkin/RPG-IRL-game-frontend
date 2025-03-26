@@ -184,7 +184,7 @@ export default {
         (this.$refs.qr as typeof QRGenerator).regenerate(
           generateQRText(QRTypes.item, '_', QRSources.user, this.qrValue!),
         );
-        this.$user.inventory.splice(this.itemIdxInInventory);
+        this.$user.inventory.splice(this.itemIdxInInventory, 1);
       } else if (this.qrType === QRTypes.resource) {
         (this.$refs.qr as typeof QRGenerator).regenerate(
           generateQRText(QRTypes.resource, ResourceTypes.money, QRSources.user, String(this.moneyToTrade)),
