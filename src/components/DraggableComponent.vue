@@ -244,6 +244,14 @@ export default {
     this.scaleCompensatingOffsetX = this.loadNumberFromLocalStorage(this.LocalStorageNames.scaleCompensatingOffsetX, 0);
     this.scaleCompensatingOffsetY = this.loadNumberFromLocalStorage(this.LocalStorageNames.scaleCompensatingOffsetY, 0);
 
+    const { x: allowedDeltaX, y: allowedDeltaY } = this.isCanMoveBy(
+      0,
+      0,
+      this.savedDragOffsetX,
+      this.savedDragOffsetY,
+    );
+    this.dragCurrentDeltaX = allowedDeltaX;
+    this.dragCurrentDeltaY = allowedDeltaY;
     this.updateTotalDragOffset();
   },
   unmounted() {
@@ -308,6 +316,8 @@ export default {
       this.dragCurrentDeltaY = 0;
     },
     onMouseMove(e) {
+      e.preventDefault();
+
       // console.log("Move", e)
       if (!this.isInDrag) {
         return;
@@ -405,7 +415,6 @@ export default {
         }
       }
       if (this.movableY) {
-        canMoveOnY = offsetY;
         if (
           this.minYOffset !== undefined &&
           (startPosY + offsetY > minY ||
@@ -415,6 +424,8 @@ export default {
           canMoveOnY = minY - startPosY;
         } else if (this.maxYOffset !== undefined && startPosY + offsetY < maxY) {
           canMoveOnY = maxY - startPosY;
+        } else {
+          canMoveOnY = offsetY;
         }
       }
       return { x: canMoveOnX, y: canMoveOnY };

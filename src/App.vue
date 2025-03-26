@@ -30,6 +30,15 @@
     width 100%
     max-width 400px
     padding 0
+    &.disabled
+      .buttons
+        > *
+          cursor not-allowed
+          background mix(black, transparent)
+          &.router-link-active
+            background mix(black, transparent)
+          img
+            opacity 0.5
     .bottom-line-bg
       position absolute
       bottom 0
@@ -131,7 +140,7 @@
       <CircleLoading class="loading" v-if="!Component" />
     </router-view>
 
-    <div class="bottom-interface">
+    <div class="bottom-interface" :class="{disabled: isUserInFightReactiveValue || isUserDeadReactiveValue}">
       <img class="bottom-line-bg" src="/static/images/bottom-line.svg" alt="">
       <nav class="buttons">
         <router-link :to="{name: 'fight'}" class="fight"><img src="/static/icons/fight.svg" alt=""></router-link>
@@ -158,14 +167,14 @@ import CircleLoading from '~/components/loaders/CircleLoading.vue';
 export default {
   components: { CircleLoading, Modals, Popups },
 
-  data(): {
-    transitionName: string;
-    global?: Record<string, any>;
-  } {
+  data() {
     return {
       transitionName: '',
-      global: undefined,
-    };
+      global: undefined as Record<string, any> | undefined,
+
+      isUserInFightReactiveValue: this.$user?.isInFight,
+      isUserDeadReactiveValue: this.$user?.stats?.hp <= 0,
+    }
   },
 
   mounted() {

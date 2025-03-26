@@ -62,6 +62,19 @@ export default function createVueRouter(Store: Store): Router {
     const loginedRedirect = {
       name: 'profile',
     };
+    const isInFightRedirect = {
+      name: 'fight',
+    };
+    const deathRedirect = {
+      name: 'qrScanner',
+    };
+    if (to.name !== isInFightRedirect.name && Store.state.user.isInFight) {
+      next(isInFightRedirect);
+      return;
+    } else if (to.name !== deathRedirect.name && Store.state.user && Store.state.user.stats.hp <= 0 && !Store.state.user.isInFight) {
+      next(deathRedirect);
+      return;
+    }
 
     if (to.path === '/' || to.path === '') {
       if (Store.state.user.isSignedIn) {

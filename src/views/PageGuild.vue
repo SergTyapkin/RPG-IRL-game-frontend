@@ -62,7 +62,7 @@
   <div class="root-profile">
     <section class="section-user-info">
       <UserProfileInfo :override-avatar="$guild?.imageUrl" :override-name="$guild?.name">
-        <ValueBadge class="money-badge" :type="ResourceTypes.money" :value="$guild?.money" />
+        <ValueBadge class="money-badge" :type="ResourceTypes.money" :value="String($guild?.money)" />
       </UserProfileInfo>
     </section>
 

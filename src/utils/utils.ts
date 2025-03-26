@@ -108,6 +108,10 @@ export interface ExtendedAbility extends Ability {
   source: ExtendedSkill | ExtendedItem,
   sourceType: 'skill' | 'item',
 }
+export interface EffectedAbility extends Omit<Omit<Ability, 'effectsToTargets'>, 'effectsForMe'> {
+  effectsToTargets: Effect[],
+  effectsForMe: Effect[],
+}
 export interface ExtendedItem extends Omit<Omit<Item, 'effects'>, 'abilities'> {
   effects: Effect[],
   abilities: Ability[],
@@ -118,21 +122,29 @@ export interface ExtendedSkill extends Omit<Omit<Skill, 'effects'>, 'abilities'>
 }
 
 
-export function listIdsToEntities<T>(ids: string[], allEntities: {[key: string]: T}): T[] {
-  const res: T[] = [];
-  ids.forEach(id => {
-    const entity = allEntities[id];
-    if (entity) {
-      res.push(entity);
+export function effectsIdsToEffects(effectsIds: string[]): Effect[] {
+  const res: Effect[] = [];
+  effectsIds.forEach(effectId => {
+    const effect = Effects[effectId];
+    if (effect) {
+      res.push(effect);
     }
   });
   return res;
 }
-export function effectsIdsToEffects(effectsIds: string[]): Effect[] {
-  return listIdsToEntities(effectsIds, Effects);
-}
-export function abilitiesIdsToAbilities(abilitiesIds: string[]): Ability[] {
-  return listIdsToEntities(abilitiesIds, Abilities);
+export function abilitiesIdsToAbilities(abilitiesIds: string[]): EffectedAbility[] {
+  const res: EffectedAbility[] = [];
+  abilitiesIds.forEach(abilityId => {
+    const ability = Abilities[abilityId];
+    if (!ability) {
+      return;
+    }
+    const effAbility = deepClone(ability) as unknown as EffectedAbility;
+    effAbility.effectsToTargets = effectsIdsToEffects(ability.effectsToTargets)
+    effAbility.effectsForMe = effectsIdsToEffects(ability.effectsForMe)
+    res.push(effAbility);
+  });
+  return res;
 }
 export function itemsIdsToItems(itemsIds: string[]): ExtendedItem[] {
   const res: ExtendedItem[] = [];

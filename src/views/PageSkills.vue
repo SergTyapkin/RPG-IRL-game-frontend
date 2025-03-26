@@ -163,7 +163,7 @@
       >
         <ValueBadge
           :type="ResourceTypes.power"
-          :value="$user.stats?.power"
+          :value="String($user.stats?.power)"
           :not-synced-value="$user.notSyncedStats?.power"
           small
           ref="power"
@@ -176,7 +176,7 @@
       >
         <ValueBadge
           :type="ResourceTypes.agility"
-          :value="$user.stats?.agility"
+          :value="String($user.stats?.agility)"
           :not-synced-value="$user.notSyncedStats?.agility"
           small
           ref="agility"
@@ -189,7 +189,7 @@
       >
         <ValueBadge
           :type="ResourceTypes.intelligence"
-          :value="$user.stats?.intelligence"
+          :value="String($user.stats?.intelligence)"
           :not-synced-value="$user.notSyncedStats?.intelligence"
           small
           ref="intelligence"
@@ -286,7 +286,7 @@
             closable
           >
             <template #buttons>
-              <ValueBadge :value="$user.stats[ResourceTypesToStats[selectedTree]]" :type="selectedTree" />
+              <ValueBadge :value="String($user.stats[ResourceTypesToStats[selectedTree]])" :type="selectedTree" />
               <div class="cost">Стоимость навыка: <span class="number">{{ selectedSkill.cost }}</span></div>
               <button
                 v-if="!$user.skills.includes(selectedSkill.id) && (selectedSkill.parentId === undefined || $user.skills.includes(selectedSkill.parentId))"

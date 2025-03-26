@@ -9,6 +9,8 @@ export const NO_SERVER_MODE = true;
 export const DEFAULT_USER_MAX_UP = 10;
 export const DEFAULT_USER_PROTECTION = 0;
 
+export const MONEY_LOSE_BY_DEATH_PERCENT = 0.5;
+
 
 export const ClassTypes = {
   power: 'power',

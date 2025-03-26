@@ -59,12 +59,8 @@ export const Items: {[key: string]: Item} = {
     imageUrl: ImgDagger,
     effects: [
       Effects.powerLowCost.id,
-      Effects.powerLowCost.id,
     ],
     abilities: [
-      Abilities.daggerHit.id,
-      Abilities.daggerHit.id,
-      Abilities.daggerHit.id,
       Abilities.daggerHit.id,
     ],
   },

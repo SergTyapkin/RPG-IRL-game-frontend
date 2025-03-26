@@ -35,6 +35,7 @@ export default new Vuex.Store({
       state.user.inventory = userData.inventory;
       state.user.equipment = userData.equipment;
       state.user.role = String(userData.role) as 'admin' | 'user';
+      state.user.isInFight = String(userData.isInFight) === 'true';
 
       state.user.isSignedIn = true;
     },

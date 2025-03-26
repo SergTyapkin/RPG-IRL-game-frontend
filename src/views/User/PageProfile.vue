@@ -89,7 +89,7 @@
       <ValueBadge :type="ResourceTypes.hp" :value="`${$user.stats?.hp}/${userMaxHp}`" />
       <ValueBadge
         :type="ResourceTypes.money"
-        :value="$user.stats?.money"
+        :value="String($user.stats?.money)"
         :not-synced-value="$user.notSyncedStats?.money"
         @click="tradeMoney"
         class="money-badge"
@@ -99,7 +99,7 @@
     <section class="section-equipment">
       <div class="top-string">
         <header>Экипировка</header>
-        <ValueBadge :type="ResourceTypes.protection" :value="userProtection" :not-synced-value="0" />
+        <ValueBadge :type="ResourceTypes.protection" :value="String(userProtection)" :not-synced-value="0" />
       </div>
       <Equipment ref="equipment" @select="selectEquippedItem" />
     </section>

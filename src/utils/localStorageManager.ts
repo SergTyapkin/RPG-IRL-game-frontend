@@ -1,8 +1,8 @@
 /** @module **/
 
-import { Guild, SyncedData, type User } from '~/types/types';
+import { Effect, Guild, SyncedData, type User } from '~/types/types';
 import validateModel from '@sergtyapkin/models-validator';
-import { SyncDataModel } from '~/utils/APIModels';
+import { EffectModel, SyncDataModel } from '~/utils/APIModels';
 
 /**
  * @enum _PropertyNames
@@ -11,6 +11,8 @@ import { SyncDataModel } from '~/utils/APIModels';
  */
 const _PropertyNames = {
   syncedData: 'synced-data',
+  abilitiesReloads: 'abilities-reloads',
+  fightEffects: 'fight-effects',
 }
 
 /**
@@ -32,5 +34,43 @@ export default class LocalStorageManager {
   }
   removeSyncedData() {
     localStorage.removeItem(_PropertyNames.syncedData);
+  }
+
+  // ---- abilitiesReloads ----
+  saveAbilitiesReloads(abilitiesReloads: {[key: string]: number}) {
+    localStorage.setItem(_PropertyNames.abilitiesReloads, JSON.stringify(abilitiesReloads));
+  }
+  loadAbilitiesReloads(): {[key: string]: number} | null {
+    const res = localStorage.getItem(_PropertyNames.abilitiesReloads);
+    if (!res) {
+      return null;
+    }
+    return JSON.parse(res) as {[key: string]: number};
+  }
+  removeAbilitiesReloads() {
+    localStorage.removeItem(_PropertyNames.abilitiesReloads);
+  }
+
+  // ---- fightEffects ----
+  saveFightEffects(fightEffects: Effect[]) {
+    localStorage.setItem(_PropertyNames.fightEffects, JSON.stringify({effects: fightEffects}));
+  }
+  loadFightEffects(): Effect[] | null {
+    const res = localStorage.getItem(_PropertyNames.fightEffects);
+    if (!res) {
+      return null;
+    }
+    return (validateModel({
+      effects: {
+        type: Array,
+        item: {
+          type: Object,
+          fields: EffectModel
+        },
+      },
+    }, res) as {effects: Effect[]}).effects;
+  }
+  removeFightEffects() {
+    localStorage.removeItem(_PropertyNames.fightEffects);
   }
 }

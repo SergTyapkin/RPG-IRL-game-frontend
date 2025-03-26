@@ -2,6 +2,7 @@ import validateModel from "@sergtyapkin/models-validator";
 import { BuffsTypes, ClassTypes, DefaultAbilityImage, DefaultAvatarImage, DefaultKnifeImage } from '~/constants/constants';
 import { Items } from '~/constants/items';
 import { Ability, Effect, Guild, Item, SyncedData, User } from '~/types/types';
+import { Effects } from '~/constants/effects';
 
 export const EffectModel = {
   id: String,
@@ -10,6 +11,11 @@ export const EffectModel = {
   imageUrl: String,
   buffs: Object,
   hidden: Boolean,
+  onlyForFight: Boolean,
+  turns: {
+    type: Number,
+    optional: true,
+  },
 };
 
 export const EffectModelMockData = validateModel(EffectModel,     {
@@ -18,6 +24,7 @@ export const EffectModelMockData = validateModel(EffectModel,     {
   description: 'Какое-то описание эффекта',
   imageUrl: DefaultAbilityImage,
   hidden: false,
+  onlyForFight: false,
   buffs: {
     [BuffsTypes.protectionIncrease]: 2,
     [BuffsTypes.maxHpIncrease]: 5,
@@ -29,7 +36,14 @@ export const AbilityModel = {
   name: String,
   description: String,
   imageUrl: String,
-  buffs: Object,
+  effectsToTargets: {
+    type: Array,
+    item: String,
+  },
+  effectsForMe: {
+    type: Array,
+    item: String,
+  },
   damage: Number,
   damageTargets: Number,
   heal: Number,
@@ -41,8 +55,8 @@ export const AbilityModelMockData = validateModel(AbilityModel,     {
   name: 'Название способности',
   description: 'Какое-то описание способности',
   imageUrl: DefaultAbilityImage,
-  buffs: {
-  },
+  effectsToTargets: [Effects.bleeding.id],
+  effectsForMe: [Effects.regeneration.id],
   damage: 5,
   damageTargets: 2,
   heal: 10,
@@ -192,7 +206,8 @@ export const UserModel = {
         optional: true,
       },
     },
-  }
+  },
+  isInFight: Boolean,
 };
 
 
@@ -219,6 +234,7 @@ export const UserModelMockData = validateModel(UserModel, {
   },
   guildId: GuildModelMockData.id,
   skills: ['P0', 'P1'],
+  isInFight: false,
 }) as User;
 
 

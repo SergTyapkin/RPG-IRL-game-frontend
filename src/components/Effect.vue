@@ -82,10 +82,14 @@
 
         display inline-block
         color colorBg
+
+  &.no-source
+    .text-container
+      border-radius borderRadiusM
 </style>
 
 <template>
-  <div class="root-effect" v-if="!effect.hidden">
+  <div class="root-effect" v-if="!effect.hidden" :class="{'no-source': withoutSource}">
     <section class="text-container" :style="{ '--bg-url': `url(${effect.imageUrl})` }">
       <header class="name">{{ effect.name }}</header>
       <div class="description">{{ effect.description }}</div>

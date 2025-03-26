@@ -30,6 +30,7 @@ export interface User {
     boots?: string;
   };
   role: 'admin' | 'user';
+  isInFight: boolean;
 
   isSignedIn: boolean;
 }
@@ -51,12 +52,13 @@ export interface Ability {
   name: string;
   description: string;
   imageUrl: string;
+  effectsToTargets: string[];
+  effectsForMe: string[];
 
   damage: number;
   damageTargets: number;
   heal: number;
   reload: number;
-  buffs: {[key in BuffType]: number};
 }
 
 export interface Effect {
@@ -65,6 +67,8 @@ export interface Effect {
   description: string;
   imageUrl: string;
   hidden: boolean;
+  onlyForFight: boolean;
+  turns?: number;
 
   buffs: {[key in BuffType]: number};
 }
@@ -96,10 +100,10 @@ export interface Guild {
 
   leaderId: string;
   members: {
-    id: string,
-    name: string,
-    imageUrl: string,
-    level: number,
+    id: string;
+    name: string;
+    imageUrl: string;
+    level: number;
   }[];
 }
 
@@ -109,7 +113,7 @@ export interface Item {
   type: string;
   protection: number;
   abilities: string[];
-  effects: string[],
+  effects: string[];
   description: string;
   imageUrl: string;
   notSynced?: boolean;

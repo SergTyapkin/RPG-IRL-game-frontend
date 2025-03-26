@@ -62,6 +62,26 @@
       color colorSec1
       text-align right
 
+  .section-reloading
+    content ''
+    position absolute
+    inset 0
+    font-size 70px
+    color colorText3
+    opacity 0
+    background mix(#666, transparent, 30%)
+    centered-flex-container()
+    trans()
+
+
+  &.in-reloading
+    .image-container
+      img.ability-bg
+        filter saturate(0) !important
+    .section-reloading
+      cursor not-allowed
+      opacity 1
+
   &.preview
     .text-container
       position absolute
@@ -73,7 +93,7 @@
 </style>
 
 <template>
-  <div class="root-ability" :class="{ preview }">
+  <div class="root-ability" :class="{ preview, 'in-reloading': ability.reloadLeft }">
     <section class="image-container">
       <img class="ability-bg" :src="ability.imageUrl" alt="">
 
@@ -88,6 +108,10 @@
       <header class="name">{{ ability.name }}</header>
       <div class="description">{{ ability.description }}</div>
       <div class="reload-info">{{ ability.reload }} хода на перезарядку</div>
+    </section>
+
+    <section class="section-reloading">
+      {{ ability.reloadLeft }}
     </section>
   </div>
 </template>

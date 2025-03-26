@@ -81,6 +81,10 @@ export default {
       let scanError = false;
       switch (QRType) {
         case QRTypes.resource: {
+          if (this.$user.stats.hp <= 0) {
+            this.$popups.error('Вы погиблил в бою', 'Прежде чем совершать любые действия, восстановитесь на базе');
+            return;
+          }
           switch (QRSubType) {
             case ResourceTypes.money:
               this.$user.notSyncedStats.money += Number(QRValue);
@@ -106,17 +110,29 @@ export default {
           break;
         }
         case QRTypes.damage: {
+          if (this.$user.stats.hp <= 0) {
+            this.$popups.error('Вы погиблил в бою', 'Прежде чем совершать любые действия, восстановитесь на базе');
+            return;
+          }
           this.$user.stats.hp -= Number(QRValue);
           this.$popups.success('QR отсканирован', `Нанесено ${QRValue} урона`);
           break;
         }
         case QRTypes.heal: {
+          if (this.$user.stats.hp <= 0) {
+            this.$popups.error('Вы погиблил в бою', 'Прежде чем совершать любые действия, восстановитесь на базе');
+            return;
+          }
           this.$user.stats.hp += Number(QRValue);
           this.$user.stats.hp = Math.min(this.$user.stats.hp, getTotalUserMaxHP(this.$user));
           this.$popups.success('QR отсканирован', `Вылечено ${QRValue} здоровья`);
           break;
         }
         case QRTypes.item: {
+          if (this.$user.stats.hp <= 0) {
+            this.$popups.error('Вы погиблил в бою', 'Прежде чем совершать любые действия, восстановитесь на базе');
+            return;
+          }
           this.$user.inventory.push(QRValue);
           const item = itemIdToItem(QRValue);
           this.$popups.success('QR отсканирован', `Получен предмет "${item.name}"`);
@@ -140,7 +156,7 @@ export default {
     async syncData(QRValue: string) {
       if (!NO_SERVER_MODE) {
         this.loading = true;
-        await this.$api.syncAllData(
+        const { ok } = await this.$api.syncAllData(
           this.$user.stats.experience + this.$user.notSyncedStats.experience,
           this.$user.stats.money + this.$user.notSyncedStats.money,
           this.$user.inventory,
@@ -154,6 +170,12 @@ export default {
           this.$user.stats.agility + this.$user.notSyncedStats.agility,
           this.$user.stats.intelligence + this.$user.notSyncedStats.intelligence,
         );
+        this.loading = false;
+        if (!ok) {
+          this.$popups.success('Ошибка сети', 'Проверьте подключение к сети и повторите попытку синхронизации');
+          return;
+        }
+        this.loading = true;
         await this.$store.dispatch('GET_USER');
         this.loading = false;
         this.$popups.success('QR отсканирован', 'Ваши предметы и данные, а также данные гильдии синхронизированы');
@@ -163,6 +185,7 @@ export default {
         this.$popups.success('QR отсканирован', 'Данные гильдии обновлены');
 
         this.$user.stats.hp = getTotalUserMaxHP(this.$user);
+        this.$app.isUserDeadReactiveValue = false;
 
         this.$user.stats.experience += this.$user.notSyncedStats.experience;
         this.$user.stats.money += this.$user.notSyncedStats.money;

@@ -6,7 +6,7 @@
 @import '../styles/components.styl'
 
 
-slider-width = 7px
+slider-width = 8px
 
 .slider-container
   user-select none
@@ -41,19 +41,19 @@ slider-width = 7px
     .range
       all unset
       cursor pointer
+      transform skewX(-20deg)
       overflow hidden
       width 100%
       height slider-width
-      background linear-gradient(170deg, colorEmpMoney, colorSec1)
-      border-radius borderRadiusMax
+      background linear-gradient(170deg, var(--color, colorEmpMoney), colorSec1)
 
       &::-webkit-slider-thumb
         cursor pointer
-        width slider-width
+        width 3px
         height slider-width
         -webkit-appearance none
         background colorEmp1
-        border-radius borderRadiusMax
+        // border-radius borderRadiusMax
         outline 2px solid colorBg
 
     .range-labels
@@ -69,9 +69,9 @@ slider-width = 7px
         position absolute
         top 5px
         left calc((var(--i) - 1) / var(--count) * 100%)
+        transform translate(-50%, -50%)
         padding 5px
         transition all 0.1s ease
-        centered-absolute-transform()
 
         &:hover
           top 7px
@@ -87,6 +87,7 @@ slider-width = 7px
         position absolute
         bottom 4px
         left calc((var(--i)) / var(--count) * 100%)
+        transform skewX(-20deg)
         width 2px
         height slider-width
         background colorBg
