@@ -79,12 +79,12 @@
         &:after
           content ""
           position absolute
+          z-index -1
           left 50%
           transform rotate(45deg) translate(calc(-50% + 2px), 0)
           width 10px
           height 10px
           background colorEmp1
-          z-index -1
         .not-synced-label
           position absolute
           top -5px

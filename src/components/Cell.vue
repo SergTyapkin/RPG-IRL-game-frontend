@@ -9,6 +9,7 @@
   position relative
   width var(--size)
   height var(--size)
+  padding = 10px
   background radial-gradient(#aa4c01, #622c01)
   border-radius borderRadiusS
   img
@@ -18,7 +19,6 @@
     size = 'calc(100% - %s)' % (padding * 2)
     width size
     height size
-    padding = 10px
 </style>
 
 <template>

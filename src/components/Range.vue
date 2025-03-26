@@ -1,9 +1,9 @@
 <style lang="stylus" scoped>
-@require '../styles/constants.styl'
-@require '../styles/fonts.styl'
-@require '../styles/utils.styl'
-@require '../styles/animations.styl'
-@require '../styles/components.styl'
+@import '../styles/constants.styl'
+@import '../styles/fonts.styl'
+@import '../styles/utils.styl'
+@import '../styles/animations.styl'
+@import '../styles/components.styl'
 
 
 slider-width = 7px
@@ -11,71 +11,71 @@ slider-width = 7px
 .slider-container
   user-select none
   display flex
-  align-items center
   gap 15px
+  align-items center
 
   .value
     font-medium()
-    all unset
-    box-sizing border-box
-    display block
-    padding 5px 8px
-    background colorSec1
-    color colorBg
-    border-radius borderRadiusMax
-    text-align center
-    width 60px
 
+    all unset
+    display block
+    box-sizing border-box
+    width 60px
+    padding 5px 8px
+    color colorBg
+    text-align center
     -moz-appearance textfield
     -webkit-appearance textfield
     appearance textfield
+    background colorSec1
+    border-radius borderRadiusMax
 
     &::-webkit-outer-spin-button
     &::-webkit-inner-spin-button
       display none
 
   .input-container
-    flex 1
     position relative
+    flex 1
 
     .range
       all unset
-      height slider-width
+      cursor pointer
+      overflow hidden
       width 100%
+      height slider-width
       background linear-gradient(170deg, colorEmpMoney, colorSec1)
       border-radius borderRadiusMax
-      overflow hidden
-      cursor pointer
 
       &::-webkit-slider-thumb
-        -webkit-appearance none
+        cursor pointer
         width slider-width
         height slider-width
-        border-radius borderRadiusMax
+        -webkit-appearance none
         background colorEmp1
-        cursor pointer
+        border-radius borderRadiusMax
         outline 2px solid colorBg
 
     .range-labels
       position absolute
-      left 0
       bottom 0
+      left 0
       width 100%
-      font-small-extra()
       color colorText5
+      font-small-extra()
 
       > *
-        position absolute
-        centered-absolute-transform()
         cursor pointer
-        transition all 0.1s ease
+        position absolute
         top 5px
         left calc((var(--i) - 1) / var(--count) * 100%)
         padding 5px
+        transition all 0.1s ease
+        centered-absolute-transform()
 
         &:hover
-          color colorText1
           top 7px
+          color colorText1
 
     .splitters-container
       pointer-events none
@@ -86,17 +86,17 @@ slider-width = 7px
       .splitter
         position absolute
         bottom 4px
-        height slider-width
         left calc((var(--i)) / var(--count) * 100%)
         width 2px
+        height slider-width
         background colorBg
 
   &.disabled
     pointer-events none
     .value
     .input-container
-      filter saturate(0.5)
       opacity 0.5
+      filter saturate(0.5)
 </style>
 
 <template>

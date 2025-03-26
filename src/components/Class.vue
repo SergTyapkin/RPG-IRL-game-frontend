@@ -6,14 +6,14 @@
 @import '../styles/animations.styl'
 
 .root-effect
+  position relative
   overflow hidden
   display flex
   flex-direction column
+  height 520px
   background colorBgLight
   border-radius borderRadiusL
   hover-effect()
-  position relative
-  height 520px
   .image-container
     position relative
     width 100%
@@ -46,18 +46,18 @@
           background colorEmpIntelligence
 
   .text-container
-    padding 10px
-    display flex
-    flex-direction column
     position absolute
     bottom 0
+    display flex
+    flex-direction column
     width 100%
+    padding 10px
     background mix(colorBg, transparent, 50%)
     .name
       font-medium()
 
-      margin-bottom 10px
       flex 1
+      margin-bottom 10px
     .description
       margin-bottom 7px
       white-space pre-wrap

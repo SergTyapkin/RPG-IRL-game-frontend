@@ -6,12 +6,12 @@
 @import '../styles/animations.styl'
 
 .root-ability
+  position relative
   overflow hidden
   display flex
   flex-direction column
   background colorBgLight
   border-radius borderRadiusS
-  position relative
   .image-container
     position relative
     img.ability-bg
@@ -42,14 +42,15 @@
           margin-right 3px
 
   .text-container
-    padding 10px
     display flex
     flex-direction column
     height 100%
+    padding 10px
     .name
       font-medium()
-      margin-bottom 7px
+
       flex 1
+      margin-bottom 7px
     .description
       margin-bottom 7px
       font-small-extra()
@@ -74,13 +75,13 @@
 <template>
   <div class="root-ability" :class="{ preview }">
     <section class="image-container">
-      <img class="ability-bg" :src="ability.imageUrl" alt="" />
+      <img class="ability-bg" :src="ability.imageUrl" alt="">
 
       <section class="stats">
         <div v-if="ability.damage" class="stat damage">
-          <img src="/static/icons/fight.svg" alt="" />{{ ability.damage }}
+          <img src="/static/icons/fight.svg" alt="">{{ ability.damage }}
         </div>
-        <div v-if="ability.heal" class="stat heal"><img src="/static/icons/close.svg" alt="" />{{ ability.heal }}</div>
+        <div v-if="ability.heal" class="stat heal"><img src="/static/icons/close.svg" alt="">{{ ability.heal }}</div>
       </section>
     </section>
     <section class="text-container">

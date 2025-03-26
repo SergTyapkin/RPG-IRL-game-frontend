@@ -46,9 +46,9 @@
       display flex
       flex-wrap wrap
       gap 15px
-      hover-effect()
       > *
         width calc((100% - 15px) / 2)
+        hover-effect()
 </style>
 
 <template>

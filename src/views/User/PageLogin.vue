@@ -7,6 +7,7 @@
   padding 20px
   .info
     font-small()
+
     color colorText5
   .form
     max-width 600px

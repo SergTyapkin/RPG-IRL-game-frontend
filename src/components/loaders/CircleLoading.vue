@@ -16,13 +16,13 @@
   position absolute
   width 7%
   height 7%
-  background #ffffffE0
+  background #ffffffe0
   border-radius 50%
   animation lds-default 1.2s linear infinite
 
 
 .lds-default.dark div
-  background #ffffffE0
+  background #ffffffe0
 
 
 .lds-default div:nth-child(1)

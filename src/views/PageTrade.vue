@@ -12,9 +12,10 @@
     header
       font-large()
       font-bold()
-      color colorSec1
+
       margin-top 30px
       margin-bottom 15px
+      color colorSec1
 
     .confirm-button
       button-emp()
@@ -29,16 +30,17 @@
     .info
       font-small()
       list-no-styles()
+
       color colorText2
 
       li
+        margin-bottom 5px
         padding-left 10px
         border-left colorText2 2px solid
-        margin-bottom 5px
 
         mark
-          background none
           color colorEmp1
+          background none
 
     .confirm-button
       button-emp()
@@ -55,8 +57,20 @@
       </section>
       <section class="section-money" v-else-if="qrType === QRTypes.resource">
         <header>Выберите количество денег для передачи</header>
-        <Range class="range" :min="0" :max="$user.stats.money" :step="10" v-model="moneyToTrade" :disabled="confirmed" />
-        <ValueBadge class="money" override-title="Останется" :value="$user.stats.money - (confirmed ? 0 : moneyToTrade)" :type="ResourceTypes.money" />
+        <Range
+          class="range"
+          :min="0"
+          :max="$user.stats.money"
+          :step="10"
+          v-model="moneyToTrade"
+          :disabled="confirmed"
+        />
+        <ValueBadge
+          class="money"
+          override-title="Останется"
+          :value="$user.stats.money - (confirmed ? 0 : moneyToTrade)"
+          :type="ResourceTypes.money"
+        />
       </section>
     </transition>
 
@@ -128,8 +142,8 @@ export default {
 
   computed: {
     ResourceTypes() {
-      return ResourceTypes
-    }
+      return ResourceTypes;
+    },
   },
 
   mounted() {
@@ -156,8 +170,6 @@ export default {
         this.$router.push({ name: 'default' });
         return;
       }
-    } else if (this.qrType === QRTypes.resource) {
-
     }
   },
 
@@ -170,12 +182,12 @@ export default {
       this.confirmed = true;
       if (this.qrType === QRTypes.item) {
         (this.$refs.qr as typeof QRGenerator).regenerate(
-          generateQRText(QRTypes.item, '_', QRSources.user, this.qrValue!)
+          generateQRText(QRTypes.item, '_', QRSources.user, this.qrValue!),
         );
         this.$user.inventory.splice(this.itemIdxInInventory);
       } else if (this.qrType === QRTypes.resource) {
         (this.$refs.qr as typeof QRGenerator).regenerate(
-          generateQRText(QRTypes.resource, ResourceTypes.money, QRSources.user, String(this.moneyToTrade))
+          generateQRText(QRTypes.resource, ResourceTypes.money, QRSources.user, String(this.moneyToTrade)),
         );
         this.$user.stats.money -= this.moneyToTrade;
       }

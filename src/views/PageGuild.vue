@@ -6,6 +6,7 @@
 @import '../styles/animations.styl'
 
 .root-profile
+  position relative
   .section-user-info
     display flex
     gap 15px
@@ -35,24 +36,21 @@
   .section-members
     margin-top 30px
 
-
-  position relative
-
   .section-modals
     position fixed
     inset 0
+    overflow-y auto
+    padding-bottom 100px
     background #00000050
     backdrop-filter blur(10px)
-    padding-bottom 100px
-    overflow-y auto
     .modal
-      margin 30px auto
-      background colorBgLight
-      padding 20px
       width calc(100% - 30px)
+      max-width 400px
+      margin 30px auto
+      padding 20px
+      background colorBgLight
       border-radius borderRadiusM
       box-shadow 0 0 15px #000
-      max-width 400px
       button
         button()
 

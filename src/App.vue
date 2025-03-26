@@ -11,7 +11,7 @@
   min-height 100vh
   border solid colorSec1
   border-width 0 1px
-  //border-radius borderRadiusL
+  // border-radius borderRadiusL
   centered-margin()
   // overflow hidden
 

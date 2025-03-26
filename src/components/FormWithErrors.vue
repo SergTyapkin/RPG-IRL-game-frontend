@@ -96,10 +96,10 @@ input-border = 2px solid border-color
 
   .submit
     button()
-    border-width 2px
 
     margin-top 10px
     margin-bottom 10px
+    border-width 2px
 </style>
 
 <template>
