@@ -162,6 +162,8 @@ export default {
         await this.$store.commit('SET_GUILD', guildData);
         this.$popups.success('QR отсканирован', 'Данные гильдии обновлены');
 
+        this.$user.stats.hp = getTotalUserMaxHP(this.$user);
+
         this.$user.stats.experience += this.$user.notSyncedStats.experience;
         this.$user.stats.money += this.$user.notSyncedStats.money;
         this.$user.stats.power += this.$user.notSyncedStats.power;

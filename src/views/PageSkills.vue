@@ -6,7 +6,7 @@
 @import '../styles/animations.styl'
 
 .root-page-skills
-  padding-bottom 0px
+  padding-bottom 0px !important
 
   .section-user-info
     display flex
@@ -119,6 +119,34 @@
     height 2px
     background background linear-gradient(90deg, transparent, colorEmp1, transparent)
     border none
+
+  .section-modals
+    position fixed
+    inset 0
+    overflow-y auto
+    padding-bottom 100px
+    background #00000050
+    backdrop-filter blur(10px)
+    .modal
+      width calc(100% - 30px)
+      max-width 400px
+      margin 30px auto
+      padding 20px
+      background colorBgLight
+      border-radius borderRadiusM
+      box-shadow 0 0 15px #000
+      button
+        button()
+
+        &.trade
+          button-emp()
+      .cost
+        color colorSec1
+        .number
+          padding 3px 10px
+          color colorBg
+          background colorSec1
+          border-radius borderRadiusMax
 </style>
 
 <template>
@@ -130,28 +158,41 @@
     <section class="section-resources">
       <button
         class="button"
-        @click="selectedTree = ResourceTypes.power"
+        @click="selectTree(ResourceTypes.power)"
         :class="{ selected: selectedTree === ResourceTypes.power }"
       >
-        <ValueBadge :type="ResourceTypes.power" :value="$user.stats?.hp" :not-synced-value="50" small />
+        <ValueBadge
+          :type="ResourceTypes.power"
+          :value="$user.stats?.power"
+          :not-synced-value="$user.notSyncedStats?.power"
+          small
+          ref="power"
+        />
       </button>
       <button
         class="button"
-        @click="selectedTree = ResourceTypes.agility"
+        @click="selectTree(ResourceTypes.agility)"
         :class="{ selected: selectedTree === ResourceTypes.agility }"
       >
-        <ValueBadge :type="ResourceTypes.agility" :value="$user.stats?.agility" :not-synced-value="50" small />
+        <ValueBadge
+          :type="ResourceTypes.agility"
+          :value="$user.stats?.agility"
+          :not-synced-value="$user.notSyncedStats?.agility"
+          small
+          ref="agility"
+        />
       </button>
       <button
         class="button"
-        @click="selectedTree = ResourceTypes.intelligence"
+        @click="selectTree(ResourceTypes.intelligence)"
         :class="{ selected: selectedTree === ResourceTypes.intelligence }"
       >
         <ValueBadge
           :type="ResourceTypes.intelligence"
           :value="$user.stats?.intelligence"
-          :not-synced-value="50"
+          :not-synced-value="$user.notSyncedStats?.intelligence"
           small
+          ref="intelligence"
         />
       </button>
     </section>
@@ -174,10 +215,11 @@
         <div class="tree-container">
           <svg :viewBox="`0 0 ${svgMaxWidth} ${svgMaxHeight}`" :width="svgMaxWidth" :height="svgMaxHeight">
             <g class="lines">
-              <g v-for="skill in currentIterableSkillTree">
+              <g v-for="skill in currentIterableSkillTree" :key="skill.id">
                 <line
                   class="line"
-                  v-for="line in skill.lines"
+                  v-for="(line, i) in skill.lines"
+                  :key="i"
                   :class="{ dark: !$user.skills.includes(skill.parentId) }"
                   :x1="line[0] + 40"
                   :y1="line[1] + 40"
@@ -188,7 +230,7 @@
             </g>
 
             <g class="skills">
-              <g v-for="skill in currentIterableSkillTree">
+              <g v-for="skill in currentIterableSkillTree" :key="skill.id">
                 <foreignObject
                   class="cell-container"
                   :x="skill.position[0]"
@@ -196,7 +238,7 @@
                   :width="80"
                   :height="80"
                 >
-                  <Cell class="cell" :src="skill.imageUrl" @click="$user.skills.push(skill.id)">
+                  <Cell class="cell" :src="skill.imageUrl" @click="selectSkill(skill)">
                     <div class="item-name">{{ skill.name }}</div>
                     <transition name="opacity">
                       <div class="locked" v-if="!$user.skills.includes(skill.id)">
@@ -207,7 +249,10 @@
                       <div
                         class="cost"
                         :class="selectedTree"
-                        v-if="!$user.skills.includes(skill.id) && (skill.parentId === undefined || $user.skills.includes(skill.parentId))"
+                        v-if="
+                          !$user.skills.includes(skill.id) &&
+                            (skill.parentId === undefined || $user.skills.includes(skill.parentId))
+                        "
                       >
                         {{ skill.cost }}
                       </div>
@@ -221,31 +266,74 @@
       </DraggableComponent>
     </section>
     <hr>
+
+    <transition mode="out-in" name="opacity">
+      <section
+        v-if="selectedSkill"
+        class="section-modals"
+        @click="
+          selectedSkill = undefined;
+        "
+      >
+        <transition mode="out-in" name="opacity">
+          <ItemInfo
+            class="modal"
+            v-if="selectedSkill"
+            :obj="selectedSkill"
+            @click.stop
+            @close="selectedSkill = undefined"
+            image-with-shadow
+            closable
+          >
+            <template #buttons>
+              <ValueBadge :value="$user.stats[ResourceTypesToStats[selectedTree]]" :type="selectedTree" />
+              <div class="cost">Стоимость навыка: <span class="number">{{ selectedSkill.cost }}</span></div>
+              <button
+                v-if="!$user.skills.includes(selectedSkill.id) && (selectedSkill.parentId === undefined || $user.skills.includes(selectedSkill.parentId))"
+                @click="learnSkill(selectedSkill)"
+                class="equip"
+                :disabled="selectedSkill.cost > $user.stats[ResourceTypesToStats[selectedTree]]"
+              >
+                Изучить
+              </button>
+            </template>
+          </ItemInfo>
+        </transition>
+      </section>
+    </transition>
   </div>
 </template>
 
 <script lang="ts">
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { ResourceTypes } from '~/constants/constants';
+import { ResourceType, ResourceTypes } from '~/constants/constants';
 import DraggableComponent from '~/components/DraggableComponent.vue';
 import Cell from '~/components/Cell.vue';
 import { type Skill } from '~/types/types';
 import { IterableSkillTrees } from '~/constants/skills';
+import ItemInfo from '~/components/ItemInfo.vue';
+import { ExtendedSkill } from '~/utils/utils';
 
 export default {
-  components: { Cell, DraggableComponent, ValueBadge, UserProfileInfo },
+  components: { ItemInfo, Cell, DraggableComponent, ValueBadge, UserProfileInfo },
 
   data() {
     return {
       selectedTree: ResourceTypes.power,
+      selectedSkill: undefined as ExtendedSkill | undefined,
 
       ResourceTypes,
+      ResourceTypesToStats: {
+        [ResourceTypes.power]: 'power',
+        [ResourceTypes.agility]: 'agility',
+        [ResourceTypes.intelligence]: 'intelligence',
+      }
     };
   },
 
   computed: {
-    currentIterableSkillTree(): Skill[] {
+    currentIterableSkillTree(): ExtendedSkill[] {
       return IterableSkillTrees[this.selectedTree];
     },
     svgMaxWidth() {
@@ -258,6 +346,34 @@ export default {
 
   mounted() {},
 
-  methods: {},
+  methods: {
+    updateSkillPoints() {
+      // this.$refs.power.$forceUpdate();
+      // this.$refs.agility.$forceUpdate();
+      // this.$refs.intelligence.$forceUpdate();
+      this.$forceUpdate();
+      (this.$refs.draggableEl as typeof DraggableComponent).$forceUpdate();
+    },
+    selectTree(type: ResourceType) {
+      this.selectedTree = type;
+    },
+    selectSkill(skill: ExtendedSkill) {
+      this.selectedSkill = skill;
+    },
+
+    learnSkill(skill: Skill) {
+      if (this.$user.stats[this.ResourceTypesToStats[this.selectedTree]] < skill.cost) {
+        return;
+      }
+      this.$user.stats[this.ResourceTypesToStats[this.selectedTree]] -= skill.cost;
+      const idx = this.$user.skills.findIndex(i => i === skill.id!);
+      if (idx === -1) {
+        this.$user.skills.push(skill.id!);
+      }
+      this.selectedSkill = undefined;
+      this.updateSkillPoints();
+      this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
+    }
+  },
 };
 </script>

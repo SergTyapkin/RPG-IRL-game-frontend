@@ -6,19 +6,19 @@
 @import '../styles/animations.styl'
 
 .root-cell
+  position relative
   width var(--size)
   height var(--size)
   background radial-gradient(#aa4c01, #622c01)
   border-radius borderRadiusS
-  position relative
   img
     position absolute
-    padding = 10px
-    size = 'calc(100% - %s)' % (padding * 2)
-    left padding
     top padding
+    left padding
+    size = 'calc(100% - %s)' % (padding * 2)
     width size
-    heigth size
+    height size
+    padding = 10px
 </style>
 
 <template>

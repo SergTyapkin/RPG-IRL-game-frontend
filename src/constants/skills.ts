@@ -1,34 +1,45 @@
 import { type Skill } from '~/types/types';
-import { DefaultKnifeImage, ResourceType, ResourceTypes } from '~/constants/constants';
+import { BuffsTypes, DefaultKnifeImage, ResourceType, ResourceTypes } from '~/constants/constants';
+import { abilitiesIdsToAbilities, deepClone, effectsIdsToEffects, ExtendedSkill } from '~/utils/utils';
+import { Effects } from '~/constants/effects';
+import { Abilities } from '~/constants/abilities';
 
 export const SkillTrees: { [key in ResourceType]: Skill } = {
   [ResourceTypes.power]: {
     name: 'Сила 1',
-    abilities: [],
+    description: 'Открывает лечение',
+    abilities: [
+      Abilities.healPotion.id,
+    ],
     buffs: {},
     effects: [],
     cost: 1,
-    description: 'Pretty description',
     position: [100, 0],
     imageUrl: DefaultKnifeImage,
     children: [
       {
         name: 'Сила 1-1',
+        description: 'Добавляет 1 макс. здоровье и ещё что-то',
         abilities: [],
         buffs: {},
-        effects: [],
+        effects: [
+          Effects.maxHp_op.id,
+          Effects.maxHp.id,
+        ],
         cost: 3,
-        description: 'Левое поддерево',
         position: [0, 150],
         imageUrl: DefaultKnifeImage,
         children: [
           {
             name: 'Сила 1-1-1',
             abilities: [],
-            buffs: {},
+            buffs: {
+              [BuffsTypes.maxHpIncrease]: 2,
+              [BuffsTypes.protectionIncrease]: 2,
+            },
             effects: [],
             cost: 3,
-            description: 'Левое левое поддерево',
+            description: 'Добавляет 2 макс. здоровья и 2 защиты, но незаметно',
             position: [0, 300],
             imageUrl: DefaultKnifeImage,
             children: [],
@@ -223,10 +234,10 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
   },
 };
 
-export const IterableSkillTrees: { [key in ResourceType]: Skill[] } = {};
+export const IterableSkillTrees: { [key in ResourceType]: ExtendedSkill[] } = {};
 
-function addItemAndChildren(
-  targetArray: any[],
+function setIdParentIdLinesForItemAndChildren(
+  targetArray: ExtendedSkill[],
   currentTreeKey: ResourceType,
   item: Skill,
   parent: Skill | undefined = undefined,
@@ -254,12 +265,15 @@ function addItemAndChildren(
   }
   item.parentId = parent?.id;
   item.id = `${currentTreeKey}${targetArray.length}`;
+  const extItem = deepClone(item) as unknown as ExtendedSkill;
+  extItem.effects = effectsIdsToEffects(item.effects);
+  extItem.abilities = abilitiesIdsToAbilities(item.abilities);
 
-  targetArray.push(item);
-  item.children.forEach(child => addItemAndChildren(targetArray, currentTreeKey, child, item));
+  targetArray.push(extItem);
+  extItem.children.forEach(child => setIdParentIdLinesForItemAndChildren(targetArray, currentTreeKey, child, item));
 }
 
 Object.keys(SkillTrees).forEach((key: ResourceType) => {
   IterableSkillTrees[key] = [];
-  addItemAndChildren(IterableSkillTrees[key], key, SkillTrees[key]);
+  setIdParentIdLinesForItemAndChildren(IterableSkillTrees[key], key, SkillTrees[key]);
 });

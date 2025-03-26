@@ -16,11 +16,12 @@
     flex 1
     padding 10px
     padding-top 15px
-    border-radius borderRadiusM 0 0 borderRadiusM
     background 'linear-gradient(%s, %s), var(--bg-url) 50% 50% / 100% auto no-repeat' % (mix(colorBgLight, transparent) mix(colorBgLight, transparent))
+    border-radius borderRadiusM 0 0 borderRadiusM
 
     .name
       font-medium()
+
       margin-bottom 8px
 
     .description
@@ -30,13 +31,13 @@
   .source-container
     position relative
     overflow hidden
+    display flex
     flex 0.3
+    flex-direction column
+    align-items center
+    justify-content space-between
     background colorSec1
     border-radius 0 borderRadiusM borderRadiusM 0
-    display flex
-    flex-direction column
-    justify-content space-between
-    align-items center
 
     img.source-img
       display block
@@ -47,9 +48,9 @@
     .source-name
       font-small-extra()
 
+      width calc(100% - 4px)
       margin 2px
       padding 5px
-      width calc(100% - 4px)
       text-align center
       background colorBgLight
       border-radius borderRadiusM
@@ -84,30 +85,31 @@
 </style>
 
 <template>
-  <div class="root-effect">
+  <div class="root-effect" v-if="!effect.hidden">
     <section class="text-container" :style="{ '--bg-url': `url(${effect.imageUrl})` }">
       <header class="name">{{ effect.name }}</header>
       <div class="description">{{ effect.description }}</div>
     </section>
     <section class="source-container" v-if="!withoutSource">
-      <img class="source-img" :src="effect.source?.imageUrl" alt="" />
+      <img class="source-img" :src="effect.source?.imageUrl" alt="">
       <header class="source-name">{{ effect.source?.name }}</header>
     </section>
 
     <section class="buffs">
       <div v-for="(value, buff) in effect.buffs" class="buff">
-        <img v-if="buff === BuffsTypes.maxHpIncrease" src="/static/icons/buff-dmg.svg" alt="hp" />
-        <img v-else-if="buff === BuffsTypes.protectionIncrease" src="/static/icons/buff-dmg.svg" alt="protection" />
-        <img v-else-if="buff === BuffsTypes.experienceModifier" src="/static/icons/buff-dmg.svg" alt="experience" />
-        <img v-else-if="buff === BuffsTypes.moneyModifier" src="/static/icons/buff-dmg.svg" alt="money" />
-        <img v-else-if="buff === BuffsTypes.powerCostDecrease" src="/static/icons/buff-dmg.svg" alt="power" />
-        <img v-else-if="buff === BuffsTypes.agilityCostDecrease" src="/static/icons/buff-dmg.svg" alt="agility" />
+        <img v-if="buff === BuffsTypes.maxHpIncrease" src="/static/icons/buff-dmg.svg" alt="hp">
+        <img v-else-if="buff === BuffsTypes.protectionIncrease" src="/static/icons/buff-dmg.svg" alt="protection">
+        <img v-else-if="buff === BuffsTypes.experienceModifier" src="/static/icons/buff-dmg.svg" alt="experience">
+        <img v-else-if="buff === BuffsTypes.moneyModifier" src="/static/icons/buff-dmg.svg" alt="money">
+        <img v-else-if="buff === BuffsTypes.powerCostDecrease" src="/static/icons/buff-dmg.svg" alt="power">
+        <img v-else-if="buff === BuffsTypes.agilityCostDecrease" src="/static/icons/buff-dmg.svg" alt="agility">
         <img
           v-else-if="buff === BuffsTypes.intelligenceCostDecrease"
           src="/static/icons/buff-dmg.svg"
-          alt="intelligence" />
-        <img v-else-if="buff === BuffsTypes.damageDoneModifier" src="/static/icons/buff-dmg.svg" alt="damage" />
-        <img v-else-if="buff === BuffsTypes.damageDoneIncrease" src="/static/icons/buff-dmg.svg" alt="damage" />
+          alt="intelligence"
+        >
+        <img v-else-if="buff === BuffsTypes.damageDoneModifier" src="/static/icons/buff-dmg.svg" alt="damage">
+        <img v-else-if="buff === BuffsTypes.damageDoneIncrease" src="/static/icons/buff-dmg.svg" alt="damage">
 
         <div class="value">{{ value }}</div>
       </div>

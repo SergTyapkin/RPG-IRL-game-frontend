@@ -22,6 +22,7 @@ bg = colorBgDark
 
     .info
       font-small()
+
       color colorText5
 
     .signin-link
@@ -30,22 +31,25 @@ bg = colorBgDark
 
     .signin-button
       margin-top 20px
-      button()
-      border none
       color colorText2
+      border none
+      button()
 
   .classes-section
     header
       font-large()
+
       color colorSec1
 
     .info
       font-small()
-      color colorText4
+
       margin-bottom 20px
+      color colorText4
 
     .classes-container
       list-no-styles()
+
       display flex
       flex-direction column
       gap 30px
@@ -116,6 +120,7 @@ export default {
           placeholder: 'Тяпкин Сергей',
           validationRegExp: Validators.name.regExp,
           prettifyResult: Validators.name.prettifyResult,
+          info: 'Имя Фамилия',
           autocomplete: 'name',
         },
       },

@@ -64,6 +64,7 @@ export interface Effect {
   name: string;
   description: string;
   imageUrl: string;
+  hidden: boolean;
 
   buffs: {[key in BuffType]: number};
 }

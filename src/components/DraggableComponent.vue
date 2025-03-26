@@ -387,13 +387,10 @@ export default {
     isCanMoveBy(offsetX, offsetY, startPosX = this.totalOffsetX, startPosY = this.totalOffsetY) {
       let canMoveOnX = 0;
       let canMoveOnY = 0;
-      console.log(this.innerElementWidthComputed, this.innerElementHeightComputed);
-      console.log(this.$el.clientWidth, this.$el.clientHeight);
       const minX = this.minXOffset * this.scale;
       const maxX = -this.innerElementWidthComputed * this.scale + this.$el.clientWidth - this.maxXOffset * this.scale;
       const minY = this.minYOffset * this.scale;
       const maxY = -this.innerElementHeightComputed * this.scale + this.$el.clientHeight - this.maxYOffset * this.scale;
-      console.log(minX, minY, maxX, maxY);
       if (this.movableX) {
         canMoveOnX = offsetX;
         if (

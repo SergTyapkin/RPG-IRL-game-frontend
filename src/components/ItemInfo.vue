@@ -11,6 +11,7 @@
   button.close
     button-no-styles()
     hover-effect()
+
     position absolute
     top 10px
     right 10px
@@ -18,38 +19,39 @@
     height 30px
 
     img
+      display block
       width 100%
       height 100%
-      display block
 
   header
     font-large()
+
     width 100%
-    text-align center
     margin-bottom 20px
+    text-align center
 
   .image-container
+    position relative
     width 100%
     height 200px
-    position relative
     margin-bottom 10px
 
     .shadow
       position absolute
-      width 50%
-      height 30px
-      background radial-gradient(#000000E0, transparent 75%)
       bottom 0
       left 50%
       transform translate(-50%, 0)
+      width 50%
+      height 30px
+      background radial-gradient(#000000e0, transparent 75%)
 
     img
       position absolute
+      z-index 2
+      display block
       width 100%
       height 100%
       object-fit contain
-      display block
-      z-index 2
 
   .section-stats
     top 70px
@@ -58,19 +60,21 @@
     gap 5px
     > *
       centered-margin()
-      margin-bottom 10px
-      padding 0 10px 0 5px
-      background colorSec1
-      centered-flex-container()
+
       gap 5px
       width min-content
-      border-radius borderRadiusMax
+      margin-bottom 10px
+      padding 0 10px 0 5px
       color colorBg
+      background colorSec1
+      border-radius borderRadiusMax
+      centered-flex-container()
       &.protection
         background colorEmpProtection
 
   .description
     font-small()
+
     margin-bottom 20px
     color colorText4
 
@@ -80,14 +84,16 @@
 
     header
       font-medium()
-      text-align left
-      color colorText2
+
       margin-bottom 2px
+      color colorText2
+      text-align left
 
     .info
       font-small()
-      text-align left
+
       color colorText5
+      text-align left
 
   .section-effects
     .text-block
@@ -195,7 +201,6 @@ export default {
   emits: ['select', 'close'],
 
   mounted() {
-    console.log(this.obj);
   },
 
   methods: {

@@ -5,13 +5,13 @@
 
 border-color = colorEmp1
 border-color-hover = colorSec1
-border-color-disabled = mix(colorBorder, colorBg, 50%)
+border-color-disabled = mix(colorText1, colorBg, 10%)
 text-color = colorEmp1
 text-color-hover-1 = colorSec1
-text-color-disabled = mix(colorBorder, colorBg, 50%)
+text-color-disabled = mix(colorText1, colorBg, 50%)
 bg-color = colorBg
 bg-color-hover = saturation(bg-color, 120%)
-bg-color-disabled = saturation(bg-color, 20%)
+bg-color-disabled = mix(colorText1, colorBg, 10%)
 
 text-color-hover-2 = colorText1
 shadow-color = mix(black, transparent, 70%)
@@ -41,6 +41,7 @@ button()
     pointer-events none
     color text-color-disabled
     background bg-color-disabled
+    border-color border-color-disabled
     box-shadow none
 
 button-emp()

@@ -164,12 +164,9 @@ export function skillIdToSkill(skillId: string): ExtendedSkill {
   if (!skill) {
     return skill;
   }
-  const extSkill = deepClone(skill) as unknown as ExtendedSkill;
-  extSkill.effects = effectsIdsToEffects(skill.effects);
-  extSkill.abilities = abilitiesIdsToAbilities(skill.abilities);
-  return extSkill;
+  return deepClone(skill);
 }
-export function getUserSkills($user: User): ExtendedSkill[] {
+export function getAllUserSkills($user: User): ExtendedSkill[] {
   const res: ExtendedSkill[] = [];
   $user.skills.forEach(id => {
     const skill = skillIdToSkill(id)
@@ -208,7 +205,7 @@ export function getAllUserEffects($user: User): ExtendedEffect[] {
       });
     }
   });
-  getUserSkills($user).forEach(skill => {
+  getAllUserSkills($user).forEach(skill => {
     skill.effects.forEach(e => {
       const ext = deepClone(e) as unknown as ExtendedEffect;
       ext.source = skill;
@@ -247,7 +244,7 @@ export function getAllUserAbilities($user: User): ExtendedAbility[] {
       });
     }
   });
-  getUserSkills($user).forEach(skill => {
+  getAllUserSkills($user).forEach(skill => {
     skill.abilities.forEach(e => {
       const ext = deepClone(e) as unknown as ExtendedAbility;
       ext.source = skill;
@@ -263,6 +260,10 @@ export function getTotalUserProtection($user: User): number {
   res += $user.equipment.hat ? Items[$user.equipment.hat]?.protection ?? 0 : 0;
   res += $user.equipment.main ? Items[$user.equipment.main]?.protection ?? 0 : 0;
   res += $user.equipment.boots ? Items[$user.equipment.boots]?.protection ?? 0 : 0;
+  const skills = getAllUserSkills($user);
+  skills.forEach(skill => {
+    res += skill.buffs[BuffsTypes.protectionIncrease] ?? 0;
+  });
   const effects = getAllUserEffects($user);
   effects.forEach(effect => {
     res += effect.buffs[BuffsTypes.protectionIncrease] ?? 0;
@@ -271,6 +272,10 @@ export function getTotalUserProtection($user: User): number {
 }
 export function getTotalUserMaxHP($user: User): number {
   let res = DEFAULT_USER_MAX_UP;
+  const skills = getAllUserSkills($user);
+  skills.forEach(skill => {
+    res += skill.buffs[BuffsTypes.maxHpIncrease] ?? 0;
+  });
   const effects = getAllUserEffects($user);
   effects.forEach(effect => {
     res += effect.buffs[BuffsTypes.maxHpIncrease] ?? 0;

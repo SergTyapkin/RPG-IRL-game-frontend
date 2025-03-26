@@ -9,6 +9,7 @@ export const EffectModel = {
   description: String,
   imageUrl: String,
   buffs: Object,
+  hidden: Boolean,
 };
 
 export const EffectModelMockData = validateModel(EffectModel,     {
@@ -16,6 +17,7 @@ export const EffectModelMockData = validateModel(EffectModel,     {
   name: 'Название эффекта',
   description: 'Какое-то описание эффекта',
   imageUrl: DefaultAbilityImage,
+  hidden: false,
   buffs: {
     [BuffsTypes.protectionIncrease]: 2,
     [BuffsTypes.maxHpIncrease]: 5,
