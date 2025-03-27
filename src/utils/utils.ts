@@ -1,6 +1,15 @@
 import { IterableSkillTrees } from '~/constants/skills';
 import type { Ability, Effect, Item, Skill, User } from '~/types/types';
-import { BuffsTypes, DEFAULT_USER_MAX_UP, DEFAULT_USER_PROTECTION, ItemTypes, QRSource, QRType, ResourceType } from '~/constants/constants';
+import {
+  BuffsTypes,
+  DEFAULT_USER_MAX_UP,
+  DEFAULT_USER_PROTECTION,
+  ItemTypes,
+  QR_CODE_ID_SPLITTER,
+  QRSource,
+  QRType,
+  ResourceType,
+} from '~/constants/constants';
 import { Items } from '~/constants/items';
 import { Abilities } from '~/constants/abilities';
 import { Effects } from '~/constants/effects';
@@ -297,20 +306,27 @@ export function getTotalUserMaxHP($user: User): number {
 
 
 // -----------------
-export function generateQRText(QRType: QRType, QRSubType: ResourceType | '_', QRSource: QRSource, QRValue: string) {
-  return btoa(`${QRType}${QRSubType}${QRSource}${QRValue}`);
+export function generateQRText(QRType: QRType, QRSubType: ResourceType | '_', QRSource: QRSource, QRValue: string, QRId: string) {
+  return btoa(`${QRType}${QRSubType}${QRSource}${QRValue}${QR_CODE_ID_SPLITTER}${QRId}`);
 }
 export function parseQRText(text: string) {
   try {
     text = atob(text);
+    const splitted = text.split(QR_CODE_ID_SPLITTER);
+    if (splitted.length !== 2) {
+      console.error('QR not splitted by splitter symbol');
+      return {};
+    }
+    const [textVal, textId] = splitted;
     return {
-      QRType: text[0] as QRType,
-      QRSubType: text[1] as ResourceType | '_',
-      QRSource: text[2] as QRSource,
-      QRValue: text.slice(3),
+      QRType: textVal[0] as QRType,
+      QRSubType: textVal[1] as ResourceType | '_',
+      QRSource: textVal[2] as QRSource,
+      QRValue: textVal.slice(3),
+      QRId: textId,
     };
   } catch {
-    return null;
+    return {};
   }
 }
 

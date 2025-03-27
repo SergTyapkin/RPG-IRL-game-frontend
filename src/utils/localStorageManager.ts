@@ -13,6 +13,7 @@ const _PropertyNames = {
   syncedData: 'synced-data',
   abilitiesReloads: 'abilities-reloads',
   fightEffects: 'fight-effects',
+  scannedQrs: 'scanned-qrs',
 }
 
 /**
@@ -84,5 +85,24 @@ export default class LocalStorageManager {
   }
   removeFightEffects() {
     localStorage.removeItem(_PropertyNames.fightEffects);
+  }
+
+  // ---- scannedQrs ----
+  saveScannedQrs(scannedQrs: string[]) {
+    localStorage.setItem(_PropertyNames.scannedQrs, JSON.stringify(scannedQrs));
+  }
+  loadScannedQrs(): string[] | null {
+    const res = localStorage.getItem(_PropertyNames.scannedQrs);
+    if (!res) {
+      return null;
+    }
+    try {
+      return JSON.parse(res) as string[];
+    } catch {
+      return null;
+    }
+  }
+  removeScannedQrs() {
+    localStorage.removeItem(_PropertyNames.scannedQrs);
   }
 }

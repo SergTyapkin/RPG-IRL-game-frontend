@@ -27,7 +27,7 @@
       gap 5px
       .stat
         height 30px
-        padding 0 5px
+        padding 0 7px
         white-space nowrap
         background colorSec1
         border-radius borderRadiusMax
@@ -101,7 +101,7 @@
         <div v-if="ability.damage" class="stat damage">
           <img src="/static/icons/fight.svg" alt="">{{ ability.damage }}
         </div>
-        <div v-if="ability.heal" class="stat heal"><img src="/static/icons/close.svg" alt="">{{ ability.heal }}</div>
+        <div v-if="ability.heal" class="stat heal"><img src="/static/icons/heart.svg" alt="">{{ ability.heal }}</div>
       </section>
     </section>
     <section class="text-container">

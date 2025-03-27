@@ -11,6 +11,8 @@ export const DEFAULT_USER_PROTECTION = 0;
 
 export const MONEY_LOSE_BY_DEATH_PERCENT = 0.5;
 
+export const QR_CODE_ID_SPLITTER = String.fromCharCode(31); // 31 ascii = Unit Separator symbol
+
 
 export const ClassTypes = {
   power: 'power',

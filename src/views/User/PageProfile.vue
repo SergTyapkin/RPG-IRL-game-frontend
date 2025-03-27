@@ -27,6 +27,8 @@
     display flex
     justify-content space-between
     margin-top 20px
+    .money-badge
+      hover-effect()
 
   .section-equipment
   .section-inventory

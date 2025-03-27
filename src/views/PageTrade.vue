@@ -175,6 +175,10 @@ export default {
 
   methods: {
     async confirm() {
+      if (this.qrType === QRTypes.resource && this.moneyToTrade === 0) {
+        this.$popups.alert('Увы', 'Нельзя передать 0 монет');
+        return;
+      }
       if (!(await this.$modals.confirm('Передать предмет?', 'Предмет сразу же будет списан c вашего профиля'))) {
         return;
       }

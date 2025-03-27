@@ -13,26 +13,31 @@
 
   > *
     aspect-ratio 1 / 1
+    &.clickable
+      hover-effect()
 </style>
 
 <template>
   <div class="root-equipment">
     <Cell
       class="hat"
-      :src="hat?.imageUrl"
+      :item="hat ? hat : {}"
       :bg-image="hat ? undefined : DefaultHatImage"
+      :class="{ clickable: hat }"
       @click="selectItem(hat)"
     />
     <Cell
       class="main"
-      :src="main?.imageUrl"
+      :item="main ? main : {}"
       :bg-image="main ? undefined : DefaultMainImage"
+      :class="{ clickable: main }"
       @click="selectItem(main)"
     />
     <Cell
       class="boots"
-      :src="boots?.imageUrl"
+      :item="boots ? boots : {}"
       :bg-image="boots ? undefined : DefaultBootsImage"
+      :class="{ clickable: boots }"
       @click="selectItem(boots)"
     />
   </div>
@@ -44,7 +49,6 @@ import Cell from '~/components/Cell.vue';
 import DefaultHatImage from '#/icons/guild.svg';
 import DefaultMainImage from '#/icons/guild.svg';
 import DefaultBootsImage from '#/icons/guild.svg';
-import { Items } from '~/constants/items';
 import { Item } from '~/types/types';
 import { itemIdToItem } from '~/utils/utils';
 
@@ -57,9 +61,9 @@ export default {
 
   data() {
     return {
-      hat: undefined as Item,
-      main: undefined as Item,
-      boots: undefined as Item,
+      hat: null as Item | null,
+      main: null as Item | null,
+      boots: null as Item | null,
 
       DefaultHatImage,
       DefaultMainImage,

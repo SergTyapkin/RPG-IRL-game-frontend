@@ -238,7 +238,7 @@
                   :width="80"
                   :height="80"
                 >
-                  <Cell class="cell" :src="skill.imageUrl" @click="selectSkill(skill)">
+                  <Cell class="cell" :item="skill" @click="selectSkill(skill)" no-stats>
                     <div class="item-name">{{ skill.name }}</div>
                     <transition name="opacity">
                       <div class="locked" v-if="!$user.skills.includes(skill.id)">

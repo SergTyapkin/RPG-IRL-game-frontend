@@ -8,23 +8,39 @@
 .root-page-qr-scanner
   .section-scanner
     margin-top 40px
+
     .result-container
-      opacity 0.5
-      .info
-        margin-top 30px
-        margin-bottom 10px
-        font-medium()
+      opacity 0.1
 
-        color colorSec1
-      .result
-        font-small()
+    .info
+      margin-top 30px
+      margin-bottom 10px
+      font-medium()
 
-        box-sizing content-box
-        min-height 1lh
-        padding 3px
-        color colorSec1
-        border 1px solid colorSec1
-        border-radius borderRadiusS
+      color colorSec1
+
+    .input-container .input
+    .result-container .result
+      input-no-styles()
+      font-small()
+
+      box-sizing content-box
+      min-height 1lh
+      padding 3px
+      color colorSec1
+      border 1px solid colorSec1
+      border-radius borderRadiusS
+
+    .input-container
+      display flex
+      gap 15px
+      .input
+        flex 1
+        padding 0 10px
+      .button
+        button-emp()
+
+        width min-content
 </style>
 
 <template>
@@ -33,6 +49,13 @@
 
     <section class="section-scanner">
       <QRScanner @scan="onScan" />
+
+      <div class="info">Или введите код:</div>
+      <div class="input-container">
+        <input class="input" v-model="textInput">
+        <button class="button" @click="onScan(textInput)">Отправить</button>
+      </div>
+
       <CircleLoading v-if="loading" />
       <div class="result-container">
         <div class="info">Результат сканирования:</div>
@@ -59,7 +82,9 @@ export default {
     return {
       loading: false,
 
+      textInput: '',
       scanResult: '',
+      scannedQrs: [] as string[],
 
       GuildModelMockData,
     };
@@ -67,16 +92,27 @@ export default {
 
   computed: {},
 
-  mounted() {},
+  mounted() {
+    const scannedQrs = this.$localStorageManager.loadScannedQrs();
+    if (scannedQrs) {
+      this.scannedQrs = scannedQrs;
+    }
+  },
 
   methods: {
     async onScan(text: string) {
-      const QRResult = parseQRText(text);
-      if (!QRResult) {
+      this.scanResult = text;
+
+      const {QRType, QRSource, QRSubType, QRValue, QRId} = parseQRText(text);
+      if (QRType === undefined) {
         this.$popups.error('Отсканирован неизвестный QR', 'Проверьте, действительно ли этот QR от этой игры');
         return;
       }
-      const {QRType, QRSource, QRSubType, QRValue} = QRResult;
+
+      if (this.scannedQrs.includes(QRId)) {
+        this.$popups.error('QR отсканирован повторно', 'Вы уже сканировали этот QR');
+        return;
+      }
 
       let scanError = false;
       switch (QRType) {
@@ -171,6 +207,8 @@ export default {
       }
 
       if (!scanError) {
+        this.scannedQrs.push(QRId);
+        this.$localStorageManager.saveScannedQrs(this.scannedQrs);
         this.$router.push({ name: 'profile' });
       }
     },
