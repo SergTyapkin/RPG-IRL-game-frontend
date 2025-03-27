@@ -15,10 +15,10 @@
   .section-resources
     display flex
     flex-wrap wrap
-    gap 5px
+    gap 0px
     justify-content space-around
     margin-top 20px
-    margin-bottom 60px
+    margin-bottom 10px
 
     .button
       button-no-styles()

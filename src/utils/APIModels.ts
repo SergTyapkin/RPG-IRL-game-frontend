@@ -133,9 +133,15 @@ export const GuildModelMockData = validateModel(GuildModel, {
   level: 2,
   imageUrl: DefaultAbilityImage,
 
-  leaderId: 'Some_Gamer_ID',
+  leaderId: 'GMR_0',
   inventory: [Items.longSword.id, Items.longSword.id, Items.longSword.id, Items.dagger.id, Items.dagger.id],
   members: [
+    {
+      id: 'GMR_0',
+      name: 'Тяпкин Сергей',
+      imageUrl: DefaultAvatarImage,
+      level: 8,
+    },
     {
       id: 'GMR_1',
       name: 'Никита Лаврентьев',

@@ -8,7 +8,7 @@
 .root-map
   overflow hidden
   max-height 100vh
-  padding 0
+  padding-bottom 100px !important
   .draggable-element
     max-height calc(100vh - 90px)
     background linear-gradient(165deg, black, mix(mix(colorEmp1, black, 40%), transparent, 40%))

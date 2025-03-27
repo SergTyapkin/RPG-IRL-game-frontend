@@ -9,8 +9,8 @@
   width 100%
   max-width 700px
   min-height 100vh
-  //border solid colorSec1
-  //border-width 0 1px
+  // border solid colorSec1
+  // border-width 0 1px
   // border-radius borderRadiusL
   centered-margin()
   // overflow hidden
@@ -19,7 +19,7 @@
     position absolute
     width 100%
     min-height 100vh
-    padding 30px 15px 120px 15px
+    padding 30px 15px 180px 15px
   .loading
     centered-absolute-transform()
 
@@ -171,6 +171,7 @@ export default {
     return {
       transitionName: '',
       global: undefined as Record<string, any> | undefined,
+      prevTouchY: 0,
 
       isUserInFightReactiveValue: this.$user?.isInFight,
       isUserDeadReactiveValue: this.$user?.stats?.hp <= 0,
@@ -192,6 +193,16 @@ export default {
     window.addEventListener('resize', () => {
       this.checkMobileScreen();
     });
+
+    const appEl = document.getElementById('app')!;
+    window.addEventListener('touchmove', (e) => {
+      const curPageY = e.touches[0].pageY;
+      const dy = this.prevTouchY - curPageY;
+      if (appEl.scrollTop === 0 && dy < 0) {
+        e.preventDefault();
+      }
+      this.prevTouchY = curPageY;
+    }, { passive: false });
   },
 
   methods: {
