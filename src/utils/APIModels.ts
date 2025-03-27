@@ -142,7 +142,7 @@ export const GuildModelMockData = validateModel(GuildModel, {
   imageUrl: DefaultAbilityImage,
 
   leaderId: 'GMR_0',
-  inventory: [Items.longSword.id, Items.longSword.id, Items.longSword.id, Items.dagger.id, Items.dagger.id],
+  inventory: [Items.artefactBlackStar.id, Items.artefactMainStone.id, Items.mainElitePirate.id, Items.bootsBerserk.id, Items.daggerNightCardinal.id],
   members: [
     {
       id: 'GMR_0',
@@ -240,7 +240,7 @@ export const UserModelMockData = validateModel(UserModel, {
     intelligence: 2,
   },
   role: 'user',
-  inventory: [Items.mainBerserk.id, Items.longSword.id, Items.bootsBerserk.id, Items.hatBerserk.id, Items.dagger.id],
+  inventory: [Items.artefactBlackStar.id, Items.artefactMainStone.id, Items.mainElitePirate.id, Items.bootsBerserk.id, Items.daggerNightCardinal.id],
   equipment: {
     hat: Items.hatBerserk.id,
     main: undefined,
@@ -281,5 +281,5 @@ export const QRDataModelMockData = validateModel(QRDataModel, {
   type: QRTypes.item,
   subType: '_',
   source: QRSources.quest,
-  value: Items.dagger.id,
+  value: Items.daggerNightCardinal.id,
 });
