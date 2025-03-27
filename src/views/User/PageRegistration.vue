@@ -71,7 +71,7 @@ bg = colorBgDark
           :loading="loading"
           @success="saveTextAndGoToChooseClasses"
         />
-        <router-link v-if="NO_SERVER_MODE" class="signin-link" :to="{ name: 'login' }">
+        <router-link v-if="!NO_SERVER_MODE" class="signin-link" :to="{ name: 'login' }">
           <button class="signin-button">Войти в имеющийся профиль</button>
         </router-link>
       </section>

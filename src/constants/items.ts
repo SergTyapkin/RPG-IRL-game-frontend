@@ -100,8 +100,8 @@ export const Items: {[key: string]: Item} = {
   },
   artefactShieldKingGuardian: {
     id: String(),
-    name: 'Артефакт “Жизнь Феникса”',
-    description: 'Дает возможность восстать после смерти в бою 1 раз. Расходуется',
+    name: 'Щит стражника королевского дворца',
+    description: 'Блокирует 80% урона',
     type: ItemTypes.artefact,
     protection: 0,
     imageUrl: ImgArtefactShieldKingGuardian,
@@ -261,8 +261,8 @@ export const Items: {[key: string]: Item} = {
   },
   mainMagicSecret: {
     id: String(),
-    name: 'Броня варвара',
-    description: 'Описание предмета',
+    name: 'Мантия секретной службы короля',
+    description: 'Блокирует 70% магического урона',
     type: ItemTypes.main,
     protection: 4,
     imageUrl: ImgMainMagicSecret,
