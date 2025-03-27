@@ -240,9 +240,9 @@ export const UserModelMockData = validateModel(UserModel, {
     intelligence: 2,
   },
   role: 'user',
-  inventory: [Items.mainBerserk.id, Items.longSword.id, Items.bootsBerserk.id, Items.helmetBerserk.id, Items.dagger.id],
+  inventory: [Items.mainBerserk.id, Items.longSword.id, Items.bootsBerserk.id, Items.hatBerserk.id, Items.dagger.id],
   equipment: {
-    hat: Items.helmetBerserk.id,
+    hat: Items.hatBerserk.id,
     main: undefined,
     boots: undefined,
   },
