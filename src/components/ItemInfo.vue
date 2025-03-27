@@ -33,7 +33,7 @@
   .image-container
     position relative
     width 100%
-    height 200px
+    height 180px
     margin-bottom 10px
 
     .shadow

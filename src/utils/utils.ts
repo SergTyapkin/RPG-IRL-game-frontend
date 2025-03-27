@@ -1,5 +1,5 @@
 import { IterableSkillTrees } from '~/constants/skills';
-import type { Ability, Effect, Item, Skill, User } from '~/types/types';
+import { Ability, Effect, Item, QRData, Skill, User } from '~/types/types';
 import {
   BuffsTypes,
   DEFAULT_USER_MAX_UP,
@@ -311,24 +311,24 @@ export function generateQRText(QRType: QRType, QRSubType: ResourceType | '_', QR
   QRId = QRId || uuidv4();
   return btoa(`${QRType}${QRSubType}${QRSource}${QRValue}${QR_CODE_ID_SPLITTER}${QRId}`);
 }
-export function parseQRText(text: string) {
+export function parseQRText(text: string): QRData | null {
   try {
     text = atob(text);
     const splitted = text.split(QR_CODE_ID_SPLITTER);
     if (splitted.length !== 2) {
       console.error('QR not splitted by splitter symbol');
-      return {};
+      return null;
     }
     const [textVal, textId] = splitted;
     return {
-      QRType: textVal[0] as QRType,
-      QRSubType: textVal[1] as ResourceType | '_',
-      QRSource: textVal[2] as QRSource,
-      QRValue: textVal.slice(3),
-      QRId: textId,
+      type: textVal[0] as QRType,
+      subType: textVal[1] as ResourceType | '_',
+      source: textVal[2] as QRSource,
+      value: textVal.slice(3),
+      id: textId,
     };
   } catch {
-    return {};
+    return null;
   }
 }
 

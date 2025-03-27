@@ -72,6 +72,7 @@ import CircleLoading from '~/components/loaders/CircleLoading.vue';
 import validateModel from '@sergtyapkin/models-validator';
 import { GuildModel, GuildModelMockData } from '~/utils/APIModels';
 import { UserLevels } from '~/constants/levels';
+import { type QRData } from '~/types/types';
 
 export default {
   components: { CircleLoading, UserProfileInfo, QRScanner },
@@ -82,7 +83,8 @@ export default {
 
       textInput: '',
       scanResult: '',
-      scannedQrs: [] as string[],
+      scannedSavedQrs: [] as QRData[],
+      scannedNotSavedQrs: [] as QRData[],
 
       GuildModelMockData,
     };
@@ -93,9 +95,13 @@ export default {
   mounted() {
     this.$app.isUserDeadReactiveValue = this.$user.stats.hp <= 0;
 
-    const scannedQrs = this.$localStorageManager.loadScannedQrs();
-    if (scannedQrs) {
-      this.scannedQrs = scannedQrs;
+    const scannedSavedQrs = this.$localStorageManager.loadScannedSavedQrs();
+    if (scannedSavedQrs) {
+      this.scannedSavedQrs = scannedSavedQrs;
+    }
+    const scannedNotSavedQrs = this.$localStorageManager.loadScannedNotSavedQrs();
+    if (scannedNotSavedQrs) {
+      this.scannedNotSavedQrs = scannedNotSavedQrs;
     }
   },
 
@@ -103,13 +109,16 @@ export default {
     async onScan(text: string) {
       this.scanResult = text;
 
-      const {QRType, QRSource, QRSubType, QRValue, QRId} = parseQRText(text);
-      if (QRType === undefined) {
+      const qrData = parseQRText(text);
+      if (!qrData) {
         this.$popups.error('Отсканирован неизвестный QR', 'Проверьте, действительно ли этот QR от этой игры');
         return;
       }
+      const { type: QRType, source: QRSource, subType: QRSubType, value: QRValue, id: QRId } = qrData;
 
-      if (this.scannedQrs.includes(QRId)) {
+      const idxSaved = this.scannedSavedQrs.findIndex(qr => qr.id === QRId);
+      const idxNotSaved = this.scannedNotSavedQrs.findIndex(qr => qr.id === QRId);
+      if (idxSaved !== -1 || idxNotSaved !== -1) {
         this.$popups.error('QR отсканирован повторно', 'Вы уже сканировали этот QR');
         return;
       }
@@ -207,8 +216,16 @@ export default {
       }
 
       if (!scanError) {
-        this.scannedQrs.push(QRId);
-        this.$localStorageManager.saveScannedQrs(this.scannedQrs);
+        if (QRType !== QRTypes.sync) {
+          this.scannedNotSavedQrs.push({
+            id: QRId,
+            type: QRType,
+            subType: QRSubType,
+            source: QRSource,
+            value: QRValue,
+          });
+          this.$localStorageManager.saveScannedNotSavedQrs(this.scannedNotSavedQrs);
+        }
         this.$router.push({ name: 'profile' });
       }
     },
@@ -264,13 +281,21 @@ export default {
           this.$user.stats.experience -= expNeedsToLevel;
           this.$user.level += 1;
           const maxLevel = Math.max(...Object.keys(UserLevels).map(Number));
-          this.$modals.alert('Уровень повышен!', `Вы получили уровень ${this.$user.level}!
-${this.$user.level < maxLevel ? `Для уровня ${this.$user.level + 1} понадобится ${UserLevels[this.$user.level + 1].experience}xp` : ''}`);
+          this.$modals.alert(
+            'Уровень повышен!',
+            `Вы получили уровень ${this.$user.level}!
+${this.$user.level < maxLevel ? `Для уровня ${this.$user.level + 1} понадобится ${UserLevels[this.$user.level + 1].experience}xp` : ''}`,
+          );
         }
+
+        this.scannedSavedQrs.push(...this.scannedNotSavedQrs);
+        this.scannedNotSavedQrs = [];
+        this.$localStorageManager.saveScannedSavedQrs(this.scannedSavedQrs);
+        this.$localStorageManager.saveScannedNotSavedQrs(this.scannedNotSavedQrs);
 
         this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
       }
-    }
+    },
   },
 };
 </script>

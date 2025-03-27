@@ -1,5 +1,13 @@
 import validateModel from "@sergtyapkin/models-validator";
-import { BuffsTypes, ClassTypes, DefaultAbilityImage, DefaultAvatarImage, DefaultKnifeImage } from '~/constants/constants';
+import {
+  BuffsTypes,
+  ClassTypes,
+  DefaultAbilityImage,
+  DefaultAvatarImage,
+  DefaultKnifeImage,
+  QRSources,
+  QRTypes,
+} from '~/constants/constants';
 import { Items } from '~/constants/items';
 import { Ability, Effect, Guild, Item, SyncedData, User } from '~/types/types';
 import { Effects } from '~/constants/effects';
@@ -260,3 +268,18 @@ export const SyncDataModelMockData = {
   guild: GuildModelMockData
 } as SyncedData;
 
+export const QRDataModel = {
+  id: String,
+  type: String,
+  subType: String,
+  source: String,
+  value: String,
+}
+
+export const QRDataModelMockData = validateModel(QRDataModel, {
+  id: 'QR_ID_1',
+  type: QRTypes.item,
+  subType: '_',
+  source: QRSources.quest,
+  value: Items.dagger.id,
+});

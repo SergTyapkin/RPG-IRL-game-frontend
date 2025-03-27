@@ -1,4 +1,4 @@
-import { BuffType, ClassType } from '~/constants/constants';
+import { BuffType, ClassType, QRSource, QRType, ResourceType } from '~/constants/constants';
 
 export interface User {
   id: string;
@@ -122,4 +122,12 @@ export interface Item {
 export interface SyncedData {
   user: User;
   guild: Guild;
+}
+
+export interface QRData {
+  id: string,
+  type: QRType,
+  subType: ResourceType | '_',
+  source: QRSource,
+  value: string,
 }

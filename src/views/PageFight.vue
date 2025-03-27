@@ -63,7 +63,17 @@
           color colorEmp1
           background none
 
+    .qr-codes
+      header
+        margin-top 20px
+        text-align center
+        font-medium()
+        color colorText3
+      .info
+        text-align center
+
     .confirm-button
+      margin-top 20px
       button-emp()
 
   .section-effects
@@ -186,9 +196,11 @@
         display flex
         flex-direction column
         gap 15px
+
         > *
           trans()
           hover-effect()
+
           &.selected
             filter brightness(1.2)
             outline colorEmp1 2px solid
@@ -219,8 +231,8 @@
 
     <transition name="opacity" mode="out-in">
       <section class="section-not-alive-info" v-if="$user.stats.hp <= 0">
+        <img class="image" src="/static/icons/fight.svg" alt="death">
         <ul class="info">
-          <img class="image" src="/static/icons/fight.svg" alt="death">
           <li>
             Вы погибли в бою.
             <mark>Доберитесь до вашей базы</mark>
@@ -231,7 +243,20 @@
             <mark>никакие действия</mark>
             , пока не вылечитесь
           </li>
+          <li>
+            Не уходите с места боя. Сперва дайте
+            <mark>одному из противников</mark>
+            отсканировать все QR-коды ниже и
+            <mark>забрать выпавшие из вас предметы</mark>
+          </li>
         </ul>
+        <section class="qr-codes">
+          <header v-if="loosedMoney">{{ loosedMoney }} монет ({{ MONEY_LOSE_BY_DEATH_PERCENT * 100 }}% монет):</header>
+          <QRGenerator v-if="loosedMoney" ref="qrMoney" />
+          <header>Все недонесённые до базы QR'ы:</header>
+          <div v-if="!scannedNotSavedQrs.length" class="info">Таких QR'ов нет</div>
+          <QRGenerator ref="allQrs" v-for="qr in scannedNotSavedQrs" :key="qr.id" />
+        </section>
         <router-link :to="{ name: 'qrScanner' }">
           <button class="confirm-button">На страницу сканирования</button>
         </router-link>
@@ -367,17 +392,25 @@
 <script lang="ts">
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { BuffsTypes, ResourceTypes } from '~/constants/constants';
+import { BuffsTypes, MONEY_LOSE_BY_DEATH_PERCENT, QRSources, QRTypes, ResourceTypes } from '~/constants/constants';
 import EffectComponent from '~/components/Effect.vue';
 import AbilityComponent from '~/components/Ability.vue';
-import { getAllUserAbilities, getAllUserEffects, getTotalUserMaxHP, getTotalUserProtection } from '~/utils/utils';
+import {
+  generateQRText,
+  getAllUserAbilities,
+  getAllUserEffects,
+  getTotalUserMaxHP,
+  getTotalUserProtection,
+} from '~/utils/utils';
 import { type InFightAbility } from '~/constants/abilities';
 import Range from '~/components/Range.vue';
 import { Effects, FightEffects } from '~/constants/effects';
-import { type Effect } from '~/types/types';
+import { type Effect, QRData } from '~/types/types';
+import QRGenerator from '~/components/QRGenerator.vue';
+import { nextTick } from 'vue';
 
 export default {
-  components: { Range, AbilityComponent, EffectComponent, ValueBadge, UserProfileInfo },
+  components: { QRGenerator, Range, AbilityComponent, EffectComponent, ValueBadge, UserProfileInfo },
 
   data() {
     return {
@@ -387,8 +420,10 @@ export default {
       isHpProtectionShowedOnly: false,
       modalState: 0,
       chosenValue: 0,
+      loosedMoney: 0,
       selectedEffect: undefined as Effect | undefined,
       fightEffects: [] as Effect[],
+      scannedNotSavedQrs: [] as QRData[],
 
       ModalStates: {
         none: 0,
@@ -399,6 +434,7 @@ export default {
 
       ResourceTypes,
       FightEffects,
+      MONEY_LOSE_BY_DEATH_PERCENT,
     };
   },
 
@@ -412,7 +448,7 @@ export default {
     },
   },
 
-  mounted() {
+  async mounted() {
     this.$app.isUserInFightReactiveValue = this.isUserInFightReactiveValue;
     this.$app.isUserDeadReactiveValue = this.$user.stats.hp <= 0;
     this.recalculateUserStats();
@@ -430,9 +466,25 @@ export default {
     if (fightEffects) {
       this.fightEffects = fightEffects;
     }
+
+    const loosedMoney = this.$localStorageManager.loadLosedMoney();
+    if (loosedMoney) {
+      this.loosedMoney = loosedMoney;
+    }
+
+    const scannedNotSavedQrs = this.$localStorageManager.loadScannedNotSavedQrs();
+    if (scannedNotSavedQrs) {
+      this.scannedNotSavedQrs = scannedNotSavedQrs;
+    }
+
+    if (this.$user.stats.hp <= 0) {
+      await nextTick();
+      this.regenerateDeadQrs();
+    }
   },
 
   methods: {
+    generateQRText,
     recalculateUserStats() {
       this.userProtection = getTotalUserProtection(this.$user);
       this.userMaxHp = getTotalUserMaxHP(this.$user);
@@ -594,8 +646,7 @@ export default {
       this.$user.stats.hp -= resultDamage;
       this.$popups.success('Урон получен', `Вы потеряли ${resultDamage} HP`);
       if (this.$user.stats.hp <= 0) {
-        this.$app.isUserDeadReactiveValue = true;
-        this.finishFight();
+        this.userDead();
       }
       this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
 
@@ -627,6 +678,35 @@ export default {
       this.recalculateUserStats();
       this.$forceUpdate();
     },
+
+    async userDead() {
+      this.loosedMoney = Math.round(this.$user.stats.money * MONEY_LOSE_BY_DEATH_PERCENT);
+      this.$user.stats.money -= this.loosedMoney;
+      this.$localStorageManager.saveLosedMoney(this.loosedMoney);
+      this.$user.notSyncedStats.experience = 0;
+      this.$user.notSyncedStats.money = 0;
+      this.$user.notSyncedStats.power = 0;
+      this.$user.notSyncedStats.agility = 0;
+      this.$user.notSyncedStats.intelligence = 0;
+      this.$app.isUserDeadReactiveValue = true;
+      this.finishFight();
+
+      await nextTick();
+      this.regenerateDeadQrs();
+    },
+    regenerateDeadQrs() {
+      if (this.$refs.qrMoney) {
+        (this.$refs.qrMoney as typeof QRGenerator).regenerate(
+          generateQRText(QRTypes.resource, ResourceTypes.money, QRSources.user, String(this.loosedMoney))
+        );
+      }
+      ((this.$refs.allQrs as (typeof QRGenerator)[]) || []).forEach((qrElem: typeof QRGenerator, idx: number) => {
+        const qr = this.scannedNotSavedQrs[idx];
+        qrElem.regenerate(
+          generateQRText(qr.type, qr.subType, qr.source, qr.value, qr.id)
+        );
+      });
+    }
   },
 };
 </script>
