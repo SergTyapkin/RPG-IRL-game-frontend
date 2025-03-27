@@ -292,7 +292,7 @@
                 v-if="!$user.skills.includes(selectedSkill.id) && (selectedSkill.parentId === undefined || $user.skills.includes(selectedSkill.parentId))"
                 @click="learnSkill(selectedSkill)"
                 class="equip"
-                :disabled="selectedSkill.cost > $user.stats[ResourceTypesToStats[selectedTree]]"
+                :disabled="selectedSkill.cost - currentDiscounts[selectedTree] > $user.stats[ResourceTypesToStats[selectedTree]]"
               >
                 Изучить
               </button>
@@ -360,9 +360,9 @@ export default {
       this.currentDiscounts[ResourceTypes.agility] = 0;
       this.currentDiscounts[ResourceTypes.intelligence] = 0;
       effects.forEach(e => {
-        this.currentDiscounts[ResourceTypes.power] += e.buffs[BuffsTypes.powerCostDecrease];
-        this.currentDiscounts[ResourceTypes.agility] += e.buffs[BuffsTypes.agilityCostDecrease];
-        this.currentDiscounts[ResourceTypes.intelligence] += e.buffs[BuffsTypes.intelligenceCostDecrease];
+        this.currentDiscounts[ResourceTypes.power] += e.buffs[BuffsTypes.powerCostDecrease] ?? 0;
+        this.currentDiscounts[ResourceTypes.agility] += e.buffs[BuffsTypes.agilityCostDecrease] ?? 0;
+        this.currentDiscounts[ResourceTypes.intelligence] += e.buffs[BuffsTypes.intelligenceCostDecrease] ?? 0;
       });
     },
 

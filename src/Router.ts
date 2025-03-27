@@ -68,7 +68,7 @@ export default function createVueRouter(Store: Store): Router {
     const deathRedirect = {
       name: 'qrScanner',
     };
-    if (to.name !== deathRedirect.name && Store.state.user && Store.state.user.stats.hp <= 0) {
+    if (to.name !== deathRedirect.name && to.name !== isInFightRedirect.name && Store.state.user && Store.state.user.stats.hp <= 0) {
       next(deathRedirect);
       return;
     } else if (to.name !== isInFightRedirect.name && Store.state.user.isInFight && !(Store.state.user.stats.hp <= 0)) {

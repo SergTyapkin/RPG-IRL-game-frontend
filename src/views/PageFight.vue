@@ -414,6 +414,7 @@ export default {
 
   mounted() {
     this.$app.isUserInFightReactiveValue = this.isUserInFightReactiveValue;
+    this.$app.isUserDeadReactiveValue = this.$user.stats.hp <= 0;
     this.recalculateUserStats();
 
     const abilitiesReloads = this.$localStorageManager.loadAbilitiesReloads();

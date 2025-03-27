@@ -91,6 +91,8 @@ export default {
   computed: {},
 
   mounted() {
+    this.$app.isUserDeadReactiveValue = this.$user.stats.hp <= 0;
+
     const scannedQrs = this.$localStorageManager.loadScannedQrs();
     if (scannedQrs) {
       this.scannedQrs = scannedQrs;

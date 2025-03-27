@@ -20,6 +20,7 @@
     width 100%
     min-height 100vh
     padding 30px 15px 180px 15px
+
   .loading
     centered-absolute-transform()
 
@@ -30,15 +31,7 @@
     width 100%
     max-width 700px
     padding 0
-    &.disabled
-      .buttons
-        > *
-          cursor not-allowed
-          background mix(black, transparent)
-          &.router-link-active
-            background mix(black, transparent)
-          img
-            opacity 0.5
+
     .bottom-line-bg
       position absolute
       bottom 0
@@ -46,6 +39,7 @@
       height 70px
       object-fit cover
       object-position bottom
+
     .buttons
       > *
         button-no-styles()
@@ -58,19 +52,36 @@
         height 35px
         padding 8px
         border-radius borderRadiusS
-        hover-effect()
         trans()
+        &:not(.disabled)
+          hover-effect()
+
+        &.disabled
+          cursor not-allowed
+          background mix(black, transparent)
+
+          &.router-link-active
+            background mix(black, transparent)
+
+          img
+            opacity 0.5
+
         &.router-link-active
           background colorBlockBg
+
         img
           width 100%
           height 100%
+
       .fight
         left 10%
+
       .tree
         left 27%
+
       .map
         left 73%
+
       .profile
         left 90%
 
@@ -140,15 +151,25 @@
       <CircleLoading class="loading" v-if="!Component" />
     </router-view>
 
-    <div class="bottom-interface" :class="{disabled: isUserInFightReactiveValue || isUserDeadReactiveValue}">
+    <div class="bottom-interface">
       <img class="bottom-line-bg" src="/static/images/bottom-line.svg" alt="">
       <nav class="buttons">
-        <router-link :to="{name: 'fight'}" class="fight"><img src="/static/icons/fight.svg" alt=""></router-link>
-        <router-link :to="{name: 'skillsTree'}" class="tree"><img src="/static/icons/tree.svg" alt=""></router-link>
-        <router-link :to="{name: 'map'}" class="map"><img src="/static/icons/map-2.svg" alt=""></router-link>
-        <router-link :to="{name: 'profile'}" class="profile"><img src="/static/icons/profile.svg" alt=""></router-link>
+        <router-link :to="{ name: 'fight' }" class="fight" :class="{ disabled: false }">
+          <img src="/static/icons/fight.svg" alt="">
+        </router-link>
+        <router-link :to="{ name: 'skillsTree' }" class="tree" :class="{disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }">
+          <img src="/static/icons/tree.svg" alt="">
+        </router-link>
+        <router-link :to="{ name: 'map' }" class="map" :class="{disabled: isUserInFightReactiveValue || isUserDeadReactiveValue}">
+          <img src="/static/icons/map-2.svg" alt="">
+        </router-link>
+        <router-link :to="{ name: 'profile' }" class="profile" :class="{disabled: isUserInFightReactiveValue || isUserDeadReactiveValue}">
+          <img src="/static/icons/profile.svg" alt="">
+        </router-link>
 
-        <router-link :to="{name: 'qrScanner'}" class="button-scanner"><img src="/static/icons/qr-scanner.svg" alt=""></router-link>
+        <router-link :to="{ name: 'qrScanner' }" class="button-scanner" :class="{disabled: isUserInFightReactiveValue}">
+          <img src="/static/icons/qr-scanner.svg" alt="">
+        </router-link>
       </nav>
     </div>
   </div>
@@ -175,7 +196,7 @@ export default {
 
       isUserInFightReactiveValue: this.$user?.isInFight,
       isUserDeadReactiveValue: this.$user?.stats?.hp <= 0,
-    }
+    };
   },
 
   mounted() {
@@ -195,14 +216,18 @@ export default {
     });
 
     const appEl = document.getElementById('app')!;
-    window.addEventListener('touchmove', (e) => {
-      const curPageY = e.touches[0].pageY;
-      const dy = this.prevTouchY - curPageY;
-      if (appEl.scrollTop === 0 && dy < 0) {
-        e.preventDefault();
-      }
-      this.prevTouchY = curPageY;
-    }, { passive: false });
+    window.addEventListener(
+      'touchmove',
+      e => {
+        const curPageY = e.touches[0].pageY;
+        const dy = this.prevTouchY - curPageY;
+        if (appEl.scrollTop === 0 && dy < 0) {
+          e.preventDefault();
+        }
+        this.prevTouchY = curPageY;
+      },
+      { passive: false },
+    );
   },
 
   methods: {
