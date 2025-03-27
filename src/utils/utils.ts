@@ -13,6 +13,7 @@ import {
 import { Items } from '~/constants/items';
 import { Abilities } from '~/constants/abilities';
 import { Effects } from '~/constants/effects';
+import { v4 as uuidv4 } from 'uuid';
 
 export function getCookie(name: string) {
   const matches = document.cookie.match(
@@ -306,7 +307,8 @@ export function getTotalUserMaxHP($user: User): number {
 
 
 // -----------------
-export function generateQRText(QRType: QRType, QRSubType: ResourceType | '_', QRSource: QRSource, QRValue: string, QRId: string) {
+export function generateQRText(QRType: QRType, QRSubType: ResourceType | '_', QRSource: QRSource, QRValue: string, QRId?: string) {
+  QRId = QRId || uuidv4();
   return btoa(`${QRType}${QRSubType}${QRSource}${QRValue}${QR_CODE_ID_SPLITTER}${QRId}`);
 }
 export function parseQRText(text: string) {
