@@ -16,6 +16,7 @@ import PageSkills from '~/views/PageSkills.vue';
 import PageFight from '~/views/PageFight.vue';
 import PageQRScanner from '~/views/PageQRScanner.vue';
 import PageTrade from '~/views/PageTrade.vue';
+import PageQRGeneration from '~/views/PageQRGeneration.vue';
 
 type MyRoute = RouteRecordRaw & {
   path: keyof typeof routes,
@@ -40,6 +41,8 @@ export default function createVueRouter(Store: Store): Router {
     { path: '/qr-scanner', name: 'qrScanner', component: PageQRScanner, meta: {loginRequired: true} },
     { path: '/guild', name: 'guild', component: PageGuild, meta: {loginRequired: true} },
     { path: '/trade', name: 'trade', component: PageTrade, meta: {loginRequired: true} },
+
+    { path: '/qr-generation-i2819jd98jsiaodm12asd1', name: 'qrGeneration', component: PageQRGeneration },
 
     { path: '/:pathMatch(.*)*', name: 'page404', component: Page404 },
   ];

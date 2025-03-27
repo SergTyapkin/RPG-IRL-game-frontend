@@ -14,6 +14,8 @@ export default {
   '/guild': true,
   '/trade': false,
 
+  '/qr-generation-i2819jd98jsiaodm12asd1': false,
+
   // Page 404
   '/:pathMatch(.*)*': false,
 };

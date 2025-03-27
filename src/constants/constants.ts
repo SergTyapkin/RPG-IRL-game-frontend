@@ -64,6 +64,7 @@ export const QRSources = {
   quest: 'Q',
   world: 'W',
   user: 'U',
+  guild: 'G',
 }
 
 export type ResourceType = typeof ResourceTypes[keyof typeof ResourceTypes];
