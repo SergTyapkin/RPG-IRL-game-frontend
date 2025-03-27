@@ -35,12 +35,10 @@
       display flex
       gap 15px
       .input
-        flex 1
-        padding 0 10px
+        padding 0 5px
+        width 150px
       .button
         button-emp()
-
-        width min-content
 </style>
 
 <template>
