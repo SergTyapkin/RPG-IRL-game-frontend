@@ -7,10 +7,10 @@
 .wrapper
   position relative
   width 100%
-  max-width 400px
+  max-width 700px
   min-height 100vh
-  border solid colorSec1
-  border-width 0 1px
+  //border solid colorSec1
+  //border-width 0 1px
   // border-radius borderRadiusL
   centered-margin()
   // overflow hidden
@@ -28,7 +28,7 @@
     position fixed
     bottom 0
     width 100%
-    max-width 400px
+    max-width 700px
     padding 0
     &.disabled
       .buttons
