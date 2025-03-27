@@ -30,7 +30,11 @@ export default class LocalStorageManager {
     if (!res) {
       return null;
     }
-    return validateModel(SyncDataModel, res) as SyncedData;
+    try {
+      return validateModel(SyncDataModel, res) as SyncedData;
+    } catch {
+      return null;
+    }
   }
   removeSyncedData() {
     localStorage.removeItem(_PropertyNames.syncedData);
@@ -45,7 +49,11 @@ export default class LocalStorageManager {
     if (!res) {
       return null;
     }
-    return JSON.parse(res) as {[key: string]: number};
+    try {
+      return JSON.parse(res) as {[key: string]: number};
+    } catch {
+      return null;
+    }
   }
   removeAbilitiesReloads() {
     localStorage.removeItem(_PropertyNames.abilitiesReloads);
@@ -60,15 +68,19 @@ export default class LocalStorageManager {
     if (!res) {
       return null;
     }
-    return (validateModel({
-      effects: {
-        type: Array,
-        item: {
-          type: Object,
-          fields: EffectModel
+    try {
+      return (validateModel({
+        effects: {
+          type: Array,
+          item: {
+            type: Object,
+            fields: EffectModel
+          },
         },
-      },
-    }, res) as {effects: Effect[]}).effects;
+      }, res) as {effects: Effect[]}).effects;
+    } catch {
+      return null;
+    }
   }
   removeFightEffects() {
     localStorage.removeItem(_PropertyNames.fightEffects);
