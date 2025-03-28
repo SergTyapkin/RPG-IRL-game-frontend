@@ -51,7 +51,7 @@
     <UserProfileInfo small />
 
     <transition name="opacity">
-      <section class="section-item" v-if="qrType === QRTypes.item">
+      <section class="section-item" v-if="qrType === QRTypes.items">
         <header>Предмет для передачи</header>
         <ItemInfo :obj="item" />
       </section>
@@ -77,7 +77,7 @@
     <transition name="opacity">
       <section class="section-confirm" v-if="!confirmed">
         <ul class="info">
-          <li v-if="qrType === QRTypes.item">
+          <li v-if="qrType === QRTypes.items">
             После подтверждения передачи этот предмет сразу же
             <mark>пропадет из вашего инвентаря</mark>
             и превратится в QR-код
@@ -91,7 +91,7 @@
             <mark>Обновлять страницу и закрывать браузер будет нельзя</mark>
             , пока другой человек не отсканирует этот QR-код
           </li>
-          <li v-if="qrType === QRTypes.item">
+          <li v-if="qrType === QRTypes.items">
             Если вы закроете страницу, а другой человек не отсканирует QR-код,
             <mark>предмет не будет передан и просто пропадет!</mark>
           </li>
@@ -150,7 +150,7 @@ export default {
     if (!this.qrType) {
       this.$popups.error('Ошибка', `Нет типа передачи!`);
       return;
-    } else if (this.qrType === QRTypes.item) {
+    } else if (this.qrType === QRTypes.items) {
       if (!this.qrValue) {
         this.$popups.error('Ошибка', `Нет id предмета для передачи!`);
         this.$router.push({ name: 'default' });
@@ -184,9 +184,9 @@ export default {
       }
 
       this.confirmed = true;
-      if (this.qrType === QRTypes.item) {
+      if (this.qrType === QRTypes.items) {
         (this.$refs.qr as typeof QRGenerator).regenerate(
-          generateQRText(QRTypes.item, '_', QRSources.user, this.qrValue!),
+          generateQRText(QRTypes.items, '_', QRSources.user, this.qrValue!),
         );
         this.$user.inventory.splice(this.itemIdxInInventory, 1);
       } else if (this.qrType === QRTypes.resource) {

@@ -67,7 +67,7 @@
 import QRScanner from '~/components/QRScanner.vue';
 import { BuffsTypes, NO_SERVER_MODE, QRSources, QRTypes, ResourceTypes } from '~/constants/constants';
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
-import { getAllUserEffects, getTotalUserMaxHP, itemIdToItem, parseQRText } from '~/utils/utils';
+import { ExtendedItem, getAllUserEffects, getTotalUserMaxHP, itemsIdsToItems, parseQRText } from '~/utils/utils';
 import CircleLoading from '~/components/loaders/CircleLoading.vue';
 import validateModel from '@sergtyapkin/models-validator';
 import { GuildModel, GuildModelMockData } from '~/utils/APIModels';
@@ -195,14 +195,20 @@ export default {
           this.$popups.success('QR отсканирован', `Вылечено ${QRValue} здоровья`);
           break;
         }
-        case QRTypes.item: {
+        case QRTypes.items: {
           if (this.$user.stats.hp <= 0) {
             this.$popups.error('Вы погиблил в бою', 'Прежде чем совершать любые действия, восстановитесь на базе');
             return;
           }
-          this.$user.inventory.push(QRValue);
-          const item = itemIdToItem(QRValue);
-          this.$popups.success('QR отсканирован', `Получен предмет "${item.name}"`);
+          let items: ExtendedItem[] = [];
+          try {
+            items = itemsIdsToItems(JSON.parse(QRValue));
+          } catch {
+            this.$popups.error('Ошибка в структуре', 'Ошибка при парсинге предметов');
+            return;
+          }
+          this.$user.inventory.push(...(items.map(i => i.id)));
+          this.$popups.success('QR отсканирован', `Получены предметы: ${items.map(i => `"${i.name}"`).join(', ')}`);
           break;
         }
         case QRTypes.sync: {

@@ -1,4 +1,4 @@
-import { BuffType, ClassType, QRSource, QRType, ResourceType } from '~/constants/constants';
+import { BuffType, ClassType, ItemType, QRSource, QRType, ResourceType } from '~/constants/constants';
 
 export interface User {
   id: string;
@@ -110,8 +110,9 @@ export interface Guild {
 export interface Item {
   id: string;
   name: string;
-  type: string;
+  type: ItemType;
   protection: number;
+  buffs: {[key in BuffType]: number};
   abilities: string[];
   effects: string[];
   description: string;

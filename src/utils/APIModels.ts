@@ -77,6 +77,7 @@ export const ItemModel = {
   type: String,
   protection: Number,
   imageUrl: String,
+  buffs: Object,
   effects: {
     type: Array,
     item: String,
@@ -94,8 +95,10 @@ export const ItemModelMockData = validateModel(ItemModel, {
   type: 'boots',
   protection: 2,
   imageUrl: DefaultKnifeImage,
+  buffs: {
+    [BuffsTypes.protectionIncrease]: 2,
+  },
   effects: [
-    EffectModelMockData.id,
   ],
   abilities: [
     AbilityModelMockData.id,
@@ -265,7 +268,7 @@ export const SyncDataModel = {
 
 export const SyncDataModelMockData = {
   user: UserModelMockData,
-  guild: GuildModelMockData
+  guild: GuildModelMockData,
 } as SyncedData;
 
 export const QRDataModel = {
@@ -278,7 +281,7 @@ export const QRDataModel = {
 
 export const QRDataModelMockData = validateModel(QRDataModel, {
   id: 'QR_ID_1',
-  type: QRTypes.item,
+  type: QRTypes.items,
   subType: '_',
   source: QRSources.quest,
   value: Items.daggerNightCardinal.id,

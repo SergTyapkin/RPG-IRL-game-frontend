@@ -38,9 +38,10 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.artefact,
     protection: 0,
     imageUrl: ImgArtefactBlackStar,
+    buffs: {},
     effects: [
       Effects.maxHp.id,
-      Effects.damage1.id,
+      Effects.damageIncrease.id,
     ],
     abilities: [
     ],
@@ -52,9 +53,10 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.artefact,
     protection: 0,
     imageUrl: ImgArtefactEyeInjustice,
+    buffs: {},
     effects: [
       Effects.maxHp.id,
-      Effects.damage1.id,
+      Effects.damageIncrease.id,
     ],
     abilities: [
     ],
@@ -66,6 +68,7 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.artefact,
     protection: 0,
     imageUrl: ImgArtefactLiveCup,
+    buffs: {},
     effects: [
       Effects.maxHp.id,
     ],
@@ -79,6 +82,7 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.artefact,
     protection: 0,
     imageUrl: ImgArtefactMainStone,
+    buffs: {},
     effects: [
       Effects.maxHp.id,
     ],
@@ -92,6 +96,7 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.artefact,
     protection: 0,
     imageUrl: ImgArtefactPhoenixLive,
+    buffs: {},
     effects: [
       Effects.maxHp.id,
     ],
@@ -105,9 +110,10 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.artefact,
     protection: 0,
     imageUrl: ImgArtefactShieldKingGuardian,
+    buffs: {},
     effects: [
       Effects.maxHp.id,
-      Effects.damage1.id,
+      Effects.damageIncrease.id,
     ],
     abilities: [
     ],
@@ -119,9 +125,10 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.artefact,
     protection: 0,
     imageUrl: ImgArtefactKompasWay,
+    buffs: {},
     effects: [
       Effects.maxHp.id,
-      Effects.damage1.id,
+      Effects.damageIncrease.id,
     ],
     abilities: [
     ],
@@ -135,6 +142,7 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.weapon,
     protection: 0,
     imageUrl: ImgDaggerNightCardinal,
+    buffs: {},
     effects: [
       Effects.powerLowCost.id,
     ],
@@ -151,6 +159,7 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.weapon,
     protection: 0,
     imageUrl: ImgSwordAlchemy,
+    buffs: {},
     effects: [
       Effects.powerLowCost.id,
     ],
@@ -165,6 +174,7 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.weapon,
     protection: 0,
     imageUrl: ImgSwordStorm,
+    buffs: {},
     effects: [
       Effects.powerLowCost.id,
     ],
@@ -181,6 +191,7 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.weapon,
     protection: 0,
     imageUrl: ImgPistolDeathBreath,
+    buffs: {},
     effects: [
       Effects.powerLowCost.id,
     ],
@@ -197,8 +208,9 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.hat,
     protection: 1,
     imageUrl: ImgHatBerserk,
+    buffs: {},
     effects: [
-      Effects.damage1.id,
+      Effects.damageIncrease.id,
     ],
     abilities: [
     ],
@@ -210,8 +222,9 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.hat,
     protection: 1,
     imageUrl: ImgHatIcePirates,
+    buffs: {},
     effects: [
-      Effects.damage1.id,
+      Effects.damageIncrease.id,
     ],
     abilities: [
     ],
@@ -225,8 +238,9 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.main,
     protection: 4,
     imageUrl: ImgMainBerserk,
+    buffs: {},
     effects: [
-      Effects.damage1.id,
+      Effects.damageIncrease.id,
     ],
     abilities: [
     ],
@@ -238,8 +252,9 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.main,
     protection: 4,
     imageUrl: ImgMainElitePirate,
+    buffs: {},
     effects: [
-      Effects.damage1.id,
+      Effects.damageIncrease.id,
     ],
     abilities: [
     ],
@@ -251,8 +266,9 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.main,
     protection: 4,
     imageUrl: ImgMainKingHunter,
+    buffs: {},
     effects: [
-      Effects.damage1.id,
+      Effects.damageIncrease.id,
       Effects.protection.id,
       Effects.maxHp.id,
     ],
@@ -266,8 +282,9 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.main,
     protection: 4,
     imageUrl: ImgMainMagicSecret,
+    buffs: {},
     effects: [
-      Effects.damage1.id,
+      Effects.damageIncrease.id,
     ],
     abilities: [
     ],
@@ -281,8 +298,9 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.boots,
     protection: 2,
     imageUrl: ImgBootsBerserk,
+    buffs: {},
     effects: [
-      Effects.damage1.id,
+      Effects.damageIncrease.id,
     ],
     abilities: [
     ],
@@ -294,8 +312,9 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.boots,
     protection: 2,
     imageUrl: ImgBootsKingSailor,
+    buffs: {},
     effects: [
-      Effects.damage1.id,
+      Effects.damageIncrease.id,
     ],
     abilities: [
     ],

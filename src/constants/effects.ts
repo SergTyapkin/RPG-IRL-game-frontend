@@ -50,41 +50,6 @@ export const Effects: { [key: string]: Effect } = {
     },
   },
 
-  // ----- Operational (hidden) effects
-  maxHp_op: {
-    id: String(),
-    name: '+ макс. здоровье',
-    description: 'Ваше максимальное здоровье увеличено на 1',
-    imageUrl: DefaultAbilityImage,
-    hidden: true,
-    onlyForFight: false,
-    buffs: {
-      [BuffsTypes.maxHpIncrease]: 1,
-    },
-  },
-  protection_op: {
-    id: String(),
-    name: '+ защита',
-    description: 'Ваша защита увеличена на 1',
-    imageUrl: DefaultAbilityImage,
-    hidden: true,
-    onlyForFight: false,
-    buffs: {
-      [BuffsTypes.protectionIncrease]: 1,
-    },
-  },
-  damage_op: {
-    id: String(),
-    name: '+ урон',
-    description: 'Ваша урон увеличен на 1',
-    imageUrl: DefaultAbilityImage,
-    hidden: true,
-    onlyForFight: false,
-    buffs: {
-      [BuffsTypes.damageDoneIncrease]: 1,
-    },
-  },
-
   // ----- Default effects
   luck: {
     id: String(),
@@ -130,7 +95,7 @@ export const Effects: { [key: string]: Effect } = {
       [BuffsTypes.protectionIncrease]: 2,
     },
   },
-  damage1: {
+  damageIncrease: {
     id: String(),
     name: 'Сила I',
     description: 'Ваш наносимый урон увеличена на 2',
@@ -141,7 +106,7 @@ export const Effects: { [key: string]: Effect } = {
       [BuffsTypes.damageDoneIncrease]: 2,
     },
   },
-  damage2: {
+  damageModifier: {
     id: String(),
     name: 'Сила II',
     description: 'Ваш наносимый урон увеличена на 25%',

@@ -287,12 +287,12 @@ export default {
     saveAndUpdateInventories() {
       this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
       this.recalculateUserStats();
-      this.$refs.inventory.update();
-      this.$refs.equipment.update();
+      (this.$refs.inventory as typeof Inventory).update();
+      (this.$refs.equipment as typeof Equipment).update();
     },
 
     tradeItem(item: Item) {
-      this.$router.push({ name: 'trade', query: { qrValue: item.id, qrType: QRTypes.item } });
+      this.$router.push({ name: 'trade', query: { qrValue: JSON.stringify([item.id]), qrType: QRTypes.items } });
     },
     tradeMoney() {
       this.$router.push({ name: 'trade', query: { qrType: QRTypes.resource } });

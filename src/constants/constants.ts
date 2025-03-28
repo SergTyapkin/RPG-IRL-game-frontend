@@ -54,7 +54,7 @@ export const BuffsTypes = {
 
 export const QRTypes = {
   resource: 'R',
-  item: 'I',
+  items: 'I',
   heal: 'H',
   damage: 'D',
   sync: 'S',

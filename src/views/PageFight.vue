@@ -641,8 +641,13 @@ export default {
       this.modalState = this.ModalStates.chooseHeal;
     },
 
-    takeDamage(value: number) {
-      const resultDamage = Math.max(0, value - this.userProtection);
+    takeDamage(value: number, isPiercing = false) {
+      let resultDamage = 0;
+      if (isPiercing) {
+        resultDamage = value;
+      } else {
+        resultDamage = Math.max(0, value - this.userProtection);
+      }
       this.$user.stats.hp -= resultDamage;
       this.$popups.success('Урон получен', `Вы потеряли ${resultDamage} HP`);
       if (this.$user.stats.hp <= 0) {
