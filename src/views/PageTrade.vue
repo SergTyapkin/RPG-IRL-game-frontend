@@ -186,7 +186,7 @@ export default {
       this.confirmed = true;
       if (this.qrType === QRTypes.items) {
         (this.$refs.qr as typeof QRGenerator).regenerate(
-          generateQRText(QRTypes.items, '_', QRSources.user, this.qrValue!),
+          generateQRText(QRTypes.items, '_', QRSources.user, JSON.stringify([this.qrValue])),
         );
         this.$user.inventory.splice(this.itemIdxInInventory, 1);
       } else if (this.qrType === QRTypes.resource) {

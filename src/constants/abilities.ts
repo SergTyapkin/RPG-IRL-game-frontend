@@ -8,29 +8,23 @@ export interface InFightAbility extends EffectedAbility {
 }
 
 export const Abilities: {[key: string]: Ability} = {
-  daggerHit: {
+  default: {
     id: String(),
-    name: 'Удар кинжала',
-    description: 'Наносит 1 урона одному врагу. Даёт кровотечение',
+    name: 'Кулаки',
+    description: 'Удар кулаком наносит 1 или 2 урона с 50% шансом одному врагу',
     imageUrl: DefaultAbilityImage,
-    effectsToTargets: [Effects.bleeding.id],
-    effectsForMe: [Effects.regeneration.id],
+    effectsToTargets: [],
+    effectsForMe: [],
     damage: 1,
     damageTargets: 1,
     heal: 0,
     reload: 1,
-  },
-  longSwordHit: {
-    id: String(),
-    name: 'Удар длинного меча',
-    description: 'Наносит 5 урона двум врагам. Накладывает на них слабость',
-    imageUrl: DefaultAbilityImage,
-    effectsToTargets: [Effects.weakness.id],
-    effectsForMe: [],
-    damage: 5,
-    damageTargets: 2,
-    heal: 0,
-    reload: 2,
+    chances: [
+      {
+        damage: 1,
+        probability: 0.5,
+      }
+    ],
   },
   healPotion: {
     id: String(),
@@ -43,6 +37,7 @@ export const Abilities: {[key: string]: Ability} = {
     damageTargets: 0,
     heal: 3,
     reload: 3,
+    chances: [],
   },
 }
 

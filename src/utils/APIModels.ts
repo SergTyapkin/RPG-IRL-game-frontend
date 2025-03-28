@@ -18,8 +18,18 @@ export const EffectModel = {
   description: String,
   imageUrl: String,
   buffs: Object,
-  hidden: Boolean,
-  onlyForFight: Boolean,
+  hidden: {
+    type: Boolean,
+    optional: true,
+  },
+  isForFight: {
+    type: Boolean,
+    optional: true,
+  },
+  onlyForFight: {
+    type: Boolean,
+    optional: true,
+  },
   turns: {
     type: Number,
     optional: true,
@@ -63,8 +73,8 @@ export const AbilityModelMockData = validateModel(AbilityModel,     {
   name: 'Название способности',
   description: 'Какое-то описание способности',
   imageUrl: DefaultAbilityImage,
-  effectsToTargets: [Effects.bleeding.id],
-  effectsForMe: [Effects.regeneration.id],
+  effectsToTargets: [Effects.bleeding_1.id],
+  effectsForMe: [Effects.regeneration_1.id],
   damage: 5,
   damageTargets: 2,
   heal: 10,

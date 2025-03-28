@@ -48,8 +48,12 @@ export const BuffsTypes = {
   powerCostDecrease: 'powerCostDecrease',
   agilityCostDecrease: 'agilityCostDecrease',
   intelligenceCostDecrease: 'intelligenceCostDecrease',
+  powerPerLevelIncrease: 'powerPerLevelIncrease',
+  agilityPerLevelIncrease: 'agilityPerLevelIncrease',
+  intelligencePerLevelIncrease: 'intelligencePerLevelIncrease',
   damageDoneModifier: 'damageDoneModifier',
   damageDoneIncrease: 'damageDoneIncrease',
+  hpEveryTurn: 'hpEveryTurn',
 };
 
 export const QRTypes = {

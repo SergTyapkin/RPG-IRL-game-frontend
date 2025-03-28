@@ -109,7 +109,7 @@
 
     <section class="section-qr">
       <header>QR-код для передачи</header>
-      <input :value="qrText" @change="regenerateQR">
+      <input :value="qrText">
       <QRGenerator ref="qr" v-show="selectedQRSubType && selectedQRType && selectedQRSource && QRValue" />
     </section>
   </div>
@@ -161,13 +161,16 @@ export default {
 
   watch: {
     selectedQRType() {
-      return this.regenerateQR();
+      this.regenerateQR();
     },
     selectedQRSubType() {
-      return this.regenerateQR();
+      this.regenerateQR();
     },
     selectedQRSource() {
-      return this.regenerateQR();
+      this.regenerateQR();
+    },
+    QRValue() {
+      this.regenerateQR();
     },
   },
 };

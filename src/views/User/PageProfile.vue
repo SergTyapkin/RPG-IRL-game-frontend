@@ -50,6 +50,26 @@
     header
       margin-bottom 20px
 
+  .section-effects
+    margin-top 40px
+
+    header
+      margin-bottom 30px
+      color colorSec1
+      font-large()
+      font-bold()
+
+    .info
+      font-small()
+
+      color colorText5
+      text-align center
+
+    .effects-container
+      display flex
+      flex-direction column
+      gap 25px
+
   .section-modals
     position fixed
     inset 0
@@ -83,8 +103,7 @@
         :level="$user.level"
         :cur-synced-xp="$user.stats?.experience"
         :cur-not-synced-xp="$user.notSyncedStats?.experience"
-        :max-xp="UserLevels[$user.level].experience"
-      />
+        :max-xp="UserLevels[$user.level].experience" />
     </section>
 
     <section class="section-HP-Money">
@@ -94,8 +113,7 @@
         :value="String($user.stats?.money)"
         :not-synced-value="$user.notSyncedStats?.money"
         @click="tradeMoney"
-        class="money-badge"
-      />
+        class="money-badge" />
     </section>
 
     <section class="section-equipment">
@@ -109,6 +127,14 @@
     <section class="section-inventory">
       <header>Инвентарь</header>
       <Inventory :items-ids="$user.inventory" @select="selectItem" ref="inventory" />
+    </section>
+
+    <section class="section-effects">
+      <header>Эффекты</header>
+      <div class="effects-container">
+        <div v-if="!shownEffects.length" class="info">Эффектов нет</div>
+        <EffectComponent v-for="effect in shownEffects" :key="effect.id" :effect="effect" />
+      </div>
     </section>
 
     <!--    <div class="buttons-row">-->
@@ -126,8 +152,7 @@
         @click="
           selectedItem = undefined;
           selectedEquippedItem = undefined;
-        "
-      >
+        ">
         <transition mode="out-in" name="opacity">
           <ItemInfo
             class="modal"
@@ -136,16 +161,15 @@
             @click.stop
             @close="selectedItem = undefined"
             image-with-shadow
-            closable
-          >
+            closable>
             <template #buttons>
               <button
                 @click="equipItem(selectedItem)"
                 class="equip"
                 v-if="
-                  [ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(selectedItem.type) && !selectedItem.notSynced
-                "
-              >
+                  [ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(selectedItem.type) &&
+                  !selectedItem.notSynced
+                ">
                 Экипировать
               </button>
               <button @click="tradeItem(selectedItem)" class="trade">Передать</button>
@@ -159,8 +183,7 @@
             @click.stop
             @close="selectedEquippedItem = undefined"
             image-with-shadow
-            closable
-          >
+            closable>
             <template #buttons>
               <button @click="unequipItem(selectedEquippedItem)" class="equip">Снять</button>
             </template>
@@ -179,12 +202,13 @@ import { ItemTypes, NO_SERVER_MODE, QRTypes, ResourceTypes } from '~/constants/c
 import Equipment from '~/components/Equipment.vue';
 import Inventory from '~/components/Inventory.vue';
 import { UserLevels } from '~/constants/levels';
-import { getTotalUserMaxHP, getTotalUserProtection } from '~/utils/utils';
+import { getAllUserEffects, getTotalUserMaxHP, getTotalUserProtection } from '~/utils/utils';
 import { type Item } from '~/types/types';
 import ItemInfo from '~/components/ItemInfo.vue';
+import EffectComponent from '~/components/Effect.vue';
 
 export default {
-  components: { ItemInfo, Inventory, Equipment, ValueBadge, LevelComponent, UserProfileInfo },
+  components: { EffectComponent, ItemInfo, Inventory, Equipment, ValueBadge, LevelComponent, UserProfileInfo },
 
   data() {
     return {
@@ -198,6 +222,12 @@ export default {
       UserLevels,
       ItemTypes,
     };
+  },
+
+  computed: {
+    shownEffects() {
+      return getAllUserEffects(this.$user, false);
+    },
   },
 
   mounted() {
@@ -292,7 +322,7 @@ export default {
     },
 
     tradeItem(item: Item) {
-      this.$router.push({ name: 'trade', query: { qrValue: JSON.stringify([item.id]), qrType: QRTypes.items } });
+      this.$router.push({ name: 'trade', query: { qrValue: item.id, qrType: QRTypes.items } });
     },
     tradeMoney() {
       this.$router.push({ name: 'trade', query: { qrType: QRTypes.resource } });

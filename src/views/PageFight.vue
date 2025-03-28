@@ -69,6 +69,7 @@
         text-align center
         font-medium()
         color colorText3
+
       .info
         text-align center
 
@@ -231,7 +232,7 @@
 
     <transition name="opacity" mode="out-in">
       <section class="section-not-alive-info" v-if="$user.stats.hp <= 0">
-        <img class="image" src="/static/icons/fight.svg" alt="death">
+        <img class="image" src="/static/icons/fight.svg" alt="death" />
         <ul class="info">
           <li>
             Вы погибли в бою.
@@ -301,8 +302,8 @@
     <section class="section-effects">
       <header>Постоянные эффекты</header>
       <div class="effects-container">
-        <div v-if="!effects.length" class="info">Эффектов нет</div>
-        <EffectComponent v-for="effect in effects" :key="effect.id" :effect="effect" />
+        <div v-if="!shownEffects.length" class="info">Эффектов нет</div>
+        <EffectComponent v-for="effect in shownEffects" :key="effect.id" :effect="effect" />
       </div>
     </section>
 
@@ -322,8 +323,7 @@
           v-for="ability in abilities"
           @click="playAbility(ability)"
           :key="ability.id"
-          :ability="ability"
-        />
+          :ability="ability" />
       </div>
     </section>
 
@@ -331,14 +331,13 @@
       <section
         v-if="isHpProtectionShowedOnly"
         class="section-hp-protection-only"
-        @click="isHpProtectionShowedOnly = false"
-      >
+        @click="isHpProtectionShowedOnly = false">
         <section class="section-hp">
-          <img src="/static/icons/heart.svg" alt="">
+          <img src="/static/icons/heart.svg" alt="" />
           <div class="value">{{ $user.stats.hp }}</div>
         </section>
         <section class="section-protection">
-          <img src="/static/icons/shield.svg" alt="">
+          <img src="/static/icons/shield.svg" alt="" />
           <div class="value">{{ userProtection }}</div>
         </section>
       </section>
@@ -349,7 +348,7 @@
         <transition mode="out-in" name="opacity">
           <section class="section-choose-damage" v-if="modalState === ModalStates.chooseDamage" @click.stop>
             <button class="close">
-              <img src="/static/icons/close.svg" alt="close" @click="modalState = ModalStates.none">
+              <img src="/static/icons/close.svg" alt="close" @click="modalState = ModalStates.none" />
             </button>
             <header>Введите кол-во урона</header>
             <Range class="range" :min="1" :max="15" v-model="chosenValue" :labels-count="14" />
@@ -357,7 +356,7 @@
           </section>
           <section class="section-choose-heal" v-else-if="modalState === ModalStates.chooseHeal" @click.stop>
             <button class="close">
-              <img src="/static/icons/close.svg" alt="close" @click="modalState = ModalStates.none">
+              <img src="/static/icons/close.svg" alt="close" @click="modalState = ModalStates.none" />
             </button>
             <header>Введите кол-во лечения</header>
             <Range class="range" :min="1" :max="10" v-model="chosenValue" :labels-count="9" />
@@ -366,7 +365,7 @@
 
           <section class="section-choose-effects" v-else-if="modalState === ModalStates.chooseEffect" @click.stop>
             <button class="close">
-              <img src="/static/icons/close.svg" alt="close" @click="modalState = ModalStates.none">
+              <img src="/static/icons/close.svg" alt="close" @click="modalState = ModalStates.none" />
             </button>
             <header>Выберите эффект</header>
             <div class="effects-container">
@@ -376,8 +375,7 @@
                 :effect="effect"
                 without-source
                 :class="{ selected: selectedEffect === effect }"
-                @click="selectedEffect = effect"
-              />
+                @click="selectedEffect = effect" />
             </div>
             <transition name="opacity">
               <button v-show="selectedEffect" class="button-submit" @click="takeEffect(selectedEffect)">Выбрать</button>
@@ -396,6 +394,7 @@ import { BuffsTypes, MONEY_LOSE_BY_DEATH_PERCENT, QRSources, QRTypes, ResourceTy
 import EffectComponent from '~/components/Effect.vue';
 import AbilityComponent from '~/components/Ability.vue';
 import {
+  effectsIdsToEffects,
   generateQRText,
   getAllUserAbilities,
   getAllUserEffects,
@@ -404,10 +403,11 @@ import {
 } from '~/utils/utils';
 import { type InFightAbility } from '~/constants/abilities';
 import Range from '~/components/Range.vue';
-import { Effects, FightEffects } from '~/constants/effects';
-import { type Effect, QRData } from '~/types/types';
+import { Effects, FightEffects, TeamEffectsIds } from '~/constants/effects';
+import { AbilityChance, type Effect, QRData } from '~/types/types';
 import QRGenerator from '~/components/QRGenerator.vue';
 import { nextTick } from 'vue';
+import { userDead } from '~/utils/userEvents';
 
 export default {
   components: { QRGenerator, Range, AbilityComponent, EffectComponent, ValueBadge, UserProfileInfo },
@@ -439,6 +439,9 @@ export default {
   },
 
   computed: {
+    shownEffects() {
+      return getAllUserEffects(this.$user, true);
+    },
     effects() {
       return getAllUserEffects(this.$user);
     },
@@ -556,6 +559,8 @@ export default {
         return;
       }
       ability.reloadLeft = ability.reload;
+
+      // Calculate stats ------------
       // Calculate damage
       let damage = ability.damage;
       const damageTargets = ability.damageTargets;
@@ -571,11 +576,21 @@ export default {
       damage *= damageModifier;
       damage = Math.round(damage);
       // Calculate heal
-      const heal = ability.heal;
+      let heal = ability.heal;
       // Calculate effects
       const effectsToTargets = ability.effectsToTargets;
       const effectsForMe = ability.effectsForMe;
-      // Inform user
+      // Calculate chances
+      (ability.chances || []).forEach((chance: AbilityChance) => {
+        if (Math.random() < chance.probability) {
+          damage += chance.damage ?? 0;
+          heal += chance.heal ?? 0;
+          effectsToTargets.push(...(effectsIdsToEffects(chance.effectsToTargets ?? [])));
+          effectsForMe.push(...(effectsIdsToEffects(chance.effectsForMe ?? [])));
+        }
+      });
+
+      // Inform user ------------
       if (damage > 0) {
         await this.$modals.alert(
           `Вы наносите ${damage} урона по ${damageTargets} противнику(ам)`,
@@ -615,16 +630,35 @@ export default {
         abilitiesReloads[ability.id] = ability.reloadLeft;
       });
 
-      this.fightEffects.forEach(effect => {
-        switch (effect.id) {
-          case Effects.bleeding.id:
-            this.takeDamage(1);
-            break;
-          case Effects.regeneration.id:
-            this.takeHeal(1);
-            break;
+      // Personal bleeding
+      let totalHPChangeVal = 0;
+      this.fightEffects.concat(this.effects).forEach(effect => {
+        totalHPChangeVal += effect.buffs[BuffsTypes.hpEveryTurn] ?? 0;
+      });
+      if (totalHPChangeVal < 0) {
+        this.takeDamage(totalHPChangeVal);
+      } else if (totalHPChangeVal > 0) {
+        this.takeHeal(totalHPChangeVal);
+      }
+
+      // Team bleeding
+      let teamTotalHPChangeVal = 0;
+      this.fightEffects.concat(this.effects).forEach(effect => {
+        if (TeamEffectsIds.includes(effect.id)) {
+          teamTotalHPChangeVal += effect.buffs[BuffsTypes.hpEveryTurn] ?? 0;
         }
       });
+      if (teamTotalHPChangeVal < 0) {
+        this.$modals.alert(
+          `Все ваши союзники получают по ${teamTotalHPChangeVal} урона`,
+          'Громко скажите им это. Они должны ввести этот урон себе сами',
+        );
+      } else if (teamTotalHPChangeVal > 0) {
+        this.$modals.alert(
+          `Все ваши союзники восстанавливают по ${teamTotalHPChangeVal} единиц здоровья`,
+          'Громко скажите им это. Они должны ввести этот урон себе сами',
+        );
+      }
 
       this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
       this.$localStorageManager.saveAbilitiesReloads(abilitiesReloads);
@@ -685,14 +719,8 @@ export default {
     },
 
     async userDead() {
-      this.loosedMoney = Math.round(this.$user.stats.money * MONEY_LOSE_BY_DEATH_PERCENT);
-      this.$user.stats.money -= this.loosedMoney;
+      this.loosedMoney = userDead(this.$user);
       this.$localStorageManager.saveLosedMoney(this.loosedMoney);
-      this.$user.notSyncedStats.experience = 0;
-      this.$user.notSyncedStats.money = 0;
-      this.$user.notSyncedStats.power = 0;
-      this.$user.notSyncedStats.agility = 0;
-      this.$user.notSyncedStats.intelligence = 0;
       this.$app.isUserDeadReactiveValue = true;
       this.finishFight();
 
@@ -702,16 +730,14 @@ export default {
     regenerateDeadQrs() {
       if (this.$refs.qrMoney) {
         (this.$refs.qrMoney as typeof QRGenerator).regenerate(
-          generateQRText(QRTypes.resource, ResourceTypes.money, QRSources.user, String(this.loosedMoney))
+          generateQRText(QRTypes.resource, ResourceTypes.money, QRSources.user, String(this.loosedMoney)),
         );
       }
       ((this.$refs.allQrs as (typeof QRGenerator)[]) || []).forEach((qrElem: typeof QRGenerator, idx: number) => {
         const qr = this.scannedNotSavedQrs[idx];
-        qrElem.regenerate(
-          generateQRText(qr.type, qr.subType, qr.source, qr.value, qr.id)
-        );
+        qrElem.regenerate(generateQRText(qr.type, qr.subType, qr.source, qr.value, qr.id));
       });
-    }
+    },
   },
 };
 </script>

@@ -33,13 +33,18 @@
         border-radius borderRadiusMax
         centered-flex-container()
         font-medium()
-        &.damage
-          background colorEmpPower
-        &.heal
-          background colorEmpAgility
         img
           height 1lh
           margin-right 3px
+        &.damage
+          background colorEmpPower
+        &.heal
+          background colorEmpHeal
+        &.chances
+          padding 0
+          background colorEmp1
+          img
+            margin 0
 
   .text-container
     display flex
@@ -102,6 +107,7 @@
           <img src="/static/icons/fight.svg" alt="">{{ ability.damage }}
         </div>
         <div v-if="ability.heal" class="stat heal"><img src="/static/icons/heart.svg" alt="">{{ ability.heal }}</div>
+        <div v-if="ability.chances?.length" class="stat chances"><img src="/static/icons/percent.svg" alt=""></div>
       </section>
     </section>
     <section class="text-container">

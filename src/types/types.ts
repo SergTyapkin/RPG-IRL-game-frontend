@@ -47,6 +47,14 @@ export interface Class {
   }
 }
 
+export interface AbilityChance {
+  probability: number,
+
+  damage?: number,
+  heal?: number,
+  effectsToTargets?: string[],
+  effectsForMe?: string[],
+}
 export interface Ability {
   id: string;
   name: string;
@@ -59,6 +67,8 @@ export interface Ability {
   damageTargets: number;
   heal: number;
   reload: number;
+
+  chances: AbilityChance[],
 }
 
 export interface Effect {
@@ -66,8 +76,9 @@ export interface Effect {
   name: string;
   description: string;
   imageUrl: string;
-  hidden: boolean;
-  onlyForFight: boolean;
+  hidden?: boolean;
+  isForFight?: boolean,
+  onlyForFight?: boolean;
   turns?: number;
 
   buffs: {[key in BuffType]: number};

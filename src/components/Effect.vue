@@ -105,15 +105,21 @@
         <img v-else-if="buff === BuffsTypes.protectionIncrease" src="/static/icons/buff-dmg.svg" alt="protection">
         <img v-else-if="buff === BuffsTypes.experienceModifier" src="/static/icons/buff-dmg.svg" alt="experience">
         <img v-else-if="buff === BuffsTypes.moneyModifier" src="/static/icons/buff-dmg.svg" alt="money">
-        <img v-else-if="buff === BuffsTypes.powerCostDecrease" src="/static/icons/buff-dmg.svg" alt="power">
-        <img v-else-if="buff === BuffsTypes.agilityCostDecrease" src="/static/icons/buff-dmg.svg" alt="agility">
+        <img v-else-if="buff === BuffsTypes.powerCostDecrease" src="/static/icons/buff-dmg.svg" alt="power-low-cost">
+        <img v-else-if="buff === BuffsTypes.agilityCostDecrease" src="/static/icons/buff-dmg.svg" alt="agility-low-cost">
         <img
           v-else-if="buff === BuffsTypes.intelligenceCostDecrease"
           src="/static/icons/buff-dmg.svg"
           alt="intelligence"
+          class="intelligence-low-cost"
         >
-        <img v-else-if="buff === BuffsTypes.damageDoneModifier" src="/static/icons/buff-dmg.svg" alt="damage">
-        <img v-else-if="buff === BuffsTypes.damageDoneIncrease" src="/static/icons/buff-dmg.svg" alt="damage">
+        <img v-else-if="buff === BuffsTypes.powerPerLevelIncrease" src="/static/icons/buff-dmg.svg" alt="power-add">
+        <img v-else-if="buff === BuffsTypes.agilityPerLevelIncrease" src="/static/icons/buff-dmg.svg" alt="agility-add">
+        <img v-else-if="buff === BuffsTypes.intelligencePerLevelIncrease" src="/static/icons/buff-dmg.svg" alt="intelligence-add">
+        <img v-else-if="buff === BuffsTypes.damageDoneModifier" src="/static/icons/fight.svg" alt="damage">
+        <img v-else-if="buff === BuffsTypes.damageDoneIncrease" src="/static/icons/fight.svg" alt="damage">
+        <img v-else-if="buff === BuffsTypes.hpEveryTurn && value > 0" src="/static/icons/heart.svg" alt="regeneration">
+        <img v-else-if="buff === BuffsTypes.hpEveryTurn && value < 0" src="/static/icons/buff-dmg.svg" alt="bleeding">
 
         <div class="value">{{ value }}</div>
       </div>

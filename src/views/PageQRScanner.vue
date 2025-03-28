@@ -73,6 +73,8 @@ import validateModel from '@sergtyapkin/models-validator';
 import { GuildModel, GuildModelMockData } from '~/utils/APIModels';
 import { UserLevels } from '~/constants/levels';
 import { type QRData } from '~/types/types';
+import { Classes } from '~/constants/classes';
+import { userIncreaseLevel } from '~/utils/userEvents';
 
 export default {
   components: { CircleLoading, UserProfileInfo, QRScanner },
@@ -202,7 +204,9 @@ export default {
           }
           let items: ExtendedItem[] = [];
           try {
-            items = itemsIdsToItems(JSON.parse(QRValue));
+            const itemsIds = JSON.parse(QRValue);
+            console.log(itemsIds);
+            items = itemsIdsToItems(itemsIds);
           } catch {
             this.$popups.error('Ошибка в структуре', 'Ошибка при парсинге предметов');
             return;
@@ -231,8 +235,9 @@ export default {
             value: QRValue,
           });
           this.$localStorageManager.saveScannedNotSavedQrs(this.scannedNotSavedQrs);
+          this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
+          this.$router.push({ name: 'profile' });
         }
-        this.$router.push({ name: 'profile' });
       }
     },
 
@@ -284,14 +289,7 @@ export default {
 
         const expNeedsToLevel = UserLevels[this.$user.level].experience;
         if (this.$user.stats.experience >= expNeedsToLevel) {
-          this.$user.stats.experience -= expNeedsToLevel;
-          this.$user.level += 1;
-          const maxLevel = Math.max(...Object.keys(UserLevels).map(Number));
-          this.$modals.alert(
-            'Уровень повышен!',
-            `Вы получили уровень ${this.$user.level}!
-${this.$user.level < maxLevel ? `Для уровня ${this.$user.level + 1} понадобится ${UserLevels[this.$user.level + 1].experience}xp` : ''}`,
-          );
+          userIncreaseLevel(this.$user, this.$modals);
         }
 
         this.scannedSavedQrs.push(...this.scannedNotSavedQrs);
@@ -302,6 +300,7 @@ ${this.$user.level < maxLevel ? `Для уровня ${this.$user.level + 1} п�
         this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
       }
     },
+
   },
 };
 </script>

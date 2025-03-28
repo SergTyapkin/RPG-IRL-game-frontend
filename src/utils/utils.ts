@@ -176,7 +176,7 @@ export function itemIdToItem(itemId: string): ExtendedItem {
   extItem.abilities = abilitiesIdsToAbilities(item.abilities) as unknown as Ability[];
   return extItem;
 }
-export function getUserInventory($user: User): ExtendedItem[] {
+export function getAllUserItems($user: User): ExtendedItem[] {
   return itemsIdsToItems($user.inventory);
 }
 export function skillIdToSkill(skillId: string): ExtendedSkill {
@@ -199,8 +199,18 @@ export function getAllUserSkills($user: User): ExtendedSkill[] {
   return res;
 }
 
-export function getAllUserEffects($user: User): ExtendedEffect[] {
+export function getAllUserEffects($user: User, isForFight?: boolean): ExtendedEffect[] {
   const effects: ExtendedEffect[] = [];
+  function addExtendedEffectToRes(ext: ExtendedEffect) {
+    if (isForFight == undefined) {
+      effects.push(ext);
+      return;
+    }
+    if (Boolean(isForFight) === Boolean(ext.isForFight)) {
+      effects.push(ext);
+    }
+  }
+
   function addEffectsFromItemId(itemId?: string) {
     if (!itemId) {
       return;
@@ -210,20 +220,20 @@ export function getAllUserEffects($user: User): ExtendedEffect[] {
       const ext = deepClone(e) as unknown as ExtendedEffect;
       ext.source = item;
       ext.sourceType = 'item';
-      effects.push(ext);
+      addExtendedEffectToRes(ext);
     });
   }
   addEffectsFromItemId($user.equipment.hat);
   addEffectsFromItemId($user.equipment.main);
   addEffectsFromItemId($user.equipment.boots);
 
-  getUserInventory($user).forEach(item => {
+  getAllUserItems($user).forEach(item => {
     if (![ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(item.type)) {
       item.effects.forEach(e => {
         const ext = deepClone(e) as unknown as ExtendedEffect;
         ext.source = item;
         ext.sourceType = 'item';
-        effects.push(ext);
+        addExtendedEffectToRes(ext);
       });
     }
   });
@@ -232,7 +242,7 @@ export function getAllUserEffects($user: User): ExtendedEffect[] {
       const ext = deepClone(e) as unknown as ExtendedEffect;
       ext.source = skill;
       ext.sourceType = 'skill';
-      effects.push(ext);
+      addExtendedEffectToRes(ext);
     });
   });
   return effects;
@@ -240,23 +250,25 @@ export function getAllUserEffects($user: User): ExtendedEffect[] {
 
 export function getAllUserAbilities($user: User): ExtendedAbility[] {
   const abilities: ExtendedAbility[] = [];
+  function abilityToExtended(e: Ability, item: ExtendedItem) {
+    const ext = deepClone(e) as unknown as ExtendedAbility;
+    ext.source = item;
+    ext.sourceType = 'item';
+    return ext;
+  }
+  abilities.push(abilityToExtended(Abilities.default, itemIdToItem(Items.default.id)))
   function addAbilitiesFromItemId(itemId?: string) {
     if (!itemId) {
       return;
     }
     const item = itemIdToItem(itemId);
-    item.abilities.forEach(e => {
-      const ext = deepClone(e) as unknown as ExtendedAbility;
-      ext.source = item;
-      ext.sourceType = 'item';
-      abilities.push(ext);
-    });
+    item.abilities.forEach(e => abilities.push(abilityToExtended(e, item)));
   }
   addAbilitiesFromItemId($user.equipment.hat);
   addAbilitiesFromItemId($user.equipment.main);
   addAbilitiesFromItemId($user.equipment.boots);
 
-  getUserInventory($user).forEach(item => {
+  getAllUserItems($user).forEach(item => {
     if (![ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(item.type)) {
       item.abilities.forEach(e => {
         const ext = deepClone(e) as unknown as ExtendedAbility;
@@ -282,6 +294,10 @@ export function getTotalUserProtection($user: User): number {
   res += $user.equipment.hat ? Items[$user.equipment.hat]?.protection ?? 0 : 0;
   res += $user.equipment.main ? Items[$user.equipment.main]?.protection ?? 0 : 0;
   res += $user.equipment.boots ? Items[$user.equipment.boots]?.protection ?? 0 : 0;
+  const items = getAllUserItems($user);
+  items.forEach(items => {
+    res += items.buffs[BuffsTypes.protectionIncrease] ?? 0;
+  });
   const skills = getAllUserSkills($user);
   skills.forEach(skill => {
     res += skill.buffs[BuffsTypes.protectionIncrease] ?? 0;
@@ -294,6 +310,10 @@ export function getTotalUserProtection($user: User): number {
 }
 export function getTotalUserMaxHP($user: User): number {
   let res = DEFAULT_USER_MAX_UP;
+  const items = getAllUserItems($user);
+  items.forEach(items => {
+    res += items.buffs[BuffsTypes.maxHpIncrease] ?? 0;
+  });
   const skills = getAllUserSkills($user);
   skills.forEach(skill => {
     res += skill.buffs[BuffsTypes.maxHpIncrease] ?? 0;

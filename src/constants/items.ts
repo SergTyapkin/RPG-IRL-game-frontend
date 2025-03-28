@@ -1,10 +1,10 @@
 import { type Item } from '~/types/types';
-import { ItemTypes } from '~/constants/constants';
+import { BuffsTypes, DefaultAvatarImage, ItemTypes } from '~/constants/constants';
 import { Effects } from '~/constants/effects';
 import { Abilities } from '~/constants/abilities';
 
 import ImgArtefactBlackStar from '#/images/items/artefactBlackStar.png';
-import ImgArtefactEyeInjustice from '#/images/items/artefactEyeInjustice.png';
+import ImgArtefactEyeJustice from '#/images/items/artefactEyeJustice.png';
 import ImgArtefactLiveCup from '#/images/items/artefactLiveCup.png';
 import ImgArtefactMainStone from '#/images/items/artefactMainStone.png';
 import ImgArtefactPhoenixLive from '#/images/items/artefactPhoenixLive.png';
@@ -31,6 +31,19 @@ import ImgBootsKingSailor from '#/images/items/bootsKingSailor.png';
 
 
 export const Items: {[key: string]: Item} = {
+  default: {
+    id: String(),
+    name: 'Начальная',
+    description: '',
+    type: ItemTypes.other,
+    protection: 0,
+    imageUrl: DefaultAvatarImage,
+    buffs: {},
+    effects: [],
+    abilities: [],
+  },
+
+  // ----------------------------------------------------
   artefactBlackStar: {
     id: String(),
     name: 'Амулет “Черная звезда”',
@@ -38,39 +51,37 @@ export const Items: {[key: string]: Item} = {
     type: ItemTypes.artefact,
     protection: 0,
     imageUrl: ImgArtefactBlackStar,
-    buffs: {},
-    effects: [
-      Effects.maxHp.id,
-      Effects.damageIncrease.id,
-    ],
-    abilities: [
-    ],
+    buffs: {
+      [BuffsTypes.maxHpIncrease]: 10,
+      [BuffsTypes.protectionIncrease]: 20,
+    },
+    effects: [],
+    abilities: [],
   },
-  artefactEyeInjustice: {
+  artefactEyeJustice: {
     id: String(),
-    name: 'Око неравенства',
+    name: 'Око равенства',
     description: 'Если ваша основная характеристика ловкость, то вы получаете +2 за уровень к силе и интеллекту, если сила - к интеллекту и ловкости, если интеллект - к ловкости и силе.',
     type: ItemTypes.artefact,
     protection: 0,
-    imageUrl: ImgArtefactEyeInjustice,
+    imageUrl: ImgArtefactEyeJustice,
     buffs: {},
     effects: [
-      Effects.maxHp.id,
-      Effects.damageIncrease.id,
+      Effects.statsJustice.id,
     ],
-    abilities: [
-    ],
+    abilities: [],
   },
   artefactLiveCup: {
     id: String(),
     name: 'Чаша пиратского долголетия',
-    description: '',
+    description: 'Восстанавливает 5 здоровья вам перед каждым ходом вашей команды, и 3 каждому живому члену вашей команды',
     type: ItemTypes.artefact,
     protection: 0,
     imageUrl: ImgArtefactLiveCup,
     buffs: {},
     effects: [
-      Effects.maxHp.id,
+      Effects.regeneration_5.id,
+      Effects.teamRegeneration_3.id,
     ],
     abilities: [
     ],
@@ -84,7 +95,7 @@ export const Items: {[key: string]: Item} = {
     imageUrl: ImgArtefactMainStone,
     buffs: {},
     effects: [
-      Effects.maxHp.id,
+      Effects.damageIncrease.id,
     ],
     abilities: [
     ],
@@ -98,7 +109,7 @@ export const Items: {[key: string]: Item} = {
     imageUrl: ImgArtefactPhoenixLive,
     buffs: {},
     effects: [
-      Effects.maxHp.id,
+      Effects.damageIncrease.id,
     ],
     abilities: [
     ],
@@ -112,7 +123,7 @@ export const Items: {[key: string]: Item} = {
     imageUrl: ImgArtefactShieldKingGuardian,
     buffs: {},
     effects: [
-      Effects.maxHp.id,
+      Effects.damageIncrease.id,
       Effects.damageIncrease.id,
     ],
     abilities: [
@@ -120,14 +131,14 @@ export const Items: {[key: string]: Item} = {
   },
   artefactKompasWay: {
     id: String(),
-    name: 'Амулет “Черная звезда”',
+    name: 'Компас Магического Пути',
     description: 'Этот амулет, сделанный из черного коралла и украшенный золотом, обладает магической способностью восстанавливать здоровье своего владельца. Он может исцелять раны, болезни и усталость, а также увеличивать жизненную силу.',
     type: ItemTypes.artefact,
     protection: 0,
     imageUrl: ImgArtefactKompasWay,
     buffs: {},
     effects: [
-      Effects.maxHp.id,
+      Effects.damageIncrease.id,
       Effects.damageIncrease.id,
     ],
     abilities: [
@@ -147,7 +158,6 @@ export const Items: {[key: string]: Item} = {
       Effects.powerLowCost.id,
     ],
     abilities: [
-      Abilities.daggerHit.id,
     ],
   },
 
@@ -164,7 +174,6 @@ export const Items: {[key: string]: Item} = {
       Effects.powerLowCost.id,
     ],
     abilities: [
-      Abilities.daggerHit.id,
     ],
   },
   swordStorm: {
@@ -179,7 +188,6 @@ export const Items: {[key: string]: Item} = {
       Effects.powerLowCost.id,
     ],
     abilities: [
-      Abilities.daggerHit.id,
     ],
   },
 
@@ -196,7 +204,6 @@ export const Items: {[key: string]: Item} = {
       Effects.powerLowCost.id,
     ],
     abilities: [
-      Abilities.daggerHit.id,
     ],
   },
 
@@ -269,8 +276,7 @@ export const Items: {[key: string]: Item} = {
     buffs: {},
     effects: [
       Effects.damageIncrease.id,
-      Effects.protection.id,
-      Effects.maxHp.id,
+      Effects.damageIncrease.id,
     ],
     abilities: [
     ],

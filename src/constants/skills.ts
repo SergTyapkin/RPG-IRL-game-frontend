@@ -23,7 +23,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
         abilities: [],
         buffs: {},
         effects: [
-          Effects.maxHp.id,
+          Effects.damageIncrease.id,
         ],
         cost: 3,
         position: [0, 150],
