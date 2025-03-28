@@ -31,6 +31,7 @@
     width 100%
     max-width 700px
     padding 0
+    z-index 999
 
     .bottom-line-bg
       position absolute
@@ -167,7 +168,7 @@
           <img src="/static/icons/profile.svg" alt="">
         </router-link>
 
-        <router-link :to="{ name: 'qrScanner' }" class="button-scanner" :class="{disabled: isUserInFightReactiveValue}">
+        <router-link :to="{ name: 'qrScanner' }" class="button-scanner" :class="{disabled: isUserInFightReactiveValue && !isUserDeadReactiveValue}">
           <img src="/static/icons/qr-scanner.svg" alt="">
         </router-link>
       </nav>

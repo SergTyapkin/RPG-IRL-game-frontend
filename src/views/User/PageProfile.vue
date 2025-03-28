@@ -252,6 +252,7 @@ export default {
     recalculateUserStats() {
       this.userProtection = getTotalUserProtection(this.$user);
       this.userMaxHp = getTotalUserMaxHP(this.$user);
+      this.$user.stats.hp = Math.min(this.$user.stats.hp, this.userMaxHp);
     },
 
     selectEquippedItem(item: Item) {

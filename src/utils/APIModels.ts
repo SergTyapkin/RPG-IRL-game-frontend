@@ -1,5 +1,6 @@
 import validateModel from "@sergtyapkin/models-validator";
 import {
+  AbilityTypes,
   BuffsTypes,
   ClassTypes,
   DefaultAbilityImage,
@@ -72,6 +73,7 @@ export const AbilityModelMockData = validateModel(AbilityModel,     {
   id: 'ABLTY_ID_1',
   name: 'Название способности',
   description: 'Какое-то описание способности',
+  type: AbilityTypes.spell,
   imageUrl: DefaultAbilityImage,
   effectsToTargets: [Effects.bleeding_1.id],
   effectsForMe: [Effects.regeneration_1.id],
@@ -85,7 +87,6 @@ export const ItemModel = {
   id: String,
   name: String,
   type: String,
-  protection: Number,
   imageUrl: String,
   buffs: Object,
   effects: {
@@ -103,7 +104,6 @@ export const ItemModelMockData = validateModel(ItemModel, {
   id: 'PP_ID_1',
   name: 'Предмет',
   type: 'boots',
-  protection: 2,
   imageUrl: DefaultKnifeImage,
   buffs: {
     [BuffsTypes.protectionIncrease]: 2,

@@ -60,8 +60,7 @@
       <div class="stat damage" v-for="(damage, i) in abilitiesDamage" :key="i"><img src="/static/icons/fight.svg" alt="damage">{{ damage }}</div>
       <div class="stat heal" v-for="(heal, i) in abilitiesHealing" :key="i"><img src="/static/icons/close.svg" alt="heal">{{ heal }}</div>
       <div class="stat max-hp" v-if="item.buffs && item.buffs[BuffsTypes.maxHpIncrease]"><img src="/static/icons/heart.svg" alt="maxHp">{{ item.buffs[BuffsTypes.maxHpIncrease] }}</div>
-      <div class="stat protection-increase" v-if="item.buffs && item.buffs[BuffsTypes.protectionIncrease]"><img src="/static/icons/shield.svg" alt="protection-increase">{{ item.buffs[BuffsTypes.protectionIncrease] }}</div>
-      <div class="stat protection" v-if="item.protection"><img src="/static/icons/shield.svg" alt="protection">{{ item.protection }}</div>
+      <div class="stat protection" v-if="item.buffs && item.buffs[BuffsTypes.protectionIncrease]"><img src="/static/icons/shield.svg" alt="protection">{{ item.buffs[BuffsTypes.protectionIncrease] }}</div>
     </section>
     <slot />
   </div>

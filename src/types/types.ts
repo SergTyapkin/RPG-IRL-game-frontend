@@ -1,4 +1,4 @@
-import { BuffType, ClassType, ItemType, QRSource, QRType, ResourceType } from '~/constants/constants';
+import { AbilityType, BuffType, ClassType, ItemType, QRSource, QRType, ResourceType } from '~/constants/constants';
 
 export interface User {
   id: string;
@@ -62,6 +62,7 @@ export interface Ability {
   imageUrl: string;
   effectsToTargets: string[];
   effectsForMe: string[];
+  type: AbilityType;
 
   damage: number;
   damageTargets: number;
@@ -122,7 +123,6 @@ export interface Item {
   id: string;
   name: string;
   type: ItemType;
-  protection: number;
   buffs: {[key in BuffType]: number};
   abilities: string[];
   effects: string[];

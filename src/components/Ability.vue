@@ -20,28 +20,32 @@
       width 100%
     .stats
       position absolute
+      z-index 1
       top 10px
       left 10px
       display flex
       flex-direction column
+      align-items flex-start
       gap 5px
+      .damage-group
+        display flex
+        gap 5px
       .stat
-        height 30px
+        height 25px
         padding 0 7px
         white-space nowrap
         background colorSec1
         border-radius borderRadiusMax
         centered-flex-container()
-        font-medium()
+        font-small()
         img
-          height 1lh
+          height 16px
           margin-right 3px
         &.damage
           background colorEmpPower
         &.heal
           background colorEmpHeal
         &.chances
-          padding 0
           background colorEmp1
           img
             margin 0
@@ -103,8 +107,13 @@
       <img class="ability-bg" :src="ability.imageUrl" alt="">
 
       <section class="stats">
-        <div v-if="ability.damage" class="stat damage">
-          <img src="/static/icons/fight.svg" alt="">{{ ability.damage }}
+        <div class="damage-group">
+          <div v-if="ability.damage" class="stat damage">
+            <img src="/static/icons/fight.svg" alt="">{{ ability.damage }}
+          </div>
+          <div v-if="ability.damageTargets" class="stat damage">
+            <img src="/static/icons/person.svg" alt="">{{ ability.damageTargets }}
+          </div>
         </div>
         <div v-if="ability.heal" class="stat heal"><img src="/static/icons/heart.svg" alt="">{{ ability.heal }}</div>
         <div v-if="ability.chances?.length" class="stat chances"><img src="/static/icons/percent.svg" alt=""></div>

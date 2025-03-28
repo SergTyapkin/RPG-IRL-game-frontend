@@ -3,7 +3,7 @@ import { User } from '~/types/types';
 import { UserLevels } from '~/constants/levels';
 import { Classes } from '~/constants/classes';
 import { BuffsTypes, ClassTypes, MONEY_LOSE_BY_DEATH_PERCENT } from '~/constants/constants';
-import { getAllUserEffects } from '~/utils/utils';
+import { getAllUserEffects, getTotalUserMaxHP } from '~/utils/utils';
 import { Effects } from '~/constants/effects';
 
 
@@ -60,4 +60,8 @@ export function userDead($user: User): number {
   $user.notSyncedStats.intelligence = 0;
 
   return loosedMoney;
+}
+
+export function userRevive($user: User) {
+  $user.stats.hp = getTotalUserMaxHP($user);
 }

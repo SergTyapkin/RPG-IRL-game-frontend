@@ -274,6 +274,8 @@ export default {
 
         this.$user.stats.hp = getTotalUserMaxHP(this.$user);
         this.$app.isUserDeadReactiveValue = false;
+        this.$user.isInFight = false;
+        this.$app.isUserInFightReactiveValue = false;
 
         this.$user.stats.experience += this.$user.notSyncedStats.experience;
         this.$user.stats.money += this.$user.notSyncedStats.money;
@@ -285,7 +287,6 @@ export default {
         this.$user.notSyncedStats.power = 0;
         this.$user.notSyncedStats.agility = 0;
         this.$user.notSyncedStats.intelligence = 0;
-        this.$user.isInFight = false;
 
         const expNeedsToLevel = UserLevels[this.$user.level].experience;
         if (this.$user.stats.experience >= expNeedsToLevel) {

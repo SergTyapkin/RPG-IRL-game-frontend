@@ -1,7 +1,7 @@
 import { type Effect } from '~/types/types';
 import { BuffsTypes, BuffType, DefaultAbilityImage } from '~/constants/constants';
 
-function getFightEffect(name: string, description: string, buffType: BuffType, val: number) {
+function getFightEffect(name: string, description: string, buffType: BuffType, val: number, hidden: boolean = false) {
   return {
     id: String(),
     name: name,
@@ -9,6 +9,7 @@ function getFightEffect(name: string, description: string, buffType: BuffType, v
     imageUrl: DefaultAbilityImage,
     isForFight: true,
     onlyForFight: true,
+    hidden: hidden,
     turns: Infinity,
     buffs: {
       [buffType]: val,
@@ -35,9 +36,9 @@ const getRegeneration = (val: number) => getFightEffect(
   `Вы восстанавливаете ${val} единиц здоровья каждый ваш ход`,
   BuffsTypes.hpEveryTurn, val
 );
-const getPower = (val: number) => getFightEffect(
+const getDamage = (val: number) => getFightEffect(
   'Сила',
-  `Вы наносите на ${val} единицу больше урона`,
+  `Вы наносите на ${val} единиц больше урона`,
   BuffsTypes.damageDoneIncrease, val
 );
 const getWeakness = (val: number) => getFightEffect(
@@ -64,37 +65,19 @@ const getIntelligencePerLevelIncrease = (val: number) => getFightEffect(
 export const Effects: { [key: string]: Effect } = {
   // ----- Fight effects
   teamBleeding_1: getTeamBleeding(1),
-  teamRegeneration_1: getTeamRegeneration(1),
   teamBleeding_2: getTeamBleeding(2),
-  teamRegeneration_2: getTeamRegeneration(2),
-  teamBleeding_3: getTeamBleeding(3),
   teamRegeneration_3: getTeamRegeneration(3),
-  teamBleeding_4: getTeamBleeding(4),
-  teamRegeneration_4: getTeamRegeneration(4),
-  teamBleeding_5: getTeamBleeding(5),
-  teamRegeneration_5: getTeamRegeneration(5),
   // -----------------------------
   bleeding_1: getBleeding(1),
-  regeneration_1: getRegeneration(1),
   bleeding_2: getBleeding(2),
-  regeneration_2: getRegeneration(2),
-  bleeding_3: getBleeding(3),
-  regeneration_3: getRegeneration(3),
-  bleeding_4: getBleeding(4),
-  regeneration_4: getRegeneration(4),
-  bleeding_5: getBleeding(5),
+  regeneration_1: getRegeneration(1),
   regeneration_5: getRegeneration(5),
   // ----------------------------
-  power_1: getPower(1),
+  damage_1: getDamage(1),
+  damage_2: getDamage(2),
+  damage_10: getDamage(10),
   weakness_1: getWeakness(1),
-  power_2: getPower(2),
   weakness_2: getWeakness(2),
-  power_3: getPower(3),
-  weakness_3: getWeakness(3),
-  power_4: getPower(4),
-  weakness_4: getWeakness(4),
-  power_5: getPower(5),
-  weakness_5: getWeakness(5),
 
   // ----- Default effects
   luck: {
@@ -113,26 +96,6 @@ export const Effects: { [key: string]: Effect } = {
     imageUrl: DefaultAbilityImage,
     buffs: {
       [BuffsTypes.experienceModifier]: 1.25,
-    },
-  },
-  damageIncrease: {
-    id: String(),
-    name: 'Сила I',
-    description: 'Ваш наносимый урон увеличена на 2',
-    imageUrl: DefaultAbilityImage,
-    isForFight: true,
-    buffs: {
-      [BuffsTypes.damageDoneIncrease]: 2,
-    },
-  },
-  damageModifier: {
-    id: String(),
-    name: 'Сила II',
-    description: 'Ваш наносимый урон увеличена на 25%',
-    imageUrl: DefaultAbilityImage,
-    isForFight: true,
-    buffs: {
-      [BuffsTypes.damageDoneModifier]: 1.25,
     },
   },
   // -------------------------------------------------------
@@ -163,14 +126,16 @@ export const Effects: { [key: string]: Effect } = {
       [BuffsTypes.intelligenceCostDecrease]: 1,
     },
   },
-  // -------------------------------------------------------
-  statsJustice: {
+  damageGottenHalf: {
     id: String(),
-    name: 'Равенство',
-    description: 'Вы получаете +2 очка к двум не классовым характеристикам за каждый уровень',
+    name: 'Блокирование урона',
+    description: 'Вы получаете на 50% меньше урона по здоровью',
     imageUrl: DefaultAbilityImage,
-    buffs: {},
+    buffs: {
+      [BuffsTypes.damageGottenModifier]: 0.5,
+    },
   },
+  // -------------------------------------------------------
   powerAddPerLevel_1: getPowerPerLevelIncrease(1),
   powerAddPerLevel_2: getPowerPerLevelIncrease(2),
   powerAddPerLevel_3: getPowerPerLevelIncrease(3),
@@ -180,6 +145,56 @@ export const Effects: { [key: string]: Effect } = {
   intelligenceAddPerLevel_1: getIntelligencePerLevelIncrease(1),
   intelligenceAddPerLevel_2: getIntelligencePerLevelIncrease(2),
   intelligenceAddPerLevel_3: getIntelligencePerLevelIncrease(3),
+  // SPECIAL ------------------------------------------------------
+  statsJustice: {
+    id: String(),
+    name: 'Равенство',
+    description: 'Вы получаете +2 очка к двум не классовым характеристикам за каждый уровень',
+    imageUrl: DefaultAbilityImage,
+    buffs: {},
+  },
+  protectionAddHalfHp: {
+    id: String(),
+    name: 'Динамическая броня',
+    description: 'Ваша броня увеличивается на число, равное половине текущего значения здоровья',
+    imageUrl: DefaultAbilityImage,
+    buffs: {},
+  },
+  swordEfficiency: {
+    id: String(),
+    name: 'Эффективные мечи',
+    description: 'Урон мечей увеличен на 30%',
+    imageUrl: DefaultAbilityImage,
+    buffs: {},
+  },
+  daggerEfficiency: {
+    id: String(),
+    name: 'Эффективные кинжалы',
+    description: 'Урон кинжалов увеличен на 30%',
+    imageUrl: DefaultAbilityImage,
+    buffs: {},
+  },
+  spellEfficiency: {
+    id: String(),
+    name: 'Эффективные заклинания',
+    description: 'Эффективнос заклинаний увеличена на 30%',
+    imageUrl: DefaultAbilityImage,
+    buffs: {},
+  },
+  potionEfficiency: {
+    id: String(),
+    name: 'Эффективные зелья',
+    description: 'Эффективность зелий увеличена на 30%',
+    imageUrl: DefaultAbilityImage,
+    buffs: {},
+  },
+  pistolEfficiency: {
+    id: String(),
+    name: 'Эффективные пистолеты',
+    description: 'Эффективность пистолетов увеличена на 30%',
+    imageUrl: DefaultAbilityImage,
+    buffs: {},
+  },
 };
 
 // Add 1...10 varied effects values

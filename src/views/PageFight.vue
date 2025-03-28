@@ -390,7 +390,14 @@
 <script lang="ts">
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { BuffsTypes, MONEY_LOSE_BY_DEATH_PERCENT, QRSources, QRTypes, ResourceTypes } from '~/constants/constants';
+import {
+  AbilityTypes,
+  BuffsTypes,
+  MONEY_LOSE_BY_DEATH_PERCENT,
+  QRSources,
+  QRTypes,
+  ResourceTypes,
+} from '~/constants/constants';
 import EffectComponent from '~/components/Effect.vue';
 import AbilityComponent from '~/components/Ability.vue';
 import {
@@ -400,14 +407,16 @@ import {
   getAllUserEffects,
   getTotalUserMaxHP,
   getTotalUserProtection,
+  type InFightExtendedAbility,
 } from '~/utils/utils';
-import { type InFightAbility } from '~/constants/abilities';
 import Range from '~/components/Range.vue';
 import { Effects, FightEffects, TeamEffectsIds } from '~/constants/effects';
 import { AbilityChance, type Effect, QRData } from '~/types/types';
 import QRGenerator from '~/components/QRGenerator.vue';
 import { nextTick } from 'vue';
-import { userDead } from '~/utils/userEvents';
+import { userDead, userRevive } from '~/utils/userEvents';
+import { Abilities } from '~/constants/abilities';
+import { Items } from '~/constants/items';
 
 export default {
   components: { QRGenerator, Range, AbilityComponent, EffectComponent, ValueBadge, UserProfileInfo },
@@ -447,7 +456,7 @@ export default {
     },
 
     abilities() {
-      return getAllUserAbilities(this.$user) as unknown as InFightAbility[];
+      return getAllUserAbilities(this.$user) as unknown as InFightExtendedAbility[];
     },
   },
 
@@ -487,7 +496,6 @@ export default {
   },
 
   methods: {
-    generateQRText,
     recalculateUserStats() {
       this.userProtection = getTotalUserProtection(this.$user);
       this.userMaxHp = getTotalUserMaxHP(this.$user);
@@ -528,10 +536,10 @@ export default {
       ) {
         return;
       }
+      this.$user.isInFight = false;
       this.finishFight();
     },
     finishFight() {
-      this.$user.isInFight = false;
       this.isUserInFightReactiveValue = false;
       this.$app.isUserInFightReactiveValue = false;
       this.$localStorageManager.removeAbilitiesReloads();
@@ -543,11 +551,35 @@ export default {
       this.$forceUpdate();
     },
 
-    async playAbility(ability: InFightAbility) {
+    async playAbility(ability: InFightExtendedAbility) {
+      if (this.$user.isInFight && this.$user.stats.hp <= 0) {
+        if (ability.id === Abilities.phoenixLive.id) {
+          if (!(await this.$modals.confirm(
+              'Использовать "Жизнь Феникса"?',
+              `Артефакт будет использован и пропадет из вашего инвентаря`,
+            ))) {
+            return;
+          }
+          const idx = this.$user.inventory.findIndex(i => i === Items.artefactPhoenixLive.id);
+          if (idx === -1) {
+            this.$popups.error('Ошибка', 'Предмета нет в инвентаре');
+            return;
+          }
+          this.$user.inventory.splice(idx, 1);
+          userRevive(this.$user);
+          this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
+          this.recalculateUserStats();
+          this.$forceUpdate();
+          return;
+        }
+      }
       if (!this.$user.isInFight || this.$user.stats.hp <= 0) {
         return;
       }
       if (ability.reloadLeft) {
+        return;
+      }
+      if (ability.id === Abilities.phoenixLive.id) {
         return;
       }
       if (
@@ -561,15 +593,12 @@ export default {
       ability.reloadLeft = ability.reload;
 
       // Calculate stats ------------
+      const totalEffects = (this.effects as Effect[]).concat(this.fightEffects);
       // Calculate damage
       let damage = ability.damage;
       const damageTargets = ability.damageTargets;
       let damageModifier = 1;
-      this.effects.forEach(e => {
-        damage += e.buffs[BuffsTypes.damageDoneIncrease] ?? 0;
-        damageModifier *= e.buffs[BuffsTypes.damageDoneModifier] ?? 1;
-      });
-      this.fightEffects.forEach(e => {
+      totalEffects.forEach(e => {
         damage += e.buffs[BuffsTypes.damageDoneIncrease] ?? 0;
         damageModifier *= e.buffs[BuffsTypes.damageDoneModifier] ?? 1;
       });
@@ -585,40 +614,66 @@ export default {
         if (Math.random() < chance.probability) {
           damage += chance.damage ?? 0;
           heal += chance.heal ?? 0;
-          effectsToTargets.push(...(effectsIdsToEffects(chance.effectsToTargets ?? [])));
-          effectsForMe.push(...(effectsIdsToEffects(chance.effectsForMe ?? [])));
+          effectsToTargets.push(...effectsIdsToEffects(chance.effectsToTargets ?? []));
+          effectsForMe.push(...effectsIdsToEffects(chance.effectsForMe ?? []));
         }
       });
+      // Calculate special effects
+      const efficiencyModifiers = {
+        [AbilityTypes.sword]: 1,
+        [AbilityTypes.dagger]: 1,
+        [AbilityTypes.spell]: 1,
+        [AbilityTypes.potion]: 1,
+        [AbilityTypes.pistol]: 1,
+      };
+      totalEffects.forEach(e => {
+        if (e.id === Effects.swordEfficiency.id) {
+          efficiencyModifiers[AbilityTypes.sword] *= 1.3;
+        } else if (e.id === Effects.daggerEfficiency.id) {
+          efficiencyModifiers[AbilityTypes.dagger] *= 1.3;
+        } else if (e.id === Effects.spellEfficiency.id) {
+          efficiencyModifiers[AbilityTypes.spell] *= 1.3;
+        } else if (e.id === Effects.potionEfficiency.id) {
+          efficiencyModifiers[AbilityTypes.potion] *= 1.3;
+        } else if (e.id === Effects.pistolEfficiency.id) {
+          efficiencyModifiers[AbilityTypes.pistol] *= 1.3;
+        }
+      });
+      damage *= efficiencyModifiers[ability.type];
 
       // Inform user ------------
       if (damage > 0) {
         await this.$modals.alert(
-          `Вы наносите ${damage} урона по ${damageTargets} противнику(ам)`,
+          `Вы наносите ${damage} урона по ${damageTargets} противник${damageTargets > 1 ? 'ам' : 'у'}`,
           'Выберите противников и громко скажите им, от какой способности и сколько урона они получают. Они должны ввести его себе сами',
         );
       }
       if (effectsToTargets.length > 0) {
         const effectsToTargetsNames = effectsToTargets.map(e => `"${e.name}"`).join(', ');
         await this.$modals.alert(
-          `Вы накладываете эффект(ы): ${effectsToTargetsNames} на ${damageTargets} противника(ов)`,
+          `Вы накладываете эффект${effectsToTargetsNames.length > 1 ? 'ы' : ''}: ${effectsToTargetsNames} на ${damageTargets} противник${damageTargets > 1 ? 'ов' : 'а'}`,
           'Выберите противников и громко скажите им, от какой способноси и сколько урона они получают. Они должны ввести его себе сами',
         );
       }
       if (effectsForMe.length > 0) {
         const effectsForMeNames = effectsForMe.map(e => `"${e.name}"`).join(', ');
-        await this.$modals.alert(`Вы получаете эффект(ы): ${effectsForMeNames}`, 'Эффекты уже применены');
+        await this.$modals.alert(
+          `Вы получаете эффект${effectsForMeNames.length > 1 ? 'ы' : ''}: ${effectsForMeNames}`,
+          'Эффекты уже применены',
+        );
         effectsForMe.forEach(e => {
           this.takeEffect(Effects[e.id]);
         });
       }
       if (heal > 0) {
         await this.$modals.alert(
-          `Вы лечите ${heal} HP ${damageTargets} союзнику(ам)`,
+          `Вы лечите ${heal} HP ${damageTargets} союзник${damageTargets > 1 ? 'ам' : 'у'}`,
           'Выберите союзников и громко скажите им, от чего и сколько очков здоровья они восстанавливают. Они должны ввести это себе сами',
         );
       }
 
       this.applyOneTurnEffects();
+      this.recalculateUserStats();
     },
     applyOneTurnEffects() {
       const abilitiesReloads: { [key: string]: number } = {};
@@ -682,6 +737,13 @@ export default {
       } else {
         resultDamage = Math.max(0, value - this.userProtection);
       }
+      let damageGottenModifier = 1;
+      this.fightEffects.concat(this.effects).forEach(effect => {
+        damageGottenModifier *= effect.buffs[BuffsTypes.damageGottenModifier] ?? 1;
+      });
+      resultDamage *= damageGottenModifier;
+      resultDamage = Math.round(resultDamage);
+
       this.$user.stats.hp -= resultDamage;
       this.$popups.success('Урон получен', `Вы потеряли ${resultDamage} HP`);
       if (this.$user.stats.hp <= 0) {
@@ -691,6 +753,7 @@ export default {
 
       this.modalState = this.ModalStates.none;
       this.chosenValue = 0;
+      this.recalculateUserStats();
       this.$forceUpdate();
     },
     takeHeal(value: number) {
@@ -706,6 +769,7 @@ export default {
 
       this.modalState = this.ModalStates.none;
       this.chosenValue = 0;
+      this.recalculateUserStats();
       this.$forceUpdate();
     },
     takeEffect(effect: Effect) {

@@ -35,8 +35,20 @@ export const ItemTypes = {
   main: 'main',
   boots: 'boots',
   artefact: 'artefact',
-  weapon: 'weapon',
+  dagger: 'weapon',
+  sword: 'sword',
+  pistol: 'pistol',
+  potion: 'potion',
   material: 'material',
+  other: 'other',
+};
+
+export const AbilityTypes = {
+  dagger: 'weapon',
+  sword: 'sword',
+  pistol: 'pistol',
+  potion: 'potion',
+  spell: 'spell',
   other: 'other',
 };
 
@@ -51,6 +63,7 @@ export const BuffsTypes = {
   powerPerLevelIncrease: 'powerPerLevelIncrease',
   agilityPerLevelIncrease: 'agilityPerLevelIncrease',
   intelligencePerLevelIncrease: 'intelligencePerLevelIncrease',
+  damageGottenModifier: 'damageGottenModifier',
   damageDoneModifier: 'damageDoneModifier',
   damageDoneIncrease: 'damageDoneIncrease',
   hpEveryTurn: 'hpEveryTurn',
@@ -77,3 +90,4 @@ export type BuffType = typeof BuffsTypes[keyof typeof BuffsTypes];
 export type QRType = typeof QRTypes[keyof typeof QRTypes];
 export type QRSource = typeof QRSources[keyof typeof QRSources];
 export type ClassType = typeof ClassTypes[keyof typeof ClassTypes];
+export type AbilityType = typeof AbilityTypes[keyof typeof AbilityTypes];

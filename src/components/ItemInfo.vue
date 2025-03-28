@@ -140,7 +140,7 @@
     </div>
     <section class="section-stats">
       <div v-if="[ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)" class="protection">
-        <img src="/static/icons/shield.svg" alt=""> {{ obj.protection }}
+        <img src="/static/icons/shield.svg" alt=""> {{ obj.buffs[BuffsTypes.protectionIncrease] }}
       </div>
     </section>
     <div class="description">{{ obj.description }}</div>
@@ -176,7 +176,7 @@
 <script lang="ts">
 import Effect from '~/components/Effect.vue';
 import Ability from '~/components/Ability.vue';
-import { ItemTypes } from '~/constants/constants';
+import { BuffsTypes, ItemTypes } from '~/constants/constants';
 
 export default {
   components: { Ability, Effect },
@@ -194,20 +194,19 @@ export default {
     return {};
   },
   computed: {
+    BuffsTypes() {
+      return BuffsTypes
+    },
     ItemTypes() {
       return ItemTypes;
     },
   },
-  emits: ['select', 'close'],
+  emits: ['close'],
 
   mounted() {
   },
 
   methods: {
-    selectItem(item: any) {
-      this.$emit('select', item);
-    },
-
     close() {
       this.$emit('close');
     },
