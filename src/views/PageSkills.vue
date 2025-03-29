@@ -319,7 +319,7 @@ import Cell from '~/components/Cell.vue';
 import { type Skill } from '~/types/types';
 import { IterableSkillTrees } from '~/constants/skills';
 import ItemInfo from '~/components/ItemInfo.vue';
-import { ExtendedSkill, getAllUserEffects } from '~/utils/utils';
+import { ExtendedSkill, getAllUserBuffs } from '~/utils/utils';
 
 export default {
   components: { ItemInfo, Cell, DraggableComponent, ValueBadge, UserProfileInfo },
@@ -361,14 +361,13 @@ export default {
 
   methods: {
     updateDiscounts() {
-      const effects = getAllUserEffects(this.$user);
       this.currentDiscounts[ResourceTypes.power] = 0;
       this.currentDiscounts[ResourceTypes.agility] = 0;
       this.currentDiscounts[ResourceTypes.intelligence] = 0;
-      effects.forEach(e => {
-        this.currentDiscounts[ResourceTypes.power] += e.buffs[BuffsTypes.powerCostDecrease] ?? 0;
-        this.currentDiscounts[ResourceTypes.agility] += e.buffs[BuffsTypes.agilityCostDecrease] ?? 0;
-        this.currentDiscounts[ResourceTypes.intelligence] += e.buffs[BuffsTypes.intelligenceCostDecrease] ?? 0;
+      getAllUserBuffs(this.$user).forEach(buffs => {
+        this.currentDiscounts[ResourceTypes.power] += buffs[BuffsTypes.powerCostDecrease] ?? 0;
+        this.currentDiscounts[ResourceTypes.agility] += buffs[BuffsTypes.agilityCostDecrease] ?? 0;
+        this.currentDiscounts[ResourceTypes.intelligence] += buffs[BuffsTypes.intelligenceCostDecrease] ?? 0;
       });
     },
 

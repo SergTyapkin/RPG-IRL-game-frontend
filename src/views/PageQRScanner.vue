@@ -67,7 +67,7 @@
 import QRScanner from '~/components/QRScanner.vue';
 import { BuffsTypes, NO_SERVER_MODE, QRSources, QRTypes, ResourceTypes } from '~/constants/constants';
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
-import { ExtendedItem, getAllUserEffects, getTotalUserMaxHP, itemsIdsToItems, parseQRText } from '~/utils/utils';
+import { ExtendedItem, getAllUserBuffs, getTotalUserMaxHP, itemsIdsToItems, parseQRText } from '~/utils/utils';
 import CircleLoading from '~/components/loaders/CircleLoading.vue';
 import validateModel from '@sergtyapkin/models-validator';
 import { GuildModel, GuildModelMockData } from '~/utils/APIModels';
@@ -136,8 +136,8 @@ export default {
               let value = Number(QRValue);
               let valueModifier = 1;
               if (QRSource === QRSources.quest) {
-                getAllUserEffects(this.$user).forEach(e => {
-                  valueModifier *= e.buffs[BuffsTypes.moneyModifier] ?? 1;
+                getAllUserBuffs(this.$user).forEach(buffs => {
+                  valueModifier *= buffs[BuffsTypes.moneyModifier] ?? 1;
                 });
               }
               value *= valueModifier;
@@ -151,8 +151,8 @@ export default {
               let value = Number(QRValue);
               let valueModifier = 1;
               if (QRSource === QRSources.quest) {
-                getAllUserEffects(this.$user).forEach(e => {
-                  valueModifier *= e.buffs[BuffsTypes.experienceModifier] ?? 1;
+                getAllUserBuffs(this.$user).forEach(buffs => {
+                  valueModifier *= buffs[BuffsTypes.experienceModifier] ?? 1;
                 });
               }
               value *= valueModifier;
@@ -204,7 +204,6 @@ export default {
           let items: ExtendedItem[] = [];
           try {
             const itemsIds = JSON.parse(QRValue);
-            console.log(itemsIds);
             items = itemsIdsToItems(itemsIds);
           } catch {
             this.$popups.error('Ошибка в структуре', 'Ошибка при парсинге предметов');

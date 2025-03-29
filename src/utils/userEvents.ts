@@ -3,7 +3,7 @@ import { User } from '~/types/types';
 import { UserLevels } from '~/constants/levels';
 import { Classes } from '~/constants/classes';
 import { BuffsTypes, ClassTypes, MONEY_LOSE_BY_DEATH_PERCENT } from '~/constants/constants';
-import { getAllUserEffects, getTotalUserMaxHP } from '~/utils/utils';
+import { getAllUserBuffs, getAllUserEffects, getTotalUserMaxHP } from '~/utils/utils';
 import { Effects } from '~/constants/effects';
 
 
@@ -15,11 +15,13 @@ export function userIncreaseLevel($user: User, $modals: typeof Modals) {
   let powerAdd = Classes[$user.classType].statsPerLevel.power;
   let agilityAdd = Classes[$user.classType].statsPerLevel.agility;
   let intelligenceAdd = Classes[$user.classType].statsPerLevel.intelligence;
-  getAllUserEffects($user).forEach(e => {
-    powerAdd += e.buffs[BuffsTypes.powerPerLevelIncrease] ?? 0;
-    agilityAdd += e.buffs[BuffsTypes.agilityPerLevelIncrease] ?? 0;
-    intelligenceAdd += e.buffs[BuffsTypes.intelligenceCostDecrease] ?? 0;
+  getAllUserBuffs($user).forEach(buffs => {
+    powerAdd += buffs[BuffsTypes.powerPerLevelIncrease] ?? 0;
+    agilityAdd += buffs[BuffsTypes.agilityPerLevelIncrease] ?? 0;
+    intelligenceAdd += buffs[BuffsTypes.intelligenceCostDecrease] ?? 0;
+  });
 
+  getAllUserEffects($user).forEach(e => {
     if (e.id === Effects.statsJustice.id) {
       switch ($user.classType) {
         case ClassTypes.power:

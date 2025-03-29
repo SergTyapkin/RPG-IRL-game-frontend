@@ -35,6 +35,8 @@ export interface User {
   isSignedIn: boolean;
 }
 
+export type Buffs = {[key in BuffType]: number}
+
 export interface Class {
   type: ClassType;
   name: string;
@@ -82,14 +84,14 @@ export interface Effect {
   userCanGetInFight?: boolean;
   turns?: number;
 
-  buffs: {[key in BuffType]: number};
+  buffs: Buffs;
 }
 
 export interface Skill {
   name: string;
   description: string;
   abilities: string[];
-  buffs: {[key in BuffType]: number};
+  buffs: Buffs;
   effects: string[];
   cost: number;
   position: [number, number];
@@ -123,7 +125,7 @@ export interface Item {
   id: string;
   name: string;
   type: ItemType;
-  buffs: {[key in BuffType]: number};
+  buffs: Buffs;
   abilities: string[];
   effects: string[];
   description: string;

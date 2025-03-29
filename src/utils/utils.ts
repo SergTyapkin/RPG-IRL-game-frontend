@@ -1,5 +1,5 @@
 import { IterableSkillTrees } from '~/constants/skills';
-import { Ability, Effect, Item, QRData, Skill, User } from '~/types/types';
+import { Ability, Buffs, Effect, Item, QRData, Skill, User } from '~/types/types';
 import {
   BuffsTypes,
   DEFAULT_USER_MAX_UP,
@@ -291,24 +291,38 @@ export function getAllUserAbilities($user: User): ExtendedAbility[] {
   return abilities;
 }
 
-export function getTotalUserProtection($user: User): number {
-  let res = DEFAULT_USER_PROTECTION;
-  res += $user.equipment.hat ? Items[$user.equipment.hat].buffs[BuffsTypes.protectionIncrease] ?? 0 : 0;
-  res += $user.equipment.main ? Items[$user.equipment.main].buffs[BuffsTypes.protectionIncrease] ?? 0 : 0;
-  res += $user.equipment.boots ? Items[$user.equipment.boots].buffs[BuffsTypes.protectionIncrease] ?? 0 : 0;
-  const items = getAllUserItems($user);
-  items.forEach(item => {
+export function getAllUserBuffs($user: User): Buffs[] {
+  const res: Buffs[] = [];
+  if ($user.equipment.hat) {
+    res.push(itemIdToItem($user.equipment.hat).buffs);
+  }
+  if ($user.equipment.main) {
+    res.push(itemIdToItem($user.equipment.main).buffs);
+  }
+  if ($user.equipment.boots) {
+    res.push(itemIdToItem($user.equipment.boots).buffs);
+  }
+  getAllUserItems($user).forEach(item => {
     if (![ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(item.type)) {
-      res += item.buffs[BuffsTypes.protectionIncrease] ?? 0;
+      res.push(item.buffs);
     }
   });
-  const skills = getAllUserSkills($user);
-  skills.forEach(skill => {
-    res += skill.buffs[BuffsTypes.protectionIncrease] ?? 0;
+  getAllUserSkills($user).forEach(skill => {
+    res.push(skill.buffs);
   });
-  const effects = getAllUserEffects($user);
-  effects.forEach(effect => {
-    res += effect.buffs[BuffsTypes.protectionIncrease] ?? 0;
+  getAllUserEffects($user).forEach(effect => {
+    res.push(effect.buffs);
+  });
+  return res;
+}
+
+// -----------------------
+export function getTotalUserProtection($user: User): number {
+  let res = DEFAULT_USER_PROTECTION;
+  getAllUserBuffs($user).forEach(buffs => {
+    res += buffs[BuffsTypes.protectionIncrease] ?? 0;
+  });
+  getAllUserEffects($user).forEach(effect => {
     if (effect.id === Effects.protectionAddHalfHp.id) {
       res += Math.round($user.stats.hp / 2);
     }
