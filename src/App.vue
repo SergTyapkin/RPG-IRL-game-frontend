@@ -202,6 +202,7 @@ import { Modals, Popups } from '@sergtyapkin/modals-popups';
 import API from '~/utils/API';
 import LocalStorageManager from '~/utils/localStorageManager';
 import CircleLoading from '~/components/loaders/CircleLoading.vue';
+import { saveAllAssetsByServiceWorker } from '~/utils/utils';
 
 export default {
   components: { CircleLoading, Modals, Popups },
@@ -232,6 +233,8 @@ export default {
     window.addEventListener('resize', () => {
       this.checkMobileScreen();
     });
+
+    saveAllAssetsByServiceWorker();
 
     const appEl = document.getElementById('app')!;
     window.addEventListener(
