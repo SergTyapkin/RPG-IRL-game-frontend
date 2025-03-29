@@ -24,6 +24,21 @@ const DISABLE_CACHING_URLS_REGEXPS = [/sw\.js/];
 // для страниц слева будут несмотря на url отдаваться ресурсы справа
 const OVERRIDE_RESOURCE_MAPPING_REGEXPS = {
   '^(http(s)?://\\w+(\\.\\w+)+)/?$': '$1/index.html',
+
+  '^(http(s)?://\\w+(\\.\\w+)+)/profile([?/].*)$': '$1/index.html',
+  '^(http(s)?://\\w+(\\.\\w+)+)/skills([?/].*)$': '$1/index.html',
+  '^(http(s)?://\\w+(\\.\\w+)+)/fight([?/].*)$': '$1/index.html',
+  '^(http(s)?://\\w+(\\.\\w+)+)/qr-scanner([?/].*)$': '$1/index.html',
+  '^(http(s)?://\\w+(\\.\\w+)+)/map([?/].*)$': '$1/index.html',
+  '^(http(s)?://\\w+(\\.\\w+)+)/guild([?/].*)$': '$1/index.html',
+  '^(http(s)?://\\w+(\\.\\w+)+)/trade([?/].*)$': '$1/index.html',
+
+  '^(http(s)?://\\w+(\\.\\w+)+)/qr-generation-i2819jd98jsiaodm12asd1([?/].*)$': '$1/index.html',
+
+  '^(http(s)?://\\w+(\\.\\w+)+)/signup([?/].*)$': '$1/index.html',
+  '^(http(s)?://\\w+(\\.\\w+)+)/login([?/].*)$': '$1/index.html',
+
+  '^(http(s)?://\\w+(\\.\\w+)+)/password/change([?/].*)$': '$1/index.html',
 };
 
 // Типы PostMessage для общения приложения с service worker'ом
