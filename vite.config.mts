@@ -37,9 +37,9 @@ export default defineConfig(({ mode }: { command: 'build' | 'serve'; mode: 'deve
         includeManifestIcons: true,
         includeAssets: ['/static/favicon.svg'],
         manifest: {
-          short_name: 'Frontend Template',
-          name: 'Frontend template with all best-practice instruments',
-          description: 'Some description of our service',
+          short_name: 'RPG IRL',
+          name: 'RPG game in real life',
+          description: '',
           icons: [
             {
               src: '/static/favicon.svg',
@@ -96,7 +96,7 @@ export default defineConfig(({ mode }: { command: 'build' | 'serve'; mode: 'deve
         {
           find: '#', // to use # as static root like: "import SomeResource from '#/icons/SomeResource.png'"
           replacement: path.resolve(__dirname, 'static'),
-        }
+        },
       ],
     },
     build: {
