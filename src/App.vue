@@ -234,7 +234,9 @@ export default {
       this.checkMobileScreen();
     });
 
-    saveAllAssetsByServiceWorker();
+    saveAllAssetsByServiceWorker(({current, total, progress}) => {
+      console.log(`Saved resource by SW: ${current}. Progress: ${progress}/${total}`);
+    });
 
     const appEl = document.getElementById('app')!;
     window.addEventListener(
