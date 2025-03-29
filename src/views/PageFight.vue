@@ -232,7 +232,7 @@
 
     <transition name="opacity" mode="out-in">
       <section class="section-not-alive-info" v-if="$user.stats.hp <= 0">
-        <img class="image" src="/static/icons/fight.svg" alt="death" />
+        <img class="image" src="/static/icons/fight.svg" alt="death">
         <ul class="info">
           <li>
             Вы погибли в бою.
@@ -315,6 +315,15 @@
       </div>
     </section>
 
+    <transition name="opacity">
+      <section v-if="fightPowers.length" class="section-abilities">
+        <header>Усиления текущего хода</header>
+        <div class="abilities-container">
+          <AbilityComponent v-for="ability in fightPowers" :key="ability.id" :ability="ability" />
+        </div>
+      </section>
+    </transition>
+
     <section class="section-abilities">
       <header>Способности</header>
       <div v-if="!abilities.length" class="info">Способностей нет</div>
@@ -323,7 +332,8 @@
           v-for="ability in abilities"
           @click="playAbility(ability)"
           :key="ability.id"
-          :ability="ability" />
+          :ability="ability"
+        />
       </div>
     </section>
 
@@ -331,13 +341,14 @@
       <section
         v-if="isHpProtectionShowedOnly"
         class="section-hp-protection-only"
-        @click="isHpProtectionShowedOnly = false">
+        @click="isHpProtectionShowedOnly = false"
+      >
         <section class="section-hp">
-          <img src="/static/icons/heart.svg" alt="" />
+          <img src="/static/icons/heart.svg" alt="">
           <div class="value">{{ $user.stats.hp }}</div>
         </section>
         <section class="section-protection">
-          <img src="/static/icons/shield.svg" alt="" />
+          <img src="/static/icons/shield.svg" alt="">
           <div class="value">{{ userProtection }}</div>
         </section>
       </section>
@@ -348,7 +359,7 @@
         <transition mode="out-in" name="opacity">
           <section class="section-choose-damage" v-if="modalState === ModalStates.chooseDamage" @click.stop>
             <button class="close">
-              <img src="/static/icons/close.svg" alt="close" @click="modalState = ModalStates.none" />
+              <img src="/static/icons/close.svg" alt="close" @click="modalState = ModalStates.none">
             </button>
             <header>Введите кол-во урона</header>
             <Range class="range" :min="1" :max="15" v-model="chosenValue" :labels-count="14" />
@@ -356,7 +367,7 @@
           </section>
           <section class="section-choose-heal" v-else-if="modalState === ModalStates.chooseHeal" @click.stop>
             <button class="close">
-              <img src="/static/icons/close.svg" alt="close" @click="modalState = ModalStates.none" />
+              <img src="/static/icons/close.svg" alt="close" @click="modalState = ModalStates.none">
             </button>
             <header>Введите кол-во лечения</header>
             <Range class="range" :min="1" :max="10" v-model="chosenValue" :labels-count="9" />
@@ -365,7 +376,7 @@
 
           <section class="section-choose-effects" v-else-if="modalState === ModalStates.chooseEffect" @click.stop>
             <button class="close">
-              <img src="/static/icons/close.svg" alt="close" @click="modalState = ModalStates.none" />
+              <img src="/static/icons/close.svg" alt="close" @click="modalState = ModalStates.none">
             </button>
             <header>Выберите эффект</header>
             <div class="effects-container">
@@ -375,7 +386,8 @@
                 :effect="effect"
                 without-source
                 :class="{ selected: selectedEffect === effect }"
-                @click="selectedEffect = effect" />
+                @click="selectedEffect = effect"
+              />
             </div>
             <transition name="opacity">
               <button v-show="selectedEffect" class="button-submit" @click="takeEffect(selectedEffect)">Выбрать</button>
@@ -401,6 +413,7 @@ import {
 import EffectComponent from '~/components/Effect.vue';
 import AbilityComponent from '~/components/Ability.vue';
 import {
+  deepClone,
   effectsIdsToEffects,
   generateQRText,
   getAllUserAbilities,
@@ -411,7 +424,7 @@ import {
 } from '~/utils/utils';
 import Range from '~/components/Range.vue';
 import { Effects, FightEffects, TeamEffectsIds } from '~/constants/effects';
-import { AbilityChance, type Effect, QRData } from '~/types/types';
+import type { AbilityChance, Effect, QRData } from '~/types/types';
 import QRGenerator from '~/components/QRGenerator.vue';
 import { nextTick } from 'vue';
 import { userDead, userRevive } from '~/utils/userEvents';
@@ -432,6 +445,7 @@ export default {
       loosedMoney: 0,
       selectedEffect: undefined as Effect | undefined,
       fightEffects: [] as Effect[],
+      fightPowers: [] as InFightExtendedAbility[],
       scannedNotSavedQrs: [] as QRData[],
 
       ModalStates: {
@@ -479,6 +493,11 @@ export default {
       this.fightEffects = fightEffects;
     }
 
+    const fightPowers = this.$localStorageManager.loadFightPowers();
+    if (fightPowers) {
+      this.fightPowers = fightPowers as unknown as InFightExtendedAbility[];
+    }
+
     const loosedMoney = this.$localStorageManager.loadLosedMoney();
     if (loosedMoney) {
       this.loosedMoney = loosedMoney;
@@ -518,9 +537,14 @@ export default {
       this.$user.isInFight = true;
       this.isUserInFightReactiveValue = true;
       this.$app.isUserInFightReactiveValue = true;
+      this.fightEffects = [];
+      this.fightPowers = [];
+      this.$localStorageManager.removeFightPowers();
+      this.$localStorageManager.removeFightEffects();
       this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
       this.isHpProtectionShowedOnly = true;
-      this.$modals.alert(
+      this.$forceUpdate();
+      await this.$modals.alert(
         'Бой начат',
         `Закройте это уведомление и покажите экран всем противникам, чтобы они знали, сколько у вас HP и защиты.
 Закрыть его можно нажатием. Открыть заново - нажатием на свои HP или очки защиты`,
@@ -544,6 +568,8 @@ export default {
       this.$app.isUserInFightReactiveValue = false;
       this.$localStorageManager.removeAbilitiesReloads();
       this.fightEffects = [];
+      this.fightPowers = [];
+      this.$localStorageManager.removeFightPowers();
       this.$localStorageManager.removeFightEffects();
       this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
 
@@ -554,10 +580,12 @@ export default {
     async playAbility(ability: InFightExtendedAbility) {
       if (this.$user.isInFight && this.$user.stats.hp <= 0) {
         if (ability.id === Abilities.phoenixLive.id) {
-          if (!(await this.$modals.confirm(
+          if (
+            !(await this.$modals.confirm(
               'Использовать "Жизнь Феникса"?',
               `Артефакт будет использован и пропадет из вашего инвентаря`,
-            ))) {
+            ))
+          ) {
             return;
           }
           const idx = this.$user.inventory.findIndex(i => i === Items.artefactPhoenixLive.id);
@@ -592,7 +620,23 @@ export default {
       }
       ability.reloadLeft = ability.reload;
 
-      // Calculate stats ------------
+      // Ability is power charger ------------
+      if (ability.type === AbilityTypes.power) {
+        await this.$modals.alert(
+          'Разыграйте ещё одну способность',
+          'Ваш ход ещё не закончен. Разыграйте ещё одну способность, которая будет усилена использованной',
+        );
+        const abilityCopy = deepClone(ability);
+        abilityCopy.reloadLeft = 0;
+        this.fightPowers.push(abilityCopy);
+        this.$localStorageManager.saveFightPowers(this.fightPowers);
+        this.saveAbilitiesReloads();
+        this.recalculateUserStats();
+        this.$forceUpdate();
+        return;
+      }
+
+      // Calculate played stats ------------
       const totalEffects = (this.effects as Effect[]).concat(this.fightEffects);
       // Calculate damage
       let damage = ability.damage;
@@ -640,9 +684,16 @@ export default {
         }
       });
       damage *= efficiencyModifiers[ability.type];
+      heal *= efficiencyModifiers[ability.type];
+      // Calculate power affects
+      this.fightPowers.forEach(power => {
+        if (power.id === Abilities.powerDoubleDamage.id) {
+          damage *= 2;
+        }
+      });
 
       // Inform user ------------
-      if (damage > 0) {
+      if (ability.damage > 0 && damage > 0) {
         await this.$modals.alert(
           `Вы наносите ${damage} урона по ${damageTargets} противник${damageTargets > 1 ? 'ам' : 'у'}`,
           'Выберите противников и громко скажите им, от какой способности и сколько урона они получают. Они должны ввести его себе сами',
@@ -651,38 +702,49 @@ export default {
       if (effectsToTargets.length > 0) {
         const effectsToTargetsNames = effectsToTargets.map(e => `"${e.name}"`).join(', ');
         await this.$modals.alert(
-          `Вы накладываете эффект${effectsToTargetsNames.length > 1 ? 'ы' : ''}: ${effectsToTargetsNames} на ${damageTargets} противник${damageTargets > 1 ? 'ов' : 'а'}`,
+          `Вы накладываете эффект${effectsToTargets.length > 1 ? 'ы' : ''}: ${effectsToTargetsNames} на ${damageTargets} противник${damageTargets > 1 ? 'ов' : 'а'}`,
           'Выберите противников и громко скажите им, от какой способноси и сколько урона они получают. Они должны ввести его себе сами',
         );
       }
       if (effectsForMe.length > 0) {
         const effectsForMeNames = effectsForMe.map(e => `"${e.name}"`).join(', ');
         await this.$modals.alert(
-          `Вы получаете эффект${effectsForMeNames.length > 1 ? 'ы' : ''}: ${effectsForMeNames}`,
+          `Вы получаете эффект${effectsToTargets.length > 1 ? 'ы' : ''}: ${effectsForMeNames}`,
           'Эффекты уже применены',
         );
         effectsForMe.forEach(e => {
           this.takeEffect(Effects[e.id]);
         });
       }
-      if (heal > 0) {
-        await this.$modals.alert(
-          `Вы лечите ${heal} HP ${damageTargets} союзник${damageTargets > 1 ? 'ам' : 'у'}`,
-          'Выберите союзников и громко скажите им, от чего и сколько очков здоровья они восстанавливают. Они должны ввести это себе сами',
-        );
+      if (ability.heal > 0 && heal > 0) {
+        if (ability.damageTargets === 0) {
+          this.takeHeal(heal); // User gets heal by himself
+        } else {
+          await this.$modals.alert(
+            `Вы лечите ${heal} HP ${damageTargets} союзник${damageTargets > 1 ? 'ам' : 'у'}`,
+            'Выберите союзников и громко скажите им, от чего и сколько очков здоровья они восстанавливают. Они должны ввести это себе сами',
+          );
+        }
       }
 
+      this.fightPowers = [];
+      this.$localStorageManager.removeFightPowers();
       this.applyOneTurnEffects();
+      this.saveAbilitiesReloads();
       this.recalculateUserStats();
     },
-    applyOneTurnEffects() {
+    saveAbilitiesReloads() {
       const abilitiesReloads: { [key: string]: number } = {};
       this.abilities.forEach(ability => {
-        if (!ability.reloadLeft) {
-          ability.reloadLeft = 1;
-        }
-        ability.reloadLeft = Math.max(ability.reloadLeft - 1, 0);
-        abilitiesReloads[ability.id] = ability.reloadLeft;
+        abilitiesReloads[ability.id] = ability.reloadLeft ?? 0;
+      });
+
+      this.$localStorageManager.saveAbilitiesReloads(abilitiesReloads);
+    },
+    applyOneTurnEffects() {
+      // Abilities reload decrease by 1
+      this.abilities.forEach(ability => {
+        ability.reloadLeft = Math.max((ability.reloadLeft ?? 1) - 1, 0);
       });
 
       // Personal bleeding
@@ -716,7 +778,6 @@ export default {
       }
 
       this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
-      this.$localStorageManager.saveAbilitiesReloads(abilitiesReloads);
       this.$forceUpdate();
     },
 

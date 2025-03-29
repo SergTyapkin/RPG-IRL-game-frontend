@@ -44,6 +44,7 @@ export const ItemTypes = {
 };
 
 export const AbilityTypes = {
+  power: 'power',
   dagger: 'weapon',
   sword: 'sword',
   pistol: 'pistol',

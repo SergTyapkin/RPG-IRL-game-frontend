@@ -127,6 +127,7 @@
     padding-bottom 100px
     background #00000050
     backdrop-filter blur(10px)
+
     .modal
       width calc(100% - 30px)
       max-width 400px
@@ -135,13 +136,16 @@
       background colorBgLight
       border-radius borderRadiusM
       box-shadow 0 0 15px #000
+
       button
         button()
 
         &.trade
           button-emp()
+
       .cost
         color colorSec1
+
         .number
           padding 3px 10px
           color colorBg
@@ -268,13 +272,7 @@
     <hr>
 
     <transition mode="out-in" name="opacity">
-      <section
-        v-if="selectedSkill"
-        class="section-modals"
-        @click="
-          selectedSkill = undefined;
-        "
-      >
+      <section v-if="selectedSkill" class="section-modals" @click="selectedSkill = undefined">
         <transition mode="out-in" name="opacity">
           <ItemInfo
             class="modal"
@@ -287,12 +285,20 @@
           >
             <template #buttons>
               <ValueBadge :value="String($user.stats[ResourceTypesToStats[selectedTree]])" :type="selectedTree" />
-              <div class="cost">Стоимость навыка: <span class="number">{{ selectedSkill.cost - currentDiscounts[selectedTree] }}</span></div>
+              <div class="cost">
+                Стоимость навыка:
+                <span class="number">{{ Math.max(0, selectedSkill.cost - currentDiscounts[selectedTree]) }}</span>
+              </div>
               <button
-                v-if="!$user.skills.includes(selectedSkill.id) && (selectedSkill.parentId === undefined || $user.skills.includes(selectedSkill.parentId))"
+                v-if="
+                  !$user.skills.includes(selectedSkill.id) &&
+                    (selectedSkill.parentId === undefined || $user.skills.includes(selectedSkill.parentId))
+                "
                 @click="learnSkill(selectedSkill)"
                 class="equip"
-                :disabled="selectedSkill.cost - currentDiscounts[selectedTree] > $user.stats[ResourceTypesToStats[selectedTree]]"
+                :disabled="
+                  selectedSkill.cost - currentDiscounts[selectedTree] > $user.stats[ResourceTypesToStats[selectedTree]]
+                "
               >
                 Изучить
               </button>
@@ -333,7 +339,7 @@ export default {
         [ResourceTypes.power]: 'power',
         [ResourceTypes.agility]: 'agility',
         [ResourceTypes.intelligence]: 'intelligence',
-      }
+      },
     };
   },
 
@@ -381,7 +387,7 @@ export default {
     },
 
     learnSkill(skill: Skill) {
-      const skillCost = skill.cost - this.currentDiscounts[this.selectedTree];
+      const skillCost = Math.max(0, skill.cost - this.currentDiscounts[this.selectedTree]);
       if (this.$user.stats[this.ResourceTypesToStats[this.selectedTree]] < skillCost) {
         return;
       }
@@ -393,7 +399,7 @@ export default {
       this.selectedSkill = undefined;
       this.updateSkillPoints();
       this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
-    }
+    },
   },
 };
 </script>

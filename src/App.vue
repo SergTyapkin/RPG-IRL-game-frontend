@@ -31,7 +31,7 @@
     width 100%
     max-width 700px
     padding 0
-    z-index 999
+    z-index 99
 
     .bottom-line-bg
       position absolute
@@ -54,6 +54,7 @@
         padding 8px
         border-radius borderRadiusS
         trans()
+
         &:not(.disabled)
           hover-effect()
 
@@ -158,17 +159,33 @@
         <router-link :to="{ name: 'fight' }" class="fight" :class="{ disabled: false }">
           <img src="/static/icons/fight.svg" alt="">
         </router-link>
-        <router-link :to="{ name: 'skillsTree' }" class="tree" :class="{disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }">
+        <router-link
+          :to="{ name: 'skillsTree' }"
+          class="tree"
+          :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
+        >
           <img src="/static/icons/tree.svg" alt="">
         </router-link>
-        <router-link :to="{ name: 'map' }" class="map" :class="{disabled: isUserInFightReactiveValue || isUserDeadReactiveValue}">
+        <router-link
+          :to="{ name: 'map' }"
+          class="map"
+          :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
+        >
           <img src="/static/icons/map-2.svg" alt="">
         </router-link>
-        <router-link :to="{ name: 'profile' }" class="profile" :class="{disabled: isUserInFightReactiveValue || isUserDeadReactiveValue}">
+        <router-link
+          :to="{ name: 'profile' }"
+          class="profile"
+          :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
+        >
           <img src="/static/icons/profile.svg" alt="">
         </router-link>
 
-        <router-link :to="{ name: 'qrScanner' }" class="button-scanner" :class="{disabled: isUserInFightReactiveValue && !isUserDeadReactiveValue}">
+        <router-link
+          :to="{ name: 'qrScanner' }"
+          class="button-scanner"
+          :class="{ disabled: isUserInFightReactiveValue && !isUserDeadReactiveValue }"
+        >
           <img src="/static/icons/qr-scanner.svg" alt="">
         </router-link>
       </nav>

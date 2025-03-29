@@ -73,7 +73,6 @@ import validateModel from '@sergtyapkin/models-validator';
 import { GuildModel, GuildModelMockData } from '~/utils/APIModels';
 import { UserLevels } from '~/constants/levels';
 import { type QRData } from '~/types/types';
-import { Classes } from '~/constants/classes';
 import { userIncreaseLevel } from '~/utils/userEvents';
 
 export default {

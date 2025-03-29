@@ -81,6 +81,10 @@
     background mix(#666, transparent, 30%)
     centered-flex-container()
     trans()
+    img
+      width 100%
+      height 100%
+      opacity 0.5
 
 
   &.in-reloading
@@ -126,7 +130,8 @@
     </section>
 
     <section class="section-reloading">
-      {{ ability.reloadLeft }}
+      <div v-if="Number.isFinite(ability.reloadLeft)">{{ ability.reloadLeft }}</div>
+      <img v-else src="/static/icons/close.svg" alt="">
     </section>
   </div>
 </template>

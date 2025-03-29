@@ -82,7 +82,7 @@ export const Items: { [key: string]: Item } = {
     id: String(),
     name: 'Камень пиратских душ',
     description:
-      'Можно провести магический обряд.\n Дает +40 к урону, +20 к броне и позволяет союзникам наносить дополнительно +20 урона до судного сражения, на судном сражении дает вдвое больше\n',
+      'Можно провести магический обряд.\n Дает значительные бонусы к урону и броне, на судном сражении дает вдвое больше\n',
     type: ItemTypes.artefact,
     imageUrl: ImgArtefactMainStone,
     buffs: {
@@ -222,12 +222,14 @@ export const Items: { [key: string]: Item } = {
     id: String(),
     name: 'Комплект элитного пирата',
     description:
-      'Дает возможность один раз за сражение нанести двойной урон вашей атакой\n Дает +20 к броне и +20 к здоровью\n Дает +2 к ловкости за уровень',
+      'Дает возможность один раз за сражение нанести двойной урон вашей атакой. Дает +2 к ловкости за уровень',
     type: ItemTypes.main,
     imageUrl: ImgMainElitePirate,
-    buffs: {},
-    effects: [Effects.damage_2.id],
-    abilities: [],
+    buffs: {
+      [BuffsTypes.protectionIncrease]: 7,
+    },
+    effects: [Effects.agilityAddPerLevel_2.id],
+    abilities: [Abilities.powerDoubleDamage.id],
   },
   mainKingHunter: {
     id: String(),
@@ -245,11 +247,13 @@ export const Items: { [key: string]: Item } = {
   mainMagicSecret: {
     id: String(),
     name: 'Мантия секретной службы короля',
-    description: 'Блокирует 70% магического урона',
+    description: 'Блокирует 30% урона по здоровью',
     type: ItemTypes.main,
     imageUrl: ImgMainMagicSecret,
-    buffs: {},
-    effects: [Effects.damage_2.id],
+    buffs: {
+      [BuffsTypes.protectionIncrease]: 5,
+    },
+    effects: [Effects.damageGotten30perc.id],
     abilities: [],
   },
 

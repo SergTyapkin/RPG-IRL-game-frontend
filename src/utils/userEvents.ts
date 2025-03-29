@@ -45,8 +45,8 @@ export function userIncreaseLevel($user: User, $modals: typeof Modals) {
   $modals.alert(
     'Уровень повышен!',
     `Вы получили уровень ${$user.level}!
-        Начислено ${powerAdd} силы, ${agilityAdd} ловкости и ${intelligenceAdd} интеллекта.
-${$user.level < maxLevel ? `Для уровня ${$user.level + 1} понадобится ${UserLevels[$user.level + 1].experience}xp` : ''}`,
+Начислено ${powerAdd} силы, ${agilityAdd} ловкости и ${intelligenceAdd} интеллекта.
+${$user.level < maxLevel ? `Для уровня ${$user.level + 1} понадобится ${UserLevels[$user.level + 1].experience}xp.` : ''}`,
   );
 }
 

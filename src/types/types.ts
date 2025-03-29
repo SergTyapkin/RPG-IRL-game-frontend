@@ -79,7 +79,7 @@ export interface Effect {
   imageUrl: string;
   hidden?: boolean;
   isForFight?: boolean,
-  onlyForFight?: boolean;
+  userCanGetInFight?: boolean;
   turns?: number;
 
   buffs: {[key in BuffType]: number};

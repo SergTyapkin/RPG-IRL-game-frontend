@@ -52,7 +52,7 @@ export const Abilities: {[key: string]: Ability} = {
     damage: 15,
     damageTargets: 1,
     heal: 0,
-    reload: 1,
+    reload: 2,
     chances: [
       {
         effectsToTargets: [Effects.teamBleeding_2.id],
@@ -82,10 +82,10 @@ export const Abilities: {[key: string]: Ability} = {
     imageUrl: DefaultAbilityImage,
     effectsToTargets: [Effects.bleeding_2.id],
     effectsForMe: [],
-    damage: 12,
-    damageTargets: 0,
+    damage: 8,
+    damageTargets: 2,
     heal: 0,
-    reload: 1,
+    reload: 2,
     chances: [],
   },
   swordAlchemy: {
@@ -99,9 +99,23 @@ export const Abilities: {[key: string]: Ability} = {
     damage: 6,
     damageTargets: 0,
     heal: 0,
-    reload: 1,
+    reload: 2,
     chances: [],
   },
+  powerDoubleDamage: {
+    id: String(),
+    name: 'Двойной урон',
+    description: 'Сразу после использования этой способности можно разыграть ещё одну, урон которой будет увеличен в 2 раза',
+    type: AbilityTypes.power,
+    imageUrl: DefaultAbilityImage,
+    effectsToTargets: [],
+    effectsForMe: [],
+    damage: 0,
+    damageTargets: 0,
+    heal: 0,
+    reload: Infinity,
+    chances: [],
+  }
 }
 
 // Set right id's

@@ -16,7 +16,9 @@
     flex 1
     padding 10px
     padding-top 15px
-    background 'linear-gradient(%s, %s), var(--bg-url) 50% 50% / 100% auto no-repeat' % (mix(colorBgLight, transparent) mix(colorBgLight, transparent))
+    background 'linear-gradient(%s, %s), var(--bg-url) 50% 50% / 100% auto no-repeat' \
+      % \
+      (mix(colorBgLight, transparent) mix(colorBgLight, transparent))
     border-radius borderRadiusM 0 0 borderRadiusM
 
     .name
@@ -89,7 +91,7 @@
 </style>
 
 <template>
-  <div class="root-effect" v-if="!effect.hidden" :class="{'no-source': withoutSource}">
+  <div class="root-effect" v-if="!effect.hidden" :class="{ 'no-source': withoutSource }">
     <section class="text-container" :style="{ '--bg-url': `url(${effect.imageUrl})` }">
       <header class="name">{{ effect.name }}</header>
       <div class="description">{{ effect.description }}</div>
@@ -106,7 +108,11 @@
         <img v-else-if="buff === BuffsTypes.experienceModifier" src="/static/icons/buff-dmg.svg" alt="experience">
         <img v-else-if="buff === BuffsTypes.moneyModifier" src="/static/icons/buff-dmg.svg" alt="money">
         <img v-else-if="buff === BuffsTypes.powerCostDecrease" src="/static/icons/buff-dmg.svg" alt="power-low-cost">
-        <img v-else-if="buff === BuffsTypes.agilityCostDecrease" src="/static/icons/buff-dmg.svg" alt="agility-low-cost">
+        <img
+          v-else-if="buff === BuffsTypes.agilityCostDecrease"
+          src="/static/icons/buff-dmg.svg"
+          alt="agility-low-cost"
+        >
         <img
           v-else-if="buff === BuffsTypes.intelligenceCostDecrease"
           src="/static/icons/buff-dmg.svg"
@@ -114,14 +120,31 @@
           class="intelligence-low-cost"
         >
         <img v-else-if="buff === BuffsTypes.powerPerLevelIncrease" src="/static/icons/buff-dmg.svg" alt="power-add">
-        <img v-else-if="buff === BuffsTypes.agilityPerLevelIncrease" src="/static/icons/buff-dmg.svg" alt="agility-add">
-        <img v-else-if="buff === BuffsTypes.intelligencePerLevelIncrease" src="/static/icons/buff-dmg.svg" alt="intelligence-add">
+        <img
+          v-else-if="buff === BuffsTypes.agilityPerLevelIncrease"
+          src="/static/icons/buff-dmg.svg"
+          alt="agility-add"
+        >
+        <img
+          v-else-if="buff === BuffsTypes.intelligencePerLevelIncrease"
+          src="/static/icons/buff-dmg.svg"
+          alt="intelligence-add"
+        >
         <img v-else-if="buff === BuffsTypes.damageDoneModifier" src="/static/icons/fight.svg" alt="damage">
         <img v-else-if="buff === BuffsTypes.damageDoneIncrease" src="/static/icons/fight.svg" alt="damage">
-        <img v-else-if="buff === BuffsTypes.hpEveryTurn && value > 0" src="/static/icons/heart.svg" alt="regeneration">
+        <img
+          v-else-if="buff === BuffsTypes.hpEveryTurn && value > 0"
+          src="/static/icons/heart.svg"
+          alt="regeneration"
+        >
         <img v-else-if="buff === BuffsTypes.hpEveryTurn && value < 0" src="/static/icons/buff-dmg.svg" alt="bleeding">
+        <img
+          v-else-if="buff === BuffsTypes.damageGottenModifier"
+          src="/static/icons/shield.svg"
+          alt="damage-decrease"
+        >
 
-        <div class="value">{{ value }}</div>
+        <div class="value">{{ value > 0 && value < 1 ? `${value * 100}%` : value }}</div>
       </div>
     </section>
   </div>

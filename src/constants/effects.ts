@@ -1,66 +1,111 @@
 import { type Effect } from '~/types/types';
 import { BuffsTypes, BuffType, DefaultAbilityImage } from '~/constants/constants';
 
-function getFightEffect(name: string, description: string, buffType: BuffType, val: number, hidden: boolean = false) {
+function getFightEffect(
+  name: string,
+  description: string,
+  buffType: BuffType,
+  val: number,
+  hidden: boolean = false,
+  isForFight: boolean = false,
+  userCanGetInFight: boolean = false,
+) {
   return {
     id: String(),
     name: name,
     description: description,
     imageUrl: DefaultAbilityImage,
-    isForFight: true,
-    onlyForFight: true,
+    isForFight: isForFight,
+    userCanGetInFight: userCanGetInFight,
     hidden: hidden,
     turns: Infinity,
     buffs: {
       [buffType]: val,
     },
-  }
+  };
 }
-const getTeamBleeding = (val: number) => getFightEffect(
-  'Командное кровотечение',
-  `Ваши союзники, кроме вас, получают ${val} урона каждый ваш ход`,
-  BuffsTypes.hpEveryTurn, -val
-);
-const getTeamRegeneration = (val: number) => getFightEffect(
-  'Командная регенерация',
-  `Ваши союзники, кроме вас, восстанавливают ${val} единиц здоровья каждый ваш ход`,
-  BuffsTypes.hpEveryTurn, val
-);
-const getBleeding = (val: number) => getFightEffect(
-  'Кровотечение',
-  `Вы получаете ${val} урона каждый ваш ход`,
-  BuffsTypes.hpEveryTurn, -val
-);
-const getRegeneration = (val: number) => getFightEffect(
-  'Регенерация',
-  `Вы восстанавливаете ${val} единиц здоровья каждый ваш ход`,
-  BuffsTypes.hpEveryTurn, val
-);
-const getDamage = (val: number) => getFightEffect(
-  'Сила',
-  `Вы наносите на ${val} единиц больше урона`,
-  BuffsTypes.damageDoneIncrease, val
-);
-const getWeakness = (val: number) => getFightEffect(
-  'Слабость',
-  `Вы наносите на ${val} единиц меньше урона`,
-  BuffsTypes.damageDoneIncrease, -val
-);
-const getPowerPerLevelIncrease = (val: number) => getFightEffect(
-  'Дополнительная сила',
-  `Вы получаете на ${val} очков силы больше за уровень`,
-  BuffsTypes.powerPerLevelIncrease, val
-);
-const getAgilityPerLevelIncrease = (val: number) => getFightEffect(
-  'Дополнительная ловкость',
-  `Вы получаете на ${val} очков ловкости больше за уровень`,
-  BuffsTypes.agilityPerLevelIncrease, val
-);
-const getIntelligencePerLevelIncrease = (val: number) => getFightEffect(
-  'Дополнительный интеллект',
-  `Вы получаете на ${val} очков интеллекта больше за уровень`,
-  BuffsTypes.intelligencePerLevelIncrease, val
-);
+
+const getTeamBleeding = (val: number) =>
+  getFightEffect(
+    'Командное кровотечение',
+    `Ваши союзники, кроме вас, получают ${val} урона каждый ваш ход`,
+    BuffsTypes.hpEveryTurn,
+    -val,
+    false,
+    true,
+    true,
+  );
+const getTeamRegeneration = (val: number) =>
+  getFightEffect(
+    'Командная регенерация',
+    `Ваши союзники, кроме вас, восстанавливают ${val} единиц здоровья каждый ваш ход`,
+    BuffsTypes.hpEveryTurn,
+    val,
+    false,
+    true,
+    true,
+  );
+const getBleeding = (val: number) =>
+  getFightEffect(
+    'Кровотечение',
+    `Вы получаете ${val} урона каждый ваш ход`,
+    BuffsTypes.hpEveryTurn,
+    -val,
+    false,
+    true,
+    true,
+  );
+const getRegeneration = (val: number) =>
+  getFightEffect(
+    'Регенерация',
+    `Вы восстанавливаете ${val} единиц здоровья каждый ваш ход`,
+    BuffsTypes.hpEveryTurn,
+    val,
+    false,
+    true,
+    true,
+  );
+const getDamage = (val: number) =>
+  getFightEffect(
+    'Сила',
+    `Вы наносите на ${val} единиц больше урона`,
+    BuffsTypes.damageDoneIncrease,
+    val,
+    false,
+    true,
+    true,
+  );
+const getWeakness = (val: number) =>
+  getFightEffect(
+    'Слабость',
+    `Вы наносите на ${val} единиц меньше урона`,
+    BuffsTypes.damageDoneIncrease,
+    -val,
+    false,
+    true,
+    true,
+  );
+const getPowerPerLevelIncrease = (val: number) =>
+  getFightEffect(
+    'Дополнительная сила',
+    `Вы получаете на ${val} очков силы больше за уровень`,
+    BuffsTypes.powerPerLevelIncrease,
+    val,
+  );
+const getAgilityPerLevelIncrease = (val: number) =>
+  getFightEffect(
+    'Дополнительная ловкость',
+    `Вы получаете на ${val} очков ловкости больше за уровень`,
+    BuffsTypes.agilityPerLevelIncrease,
+    val,
+  );
+const getIntelligencePerLevelIncrease = (val: number) =>
+  getFightEffect(
+    'Дополнительный интеллект',
+    `Вы получаете на ${val} очков интеллекта больше за уровень`,
+    BuffsTypes.intelligencePerLevelIncrease,
+    val,
+  );
 
 export const Effects: { [key: string]: Effect } = {
   // ----- Fight effects
@@ -135,6 +180,15 @@ export const Effects: { [key: string]: Effect } = {
       [BuffsTypes.damageGottenModifier]: 0.5,
     },
   },
+  damageGotten30perc: {
+    id: String(),
+    name: 'Поглощение урона',
+    description: 'Вы получаете на 30% меньше урона по здоровью',
+    imageUrl: DefaultAbilityImage,
+    buffs: {
+      [BuffsTypes.damageGottenModifier]: 0.3,
+    },
+  },
   // -------------------------------------------------------
   powerAddPerLevel_1: getPowerPerLevelIncrease(1),
   powerAddPerLevel_2: getPowerPerLevelIncrease(2),
@@ -177,7 +231,7 @@ export const Effects: { [key: string]: Effect } = {
   spellEfficiency: {
     id: String(),
     name: 'Эффективные заклинания',
-    description: 'Эффективнос заклинаний увеличена на 30%',
+    description: 'Эффективность заклинаний увеличена на 30%',
     imageUrl: DefaultAbilityImage,
     buffs: {},
   },
@@ -231,7 +285,7 @@ export const TeamEffectsIds: string[] = [];
 
 export const FightEffects: { [key: string]: Effect } = {};
 Object.keys(Effects).forEach(id => {
-  if (Effects[id].onlyForFight) {
+  if (Effects[id].userCanGetInFight) {
     FightEffects[id] = Effects[id];
   }
 });

@@ -27,7 +27,7 @@ export const EffectModel = {
     type: Boolean,
     optional: true,
   },
-  onlyForFight: {
+  userCanGetInFight: {
     type: Boolean,
     optional: true,
   },
@@ -43,7 +43,7 @@ export const EffectModelMockData = validateModel(EffectModel,     {
   description: 'Какое-то описание эффекта',
   imageUrl: DefaultAbilityImage,
   hidden: false,
-  onlyForFight: false,
+  userCanGetInFight: false,
   buffs: {
     [BuffsTypes.protectionIncrease]: 2,
     [BuffsTypes.maxHpIncrease]: 5,
