@@ -4,10 +4,10 @@ import { EffectedAbility } from '~/utils/utils';
 import { Effects } from '~/constants/effects';
 
 export interface InFightAbility extends EffectedAbility {
-  reloadLeft?: number,
+  reloadLeft?: number;
 }
 
-export const Abilities: {[key: string]: Ability} = {
+export const Abilities: { [key: string]: Ability } = {
   default: {
     id: String(),
     name: 'Кулаки',
@@ -17,14 +17,14 @@ export const Abilities: {[key: string]: Ability} = {
     effectsToTargets: [],
     effectsForMe: [],
     damage: 1,
-    damageTargets: 1,
+    targetsCount: 1,
     heal: 0,
     reload: 1,
     chances: [
       {
         damage: 1,
         probability: 0.5,
-      }
+      },
     ],
   },
   healPotion: {
@@ -36,7 +36,7 @@ export const Abilities: {[key: string]: Ability} = {
     effectsToTargets: [],
     effectsForMe: [],
     damage: 0,
-    damageTargets: 0,
+    targetsCount: 0,
     heal: 3,
     reload: 3,
     chances: [],
@@ -50,14 +50,14 @@ export const Abilities: {[key: string]: Ability} = {
     effectsToTargets: [],
     effectsForMe: [],
     damage: 15,
-    damageTargets: 1,
+    targetsCount: 1,
     heal: 0,
     reload: 2,
     chances: [
       {
         effectsToTargets: [Effects.teamBleeding_2.id],
         probability: 0.5,
-      }
+      },
     ],
   },
   phoenixLive: {
@@ -69,7 +69,7 @@ export const Abilities: {[key: string]: Ability} = {
     effectsToTargets: [],
     effectsForMe: [],
     damage: 0,
-    damageTargets: 0,
+    targetsCount: 0,
     heal: 0,
     reload: Infinity,
     chances: [],
@@ -83,7 +83,7 @@ export const Abilities: {[key: string]: Ability} = {
     effectsToTargets: [Effects.bleeding_2.id],
     effectsForMe: [],
     damage: 8,
-    damageTargets: 2,
+    targetsCount: 2,
     heal: 0,
     reload: 2,
     chances: [],
@@ -97,7 +97,21 @@ export const Abilities: {[key: string]: Ability} = {
     effectsToTargets: [Effects.bleeding_2.id],
     effectsForMe: [],
     damage: 6,
-    damageTargets: 0,
+    targetsCount: 0,
+    heal: 0,
+    reload: 2,
+    chances: [],
+  },
+  pistolDeathBreath: {
+    id: String(),
+    name: 'Выстрел "Дыхания Смерти"',
+    description: 'Выстрел проходит оставляет сильно кровоточащие раны, которые наносят 4 урона каждый ход',
+    type: AbilityTypes.sword,
+    imageUrl: DefaultAbilityImage,
+    effectsToTargets: [Effects.bleeding_4.id],
+    effectsForMe: [],
+    damage: 6,
+    targetsCount: 0,
     heal: 0,
     reload: 2,
     chances: [],
@@ -105,18 +119,19 @@ export const Abilities: {[key: string]: Ability} = {
   powerDoubleDamage: {
     id: String(),
     name: 'Двойной урон',
-    description: 'Сразу после использования этой способности можно разыграть ещё одну, урон которой будет увеличен в 2 раза',
+    description:
+      'Сразу после использования этой способности можно разыграть ещё одну, урон которой будет увеличен в 2 раза',
     type: AbilityTypes.power,
     imageUrl: DefaultAbilityImage,
     effectsToTargets: [],
     effectsForMe: [],
     damage: 0,
-    damageTargets: 0,
+    targetsCount: 0,
     heal: 0,
     reload: Infinity,
     chances: [],
-  }
-}
+  },
+};
 
 // Set right id's
 Object.keys(Abilities).forEach(id => {

@@ -22,23 +22,26 @@ const STRATEGY_CACHE_FIRST = true;
 const DISABLE_CACHING_URLS_REGEXPS = [/sw\.js/];
 
 // для страниц слева будут несмотря на url отдаваться ресурсы справа
+const word = '[\\w-~!*\'()<>"{}|^`]+';
+const baseUrl = `(http(s)?://${word}(\\.${word})+)`;
+const anyEnding = `([?/].*)?`;
 const OVERRIDE_RESOURCE_MAPPING_REGEXPS = {
-  '^(http(s)?://\\w+(\\.\\w+)+)/?$': '$1/index.html',
+  [`^${baseUrl}/?$`]: '$1/index.html',
 
-  '^(http(s)?://\\w+(\\.\\w+)+)/profile([?/].*)$': '$1/index.html',
-  '^(http(s)?://\\w+(\\.\\w+)+)/skills([?/].*)$': '$1/index.html',
-  '^(http(s)?://\\w+(\\.\\w+)+)/fight([?/].*)$': '$1/index.html',
-  '^(http(s)?://\\w+(\\.\\w+)+)/qr-scanner([?/].*)$': '$1/index.html',
-  '^(http(s)?://\\w+(\\.\\w+)+)/map([?/].*)$': '$1/index.html',
-  '^(http(s)?://\\w+(\\.\\w+)+)/guild([?/].*)$': '$1/index.html',
-  '^(http(s)?://\\w+(\\.\\w+)+)/trade([?/].*)$': '$1/index.html',
+  [`^${baseUrl}/profile${anyEnding}$`]: '$1/index.html',
+  [`^${baseUrl}/skills${anyEnding}$`]: '$1/index.html',
+  [`^${baseUrl}/fight${anyEnding}$`]: '$1/index.html',
+  [`^${baseUrl}/qr-scanner${anyEnding}$`]: '$1/index.html',
+  [`^${baseUrl}/map${anyEnding}$`]: '$1/index.html',
+  [`^${baseUrl}/guild${anyEnding}$`]: '$1/index.html',
+  [`^${baseUrl}/trade${anyEnding}$`]: '$1/index.html',
 
-  '^(http(s)?://\\w+(\\.\\w+)+)/qr-generation-i2819jd98jsiaodm12asd1([?/].*)$': '$1/index.html',
+  [`^${baseUrl}/qr-generation-i2819jd98jsiaodm12asd1${anyEnding}$`]: '$1/index.html',
 
-  '^(http(s)?://\\w+(\\.\\w+)+)/signup([?/].*)$': '$1/index.html',
-  '^(http(s)?://\\w+(\\.\\w+)+)/login([?/].*)$': '$1/index.html',
+  [`^${baseUrl}/signup${anyEnding}$`]: '$1/index.html',
+  [`^${baseUrl}/login${anyEnding}$`]: '$1/index.html',
 
-  '^(http(s)?://\\w+(\\.\\w+)+)/password/change([?/].*)$': '$1/index.html',
+  [`^${baseUrl}/password/change${anyEnding}$`]: '$1/index.html',
 };
 
 // Типы PostMessage для общения приложения с service worker'ом

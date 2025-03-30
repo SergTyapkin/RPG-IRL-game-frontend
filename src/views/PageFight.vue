@@ -640,7 +640,7 @@ export default {
       const totalEffects = (this.effects as Effect[]).concat(this.fightEffects);
       // Calculate damage
       let damage = ability.damage;
-      const damageTargets = ability.damageTargets;
+      const targetsCount = ability.targetsCount;
       let damageModifier = 1;
       totalEffects.forEach(e => {
         damage += e.buffs[BuffsTypes.damageDoneIncrease] ?? 0;
@@ -695,14 +695,14 @@ export default {
       // Inform user ------------
       if (ability.damage > 0 && damage > 0) {
         await this.$modals.alert(
-          `Вы наносите ${damage} урона по ${damageTargets} противник${damageTargets > 1 ? 'ам' : 'у'}`,
+          `Вы наносите ${damage} урона по ${targetsCount} противник${targetsCount > 1 ? 'ам' : 'у'}`,
           'Выберите противников и громко скажите им, от какой способности и сколько урона они получают. Они должны ввести его себе сами',
         );
       }
       if (effectsToTargets.length > 0) {
         const effectsToTargetsNames = effectsToTargets.map(e => `"${e.name}"`).join(', ');
         await this.$modals.alert(
-          `Вы накладываете эффект${effectsToTargets.length > 1 ? 'ы' : ''}: ${effectsToTargetsNames} на ${damageTargets} противник${damageTargets > 1 ? 'ов' : 'а'}`,
+          `Вы накладываете эффект${effectsToTargets.length > 1 ? 'ы' : ''}: ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount > 1 ? 'ов' : 'а'}`,
           'Выберите противников и громко скажите им, от какой способноси и сколько урона они получают. Они должны ввести его себе сами',
         );
       }
@@ -717,11 +717,11 @@ export default {
         });
       }
       if (ability.heal > 0 && heal > 0) {
-        if (ability.damageTargets === 0) {
+        if (ability.targetsCount === 0) {
           this.takeHeal(heal); // User gets heal by himself
         } else {
           await this.$modals.alert(
-            `Вы лечите ${heal} HP ${damageTargets} союзник${damageTargets > 1 ? 'ам' : 'у'}`,
+            `Вы лечите ${heal} HP ${targetsCount} союзник${targetsCount > 1 ? 'ам' : 'у'}`,
             'Выберите союзников и громко скажите им, от чего и сколько очков здоровья они восстанавливают. Они должны ввести это себе сами',
           );
         }

@@ -67,7 +67,7 @@ export interface Ability {
   type: AbilityType;
 
   damage: number;
-  damageTargets: number;
+  targetsCount: number;
   heal: number;
   reload: number;
 

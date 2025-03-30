@@ -38,6 +38,8 @@
       font-medium()
       &.damage
         background colorEmpPower
+        .targets
+          margin-left 5px
       &.heal
         background colorEmpHeal
       &.protection
@@ -51,16 +53,27 @@
 <template>
   <div class="root-cell" :style="{ '--size': size }">
     <transition name="opacity">
-      <img class="item-bg" v-if="bgImage" :src="bgImage" alt="">
+      <img class="item-bg" v-if="bgImage" :src="bgImage" alt="" />
     </transition>
     <transition name="opacity">
-      <img class="item-img" v-if="item.imageUrl" :src="item.imageUrl" alt="">
+      <img class="item-img" v-if="item.imageUrl" :src="item.imageUrl" alt="" />
     </transition>
     <section class="stats" v-if="!noStats">
-      <div class="stat damage" v-for="(damage, i) in abilitiesDamage" :key="i"><img src="/static/icons/fight.svg" alt="damage">{{ damage }}</div>
-      <div class="stat heal" v-for="(heal, i) in abilitiesHealing" :key="i"><img src="/static/icons/close.svg" alt="heal">{{ heal }}</div>
-      <div class="stat max-hp" v-if="item.buffs && item.buffs[BuffsTypes.maxHpIncrease]"><img src="/static/icons/heart.svg" alt="maxHp">{{ item.buffs[BuffsTypes.maxHpIncrease] }}</div>
-      <div class="stat protection" v-if="item.buffs && item.buffs[BuffsTypes.protectionIncrease]"><img src="/static/icons/shield.svg" alt="protection">{{ item.buffs[BuffsTypes.protectionIncrease] }}</div>
+      <div class="stats-group">
+        <div class="stat damage" v-for="({damage, targets}, i) in abilitiesDamage" :key="i">
+          <img src="/static/icons/fight.svg" alt="damage" />{{ damage }}
+          <img src="/static/icons/person.svg" alt="targets" class="targets" v-if="targets > 1" />{{ targets > 1 ? targets : '' }}
+        </div>
+      </div>
+      <div class="stat heal" v-for="(heal, i) in abilitiesHealing" :key="i">
+        <img src="/static/icons/close.svg" alt="heal" />{{ heal }}
+      </div>
+      <div class="stat max-hp" v-if="item.buffs && item.buffs[BuffsTypes.maxHpIncrease]">
+        <img src="/static/icons/heart.svg" alt="maxHp" />{{ item.buffs[BuffsTypes.maxHpIncrease] }}
+      </div>
+      <div class="stat protection" v-if="item.buffs && item.buffs[BuffsTypes.protectionIncrease]">
+        <img src="/static/icons/shield.svg" alt="protection" />{{ item.buffs[BuffsTypes.protectionIncrease] }}
+      </div>
     </section>
     <slot />
   </div>
@@ -94,34 +107,33 @@ export default {
   },
 
   computed: {
-    abilitiesDamage(): number[] {
+    abilitiesDamage(): { damage: number, targets: number }[] {
       if (!this.item.abilities) {
         return [];
       }
-      const res: number[] = [];
+      const res: { damage: number, targets: number }[] = [];
       this.item.abilities.forEach((a: Ability) => {
         if (a.damage > 0) {
-          res.push(a.damage);
+          res.push({damage: a.damage, targets: a.targetsCount});
         }
       });
       return res;
     },
-    abilitiesHealing(): number[] {
+    abilitiesHealing(): { heal: number, targets: number }[] {
       if (!this.item.abilities) {
         return [];
       }
-      const res: number[] = [];
+      const res: { heal: number, targets: number }[] = [];
       this.item.abilities.forEach((a: Ability) => {
         if (a.heal > 0) {
-          res.push(a.heal);
+          res.push({heal: a.heal, targets: a.targetsCount});
         }
       });
       return res;
-    }
+    },
   },
 
-  mounted() {
-  },
+  mounted() {},
 
   methods: {},
 };

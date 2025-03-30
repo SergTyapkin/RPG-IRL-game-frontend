@@ -115,6 +115,7 @@ export const Effects: { [key: string]: Effect } = {
   // -----------------------------
   bleeding_1: getBleeding(1),
   bleeding_2: getBleeding(2),
+  bleeding_4: getBleeding(4),
   regeneration_1: getRegeneration(1),
   regeneration_5: getRegeneration(5),
   // ----------------------------

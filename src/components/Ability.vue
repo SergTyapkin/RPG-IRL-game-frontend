@@ -43,6 +43,8 @@
           margin-right 3px
         &.damage
           background colorEmpPower
+          .targets
+            margin-left 5px
         &.heal
           background colorEmpHeal
         &.chances
@@ -113,10 +115,8 @@
       <section class="stats">
         <div class="damage-group">
           <div v-if="ability.damage" class="stat damage">
-            <img src="/static/icons/fight.svg" alt="">{{ ability.damage }}
-          </div>
-          <div v-if="ability.damageTargets" class="stat damage">
-            <img src="/static/icons/person.svg" alt="">{{ ability.damageTargets }}
+            <img src="/static/icons/fight.svg" alt="damage">{{ ability.damage }}
+            <img src="/static/icons/person.svg" alt="targets" class="targets" v-if="ability.targetsCount > 1">{{ ability.targetsCount > 1 ? ability.targetsCount : '' }}
           </div>
         </div>
         <div v-if="ability.heal" class="stat heal"><img src="/static/icons/heart.svg" alt="">{{ ability.heal }}</div>

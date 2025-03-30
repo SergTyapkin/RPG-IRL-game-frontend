@@ -64,7 +64,7 @@ export const AbilityModel = {
     item: String,
   },
   damage: Number,
-  damageTargets: Number,
+  targetsCount: Number,
   heal: Number,
   reload: Number,
 };
@@ -78,7 +78,7 @@ export const AbilityModelMockData = validateModel(AbilityModel,     {
   effectsToTargets: [Effects.bleeding_1.id],
   effectsForMe: [Effects.regeneration_1.id],
   damage: 5,
-  damageTargets: 2,
+  targetsCount: 2,
   heal: 10,
   reload: 2,
 }) as Ability;
