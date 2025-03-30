@@ -53,6 +53,7 @@
 
         .skills
           .cell-container
+            animation-float()
             overflow visible
 
             .cell
@@ -118,6 +119,14 @@
             stroke colorSec1
             stroke-width 2px
             trans()
+            stroke-dasharray 0 100%
+            animation line 0.5s linear forwards
+            animation-index-delay()
+            @keyframes line
+              from
+                stroke-dasharray 0 100%
+              to
+                stroke-dasharray 100% 0
 
             &.dark
               opacity 0.3
@@ -213,7 +222,7 @@
     </section>
 
     <hr>
-    <section class="section-skills-tree" style="--animation-index: 4">
+    <section class="section-skills-tree">
       <DraggableComponent
         ref="draggableEl"
         :default-scale="1"
@@ -230,22 +239,23 @@
         <div class="tree-container">
           <svg :viewBox="`0 0 ${svgMaxWidth} ${svgMaxHeight}`" :width="svgMaxWidth" :height="svgMaxHeight">
             <g class="lines">
-              <g v-for="skill in currentIterableSkillTree" :key="skill.id">
+              <g v-for="(skill, idx) in currentIterableSkillTree" :key="skill.id">
                 <line
                   class="line"
                   v-for="(line, i) in skill.lines"
                   :key="i"
                   :class="{ dark: !$user.skills.includes(skill.parentId) }"
-                  :x1="line[0] + 40"
-                  :y1="line[1] + 40"
-                  :x2="line[2] + 40"
-                  :y2="line[3] + 40"
+                  :x2="line[0] + 40"
+                  :y2="line[1] + 40"
+                  :x1="line[2] + 40"
+                  :y1="line[3] + 40"
+                  :style="{'--animation-index': 3 + idx + i}"
                 />
               </g>
             </g>
 
             <g class="skills">
-              <g v-for="skill in currentIterableSkillTree" :key="skill.id">
+              <g v-for="(skill, idx) in currentIterableSkillTree" :key="skill.id" :style="{'--animation-index': idx}">
                 <foreignObject
                   class="cell-container"
                   :x="skill.position[0]"
