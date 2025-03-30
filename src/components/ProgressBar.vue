@@ -5,43 +5,45 @@
 @import '../styles/animations.styl'
 @import '../styles/components.styl'
 
-
-progressbar-width = 5px
 color = colorSuccess
 colorBarBg = colorBgLight
 
+
+progressbar-width = 5px
+
 .root-progressbar
   user-select none
+  position relative
+  transform skewX(-20deg)
   width 100%
   height progressbar-width
   background linear-gradient(90deg, color 50%, colorBarBg 50%) 50% 50% / 200% 100% no-repeat
   background-position-x calc(100% - var(--progress) * 100%)
-  transform skewX(-20deg)
   trans()
-  position relative
 
   .progress
     font-small()
+
     position absolute
-    left calc(var(--progress) * 100% + 5px)
     top 10px
+    left calc(var(--progress) * 100% + 5px)
+    transform skewX(20deg) translateX(-50%)
     height 20px
+    padding 2px 5px 0 5px
+    color colorBg
     background color
     border-radius borderRadiusS
-    padding 2px 5px 0 5px
-    transform skewX(20deg) translateX(-50%)
-    color colorBg
     trans()
     &::before
       content ""
       position absolute
-      left 50%
+      z-index -1
       top -2px
+      left 50%
+      transform translateX(-50%) rotate(45deg)
       width 15px
       height 15px
       background color
-      transform translateX(-50%) rotate(45deg)
-      z-index -1
 </style>
 
 <template>

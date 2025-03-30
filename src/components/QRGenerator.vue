@@ -34,6 +34,7 @@ thumb-size = 15px
 
 .flex-container
   centered-flex-container()
+
   flex-wrap wrap
 
 .container-bg

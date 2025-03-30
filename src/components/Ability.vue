@@ -26,8 +26,8 @@
       left 10px
       display flex
       flex-direction column
-      align-items flex-start
       gap 5px
+      align-items flex-start
       .damage-group
         display flex
         gap 5px
