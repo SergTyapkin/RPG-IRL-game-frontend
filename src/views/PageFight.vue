@@ -8,6 +8,7 @@
 .root-page-fight
   .section-user
     margin-bottom 20px
+    animation-float(0.5s, -20px, 0, left)
 
   .section-badges
     display flex
@@ -15,6 +16,10 @@
     justify-content space-between
     width 100%
     margin-bottom 40px
+    .hp-badge
+      animation-float(0.5s, -20px, 0, left)
+    .protection-badge
+      animation-float(0.5s, +20px, 0, right)
 
   .section-buttons
     display flex
@@ -23,6 +28,7 @@
     justify-content space-between
 
     > *
+      animation-float()
       button-emp()
 
       width calc((100% - 15px) / 2)
@@ -55,6 +61,8 @@
       color colorText2
 
       li
+        animation-float(0.5s, -20px, 0, left)
+
         margin-bottom 5px
         padding-left 10px
         border-left colorText2 2px solid
@@ -66,14 +74,16 @@
     .qr-codes
       header
         margin-top 20px
+        color colorText3
         text-align center
         font-medium()
-        color colorText3
 
       .info
         text-align center
 
     .confirm-button
+      animation-float()
+
       margin-top 20px
       button-emp()
 
@@ -98,6 +108,8 @@
       display flex
       flex-direction column
       gap 25px
+      > *
+        animation-float()
 
   .section-abilities
     margin-top 60px
@@ -110,6 +122,7 @@
       > *
         width calc((100% - 15px) / 2)
         hover-effect()
+        animation-float()
 
   .section-hp-protection-only
     position fixed
@@ -221,30 +234,40 @@
 
 <template>
   <div class="root-page-fight">
-    <section class="section-user">
+    <section class="section-user" style="--animation-index: 0">
       <UserProfileInfo show-guild />
     </section>
 
     <section class="section-badges" @click="isHpProtectionShowedOnly = true">
-      <ValueBadge :type="ResourceTypes.hp" :value="`${$user.stats?.hp}/${userMaxHp}`" />
-      <ValueBadge :type="ResourceTypes.protection" :value="String(userProtection)" />
+      <ValueBadge
+        class="hp-badge"
+        :type="ResourceTypes.hp"
+        :value="`${$user.stats?.hp}/${userMaxHp}`"
+        style="--animation-index: 1"
+      />
+      <ValueBadge
+        class="protection-badge"
+        :type="ResourceTypes.protection"
+        :value="String(userProtection)"
+        style="--animation-index: 1"
+      />
     </section>
 
     <transition name="opacity" mode="out-in">
       <section class="section-not-alive-info" v-if="$user.stats.hp <= 0">
         <img class="image" src="/static/icons/fight.svg" alt="death">
         <ul class="info">
-          <li>
+          <li style="--animation-index: 0">
             Вы погибли в бою.
             <mark>Доберитесь до вашей базы</mark>
             , чтобы восстановить здоровье
           </li>
-          <li>
+          <li style="--animation-index: 1">
             Вы не можете совершать
             <mark>никакие действия</mark>
             , пока не вылечитесь
           </li>
-          <li>
+          <li style="--animation-index: 2">
             Не уходите с места боя. Сперва дайте
             <mark>одному из противников</mark>
             отсканировать все QR-коды ниже и
@@ -265,22 +288,22 @@
 
       <section class="section-confirm" v-else-if="!isUserInFightReactiveValue">
         <ul class="info">
-          <li>
+          <li style="--animation-index: 0">
             После начала боя вы
             <mark>не сможете выйти с этой страницы</mark>
             до его конца
           </li>
-          <li>
+          <li style="--animation-index: 1">
             Чтобы начать бой, объявите противникам об этом. В этом случае
             <mark>все участники боя должны немедленно начать бой</mark>
           </li>
-          <li>
+          <li style="--animation-index: 2">
             Если вы погибаете в бою, вы передаете противникам
             <mark>50% ваших монет</mark>
             и
             <mark>все не донесенные до базы предметы</mark>
           </li>
-          <li>
+          <li style="--animation-index: 3">
             Бой можно
             <mark>досрочно завершить</mark>
             , если одна из команд решает сдаться. Сделать это можно только
@@ -288,14 +311,14 @@
             хотя бы одного игрока этой команды
           </li>
         </ul>
-        <button class="confirm-button" @click="startFight">Начать бой</button>
+        <button class="confirm-button" @click="startFight" style="--animation-index: 4">Начать бой</button>
       </section>
 
       <section class="section-buttons" v-else>
-        <button class="button-take-damage" @click="chooseDamage">Нанесли урон</button>
-        <button class="button-take-effect" @click="chooseEffect">Дали эффект</button>
-        <button class="button-take-heal" @click="chooseHeal">Вылечили</button>
-        <button class="button-finish-fight" @click="onEndFight">Завершить бой</button>
+        <button class="button-take-damage" @click="chooseDamage" style="--animation-index: 0">Нанесли урон</button>
+        <button class="button-take-effect" @click="chooseEffect" style="--animation-index: 1">Дали эффект</button>
+        <button class="button-take-heal" @click="chooseHeal" style="--animation-index: 2">Вылечили</button>
+        <button class="button-finish-fight" @click="onEndFight" style="--animation-index: 3">Завершить бой</button>
       </section>
     </transition>
 
@@ -303,7 +326,12 @@
       <header>Постоянные эффекты</header>
       <div class="effects-container">
         <div v-if="!shownEffects.length" class="info">Эффектов нет</div>
-        <EffectComponent v-for="effect in shownEffects" :key="effect.id" :effect="effect" />
+        <EffectComponent
+          v-for="(effect, idx) in shownEffects"
+          :key="effect.id"
+          :effect="effect"
+          :style="{ '--animation-index': idx }"
+        />
       </div>
     </section>
 
@@ -311,7 +339,13 @@
       <header>Временные эффекты</header>
       <div class="effects-container">
         <div v-if="!fightEffects.length" class="info">Эффектов нет</div>
-        <EffectComponent v-for="effect in fightEffects" :key="effect.id" :effect="effect" without-source />
+        <EffectComponent
+          v-for="(effect, idx) in fightEffects"
+          :key="effect.id"
+          :effect="effect"
+          without-source
+          :style="{ '--animation-index': idx }"
+        />
       </div>
     </section>
 
@@ -319,7 +353,12 @@
       <section v-if="fightPowers.length" class="section-abilities">
         <header>Усиления текущего хода</header>
         <div class="abilities-container">
-          <AbilityComponent v-for="ability in fightPowers" :key="ability.id" :ability="ability" />
+          <AbilityComponent
+            v-for="(ability, idx) in fightPowers"
+            :key="ability.id"
+            :ability="ability"
+            :style="{ '--animation-index': idx }"
+          />
         </div>
       </section>
     </transition>
@@ -329,10 +368,11 @@
       <div v-if="!abilities.length" class="info">Способностей нет</div>
       <div class="abilities-container">
         <AbilityComponent
-          v-for="ability in abilities"
+          v-for="(ability, idx) in abilities"
           @click="playAbility(ability)"
           :key="ability.id"
           :ability="ability"
+          :style="{ '--animation-index': idx }"
         />
       </div>
     </section>

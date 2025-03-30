@@ -10,6 +10,7 @@
   .section-user-info
     display flex
     align-items flex-end
+    animation-float(0.5s, -20px, 0, left)
 
     .guild-button
       width 40px
@@ -22,13 +23,17 @@
 
   .section-level
     margin-top 10px
+    animation-float(0.5s, -20px, 0, left)
 
   .section-HP-Money
     display flex
     justify-content space-between
     margin-top 20px
+    > *
+      animation-float(0.5s, -20px, 0, left)
     .money-badge
       hover-effect()
+      animation-float(0.5s, 20px, 0, right)
 
   .section-equipment
   .section-inventory
@@ -45,6 +50,8 @@
       align-items center
       justify-content space-between
       margin-bottom 15px
+      .protection-badge
+        animation-float(0.5s, 20px, 0, right)
 
   .section-inventory
     header
@@ -69,6 +76,8 @@
       display flex
       flex-direction column
       gap 25px
+      > *
+        animation-float()
 
   .section-modals
     position fixed
@@ -94,32 +103,35 @@
 
 <template>
   <div class="root-profile">
-    <section class="section-user-info">
+    <section class="section-user-info" style="--animation-index: 0">
       <UserProfileInfo show-guild @contextmenu.prevent="logout" />
     </section>
 
-    <section class="section-level">
+    <section class="section-level" style="--animation-index: 1">
       <LevelComponent
         :level="$user.level"
         :cur-synced-xp="$user.stats?.experience"
         :cur-not-synced-xp="$user.notSyncedStats?.experience"
-        :max-xp="UserLevels[$user.level].experience" />
+        :max-xp="UserLevels[$user.level].experience"
+      />
     </section>
 
     <section class="section-HP-Money">
-      <ValueBadge :type="ResourceTypes.hp" :value="`${$user.stats?.hp}/${userMaxHp}`" />
+      <ValueBadge :type="ResourceTypes.hp" :value="`${$user.stats?.hp}/${userMaxHp}`" style="--animation-index: 2" />
       <ValueBadge
         :type="ResourceTypes.money"
         :value="String($user.stats?.money)"
         :not-synced-value="$user.notSyncedStats?.money"
         @click="tradeMoney"
-        class="money-badge" />
+        class="money-badge"
+        style="--animation-index: 2"
+      />
     </section>
 
     <section class="section-equipment">
       <div class="top-string">
         <header>Экипировка</header>
-        <ValueBadge :type="ResourceTypes.protection" :value="String(userProtection)" :not-synced-value="0" />
+        <ValueBadge class="protection-badge" :type="ResourceTypes.protection" :value="String(userProtection)" :not-synced-value="0" style="--animation-index: 3" />
       </div>
       <Equipment ref="equipment" @select="selectEquippedItem" />
     </section>
@@ -133,7 +145,7 @@
       <header>Эффекты</header>
       <div class="effects-container">
         <div v-if="!shownEffects.length" class="info">Эффектов нет</div>
-        <EffectComponent v-for="effect in shownEffects" :key="effect.id" :effect="effect" />
+        <EffectComponent v-for="(effect, idx) in shownEffects" :key="effect.id" :effect="effect" :style="{'--animation-index': idx}" />
       </div>
     </section>
 
@@ -152,7 +164,8 @@
         @click="
           selectedItem = undefined;
           selectedEquippedItem = undefined;
-        ">
+        "
+      >
         <transition mode="out-in" name="opacity">
           <ItemInfo
             class="modal"
@@ -161,15 +174,17 @@
             @click.stop
             @close="selectedItem = undefined"
             image-with-shadow
-            closable>
+            closable
+          >
             <template #buttons>
               <button
                 @click="equipItem(selectedItem)"
                 class="equip"
                 v-if="
                   [ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(selectedItem.type) &&
-                  !selectedItem.notSynced
-                ">
+                    !selectedItem.notSynced
+                "
+              >
                 Экипировать
               </button>
               <button @click="tradeItem(selectedItem)" class="trade">Передать</button>
@@ -183,7 +198,8 @@
             @click.stop
             @close="selectedEquippedItem = undefined"
             image-with-shadow
-            closable>
+            closable
+          >
             <template #buttons>
               <button @click="unequipItem(selectedEquippedItem)" class="equip">Снять</button>
             </template>

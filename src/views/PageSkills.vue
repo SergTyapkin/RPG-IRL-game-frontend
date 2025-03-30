@@ -11,6 +11,7 @@
   .section-user-info
     display flex
     align-items flex-end
+    animation-float(0.5s, -20px, 0, left)
 
   .section-resources
     display flex
@@ -27,12 +28,19 @@
       border-radius borderRadiusM
       hover-effect()
       trans()
+      &:nth-child(1)
+        animation-float(0.5s, -20px, 0, left)
+      &:nth-child(2)
+        animation-opacity()
+      &:nth-child(3)
+        animation-float(0.5s, +20px, 0, right)
 
       &.selected
         background colorBlockBg
 
   .section-skills-tree
     overflow hidden
+    animation-float()
 
     .tree-container
       position relative
@@ -155,7 +163,7 @@
 
 <template>
   <div class="root-page-skills">
-    <section class="section-user-info">
+    <section class="section-user-info" style="--animation-index: 0">
       <UserProfileInfo small />
     </section>
 
@@ -164,6 +172,7 @@
         class="button"
         @click="selectTree(ResourceTypes.power)"
         :class="{ selected: selectedTree === ResourceTypes.power }"
+        style="--animation-index: 1"
       >
         <ValueBadge
           :type="ResourceTypes.power"
@@ -177,6 +186,7 @@
         class="button"
         @click="selectTree(ResourceTypes.agility)"
         :class="{ selected: selectedTree === ResourceTypes.agility }"
+        style="--animation-index: 2"
       >
         <ValueBadge
           :type="ResourceTypes.agility"
@@ -190,6 +200,7 @@
         class="button"
         @click="selectTree(ResourceTypes.intelligence)"
         :class="{ selected: selectedTree === ResourceTypes.intelligence }"
+        style="--animation-index: 3"
       >
         <ValueBadge
           :type="ResourceTypes.intelligence"
@@ -202,7 +213,7 @@
     </section>
 
     <hr>
-    <section class="section-skills-tree">
+    <section class="section-skills-tree" style="--animation-index: 4">
       <DraggableComponent
         ref="draggableEl"
         :default-scale="1"

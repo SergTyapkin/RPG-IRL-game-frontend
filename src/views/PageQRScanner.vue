@@ -6,16 +6,18 @@
 @import '../styles/animations.styl'
 
 .root-page-qr-scanner
+  .user-info
+    animation-float(0.5s, -20px, 0, left)
+
   .section-scanner
     margin-top 40px
-
-    .result-container
-      opacity 0.1
+    animation-float(0.5s, -20px, 0, left)
 
     .info
       margin-top 30px
       margin-bottom 10px
       font-medium()
+      animation-float(0.5s, -20px, 0, left)
 
       color colorSec1
 
@@ -34,22 +36,26 @@
     .input-container
       display flex
       gap 15px
+      animation-float(0.5s, -20px, 0, left)
       .input
-        padding 0 5px
         width 150px
+        padding 0 5px
       .button
         button-emp()
+
+    .result-container
+      opacity 0.1 !important
 </style>
 
 <template>
   <div class="root-page-qr-scanner">
-    <UserProfileInfo small @contextmenu.prevent="syncData(GuildModelMockData)" />
+    <UserProfileInfo class="user-info" small @contextmenu.prevent="syncData(GuildModelMockData)" style="--animation-index: 0" />
 
-    <section class="section-scanner">
+    <section class="section-scanner" style="--animation-index: 1">
       <QRScanner @scan="onScan" />
 
-      <div class="info">Или введите код:</div>
-      <div class="input-container">
+      <div class="info" style="--animation-index: 2">Или введите код:</div>
+      <div class="input-container" style="--animation-index: 3">
         <input class="input" v-model="textInput">
         <button class="button" @click="onScan(textInput)">Отправить</button>
       </div>

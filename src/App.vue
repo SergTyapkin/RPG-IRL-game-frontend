@@ -27,36 +27,38 @@
   .overlay
     .loading-resources-toast
       position fixed
-      top 0
-      background colorBgLight
-      margin 10px
-      width calc(100% - 20px)
-      padding 15px
-      border-radius borderRadiusM
-      border 1px solid colorBorder
-      box-shadow 0 0 5px #000
       z-index 999
+      top 0
+      width calc(100% - 20px)
+      margin 10px
+      padding 15px
+      background colorBgLight
+      border 1px solid colorBorder
+      border-radius borderRadiusM
+      box-shadow 0 0 5px #000
       header
         font-medium()
-        margin-bottom 10px
+
         display flex
         align-items center
+        margin-bottom 10px
         img
           height 1lh
           margin-right 5px
       .info
         margin-top 3px
         font-small-extra()
+
         color colorText5
 
     .bottom-interface
       pointer-events none
       position fixed
+      z-index 99
       bottom 0
       width 100%
       max-width 700px
       padding 0
-      z-index 99
 
       .bottom-line-bg
         position absolute
@@ -175,7 +177,7 @@
       <transition name="scale-in">
         <component :is="Component" />
       </transition>
-      <CircleLoading class="loading" v-if="true" />
+      <div v-if="!Component"><CircleLoading class="loading" /></div>
     </router-view>
 
     <section class="overlay">

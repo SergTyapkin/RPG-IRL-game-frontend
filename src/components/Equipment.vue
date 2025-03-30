@@ -13,6 +13,12 @@
 
   > *
     aspect-ratio 1 / 1
+    &:nth-child(1)
+      animation-float(0.5s, -20px, 0, hat)
+    &:nth-child(2)
+      animation-opacity()
+    &:nth-child(3)
+      animation-float(0.5s, +20px, 0, boots)
     &.clickable
       hover-effect()
 </style>
@@ -22,23 +28,26 @@
     <Cell
       class="hat"
       :item="hat ? hat : {}"
-      :bg-image="hat ? undefined : DefaultHatImage"
+      :bg-image="!loaded || hat ? undefined : DefaultHatImage"
       :class="{ clickable: hat }"
       @click="selectItem(hat)"
+      style="--animation-index: 3"
     />
     <Cell
       class="main"
       :item="main ? main : {}"
-      :bg-image="main ? undefined : DefaultMainImage"
+      :bg-image="!loaded || main ? undefined : DefaultMainImage"
       :class="{ clickable: main }"
       @click="selectItem(main)"
+      style="--animation-index: 0"
     />
     <Cell
       class="boots"
       :item="boots ? boots : {}"
-      :bg-image="boots ? undefined : DefaultBootsImage"
+      :bg-image="!loaded || boots ? undefined : DefaultBootsImage"
       :class="{ clickable: boots }"
       @click="selectItem(boots)"
+      style="--animation-index: 3"
     />
   </div>
 </template>
@@ -65,6 +74,8 @@ export default {
       main: null as Item | null,
       boots: null as Item | null,
 
+      loaded: false,
+
       DefaultHatImage,
       DefaultMainImage,
       DefaultBootsImage,
@@ -73,6 +84,7 @@ export default {
 
   mounted() {
     this.update();
+    this.loaded = true;
   },
 
   methods: {

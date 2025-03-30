@@ -14,33 +14,43 @@
 
     .list
       list-no-styles()
+
       display flex
       flex-wrap wrap
 
       > *
         button()
+
         width min-content
         margin 0
+        padding 10px
 
         &.selected
           button-emp()
+
           width min-content
           margin 0
-
-    input
-      padding 5px
-      font-medium()
-      width 100%
-
-    button-clear
-      padding 5px
-      width 30px
-      height 30px
-      background colorEmpHP
+          padding 10px
+          border 1px solid
 
       img
         width 100%
         height 100%
+
+    input
+      width 100%
+      padding 5px
+      font-medium()
+    .input-container
+      display flex
+
+      .button-clear
+        button()
+
+        width 30px
+        padding 5px
+        background colorEmpHP
+        border-radius 0
 </style>
 
 <template>
@@ -91,8 +101,8 @@
 
     <section class="section-qr-value">
       <header>Значение QR'a</header>
-      <div>
-        Текстом:
+      Текстом:
+      <div class="input-container">
         <input v-model="QRValue">
         <button class="button-clear" @click="QRValue = ''"><img src="/static/icons/close.svg" alt="clear"></button>
       </div>

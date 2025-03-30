@@ -6,12 +6,14 @@
 @import '../styles/animations.styl'
 
 .root-level-component
-  --cur-progress unquote('min(calc(var(--cur) / var(--max) * 100%), 100%)')
-  --cur-add-progress unquote('min(calc(var(--cur-add) / var(--max) * 100%), calc(100% - var(--cur-progress)))')
-  --cur-total-progress unquote('min(calc((var(--cur) + var(--cur-add)) / var(--max) * 100%), 100%)')
+
+  --cur-progress unquote('min(calc(var(--cur-anim) / var(--max) * 100%), 100%)')
+  --cur-add-progress unquote('min(calc(var(--cur-add-anim) / var(--max) * 100%), calc(100% - var(--cur-progress)))')
+  --cur-total-progress unquote('min(calc((var(--cur-anim) + var(--cur-add-anim)) / var(--max) * 100%), 100%)')
 
   position relative
   width 100%
+  animation progress 1s ease forwards
   .number-bg
     width 50px
     height 50px
@@ -99,6 +101,17 @@
           img
             width 100%
             height 100%
+
+  @keyframes progress
+    0%
+      --cur-anim 0
+      --cur-add-anim 0
+    50%
+      --cur-anim var(--cur)
+      --cur-add-anim 0
+    100%
+      --cur-anim var(--cur)
+      --cur-add-anim var(--cur-add)
 </style>
 
 <template>

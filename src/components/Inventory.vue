@@ -14,14 +14,15 @@
   > *
     aspect-ratio 1/1
     width calc((100% - 30px) / 3)
+    animation-float()
     &.clickable
       hover-effect()
 </style>
 
 <template>
   <div class="root-inventory">
-    <Cell v-for="item in items" :key="item.id" class="cell clickable" :item="item" @click="selectItem(item)" />
-    <Cell v-for="i in (!items.length ? 3 : ((items.length % 3) * 2) % 3)" :key="i" class="cell" :item="{}" />
+    <Cell v-for="(item, idx) in items" :key="item.id" :style="{'--animation-index': idx}" class="cell clickable" :item="item" @click="selectItem(item)" />
+    <Cell v-for="i in (!items.length ? 3 : ((items.length % 3) * 2) % 3)" :key="i" :style="{'--animation-index': items.length + i}" class="cell" :item="{}" />
   </div>
 </template>
 
