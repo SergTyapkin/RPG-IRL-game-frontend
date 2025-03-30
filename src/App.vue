@@ -15,109 +15,109 @@
   centered-margin()
   // overflow hidden
 
-  > *:not(.loading):not(.loading-resources-toast)
+  > *:not(.overlay)
     position absolute
     width 100%
     min-height 100vh
     padding 30px 15px 180px 15px
 
-  .loading-resources-toast
-    position fixed
-    top 0
-    background colorBgLight
-    margin 10px
-    width calc(100% - 20px)
-    padding 15px
-    border-radius borderRadiusM
-    border 1px solid colorBorder
-    box-shadow 0 0 5px #000
-    z-index 999
-    header
-      font-medium()
-      margin-bottom 10px
-      display flex
-      align-items center
-      img
-        height 1lh
-        margin-right 5px
-    .info
-      margin-top 3px
-      font-small-extra()
-      color colorText5
-
-
   .loading
     centered-absolute-transform()
 
-  .bottom-interface
-    pointer-events none
-    position fixed
-    bottom 0
-    width 100%
-    max-width 700px
-    padding 0
-    z-index 99
+  .overlay
+    .loading-resources-toast
+      position fixed
+      top 0
+      background colorBgLight
+      margin 10px
+      width calc(100% - 20px)
+      padding 15px
+      border-radius borderRadiusM
+      border 1px solid colorBorder
+      box-shadow 0 0 5px #000
+      z-index 999
+      header
+        font-medium()
+        margin-bottom 10px
+        display flex
+        align-items center
+        img
+          height 1lh
+          margin-right 5px
+      .info
+        margin-top 3px
+        font-small-extra()
+        color colorText5
 
-    .bottom-line-bg
-      position absolute
+    .bottom-interface
+      pointer-events none
+      position fixed
       bottom 0
       width 100%
-      height 70px
-      object-fit cover
-      object-position bottom
+      max-width 700px
+      padding 0
+      z-index 99
 
-    .buttons
-      > *
-        button-no-styles()
-
-        pointer-events all
+      .bottom-line-bg
         position absolute
-        bottom 28px
-        transform translate(-50%, 50%)
-        width 35px
-        height 35px
-        padding 8px
-        border-radius borderRadiusS
-        trans()
+        bottom 0
+        width 100%
+        height 70px
+        object-fit cover
+        object-position bottom
 
-        &:not(.disabled)
-          hover-effect()
+      .buttons
+        > *
+          button-no-styles()
 
-        &.disabled
-          cursor not-allowed
-          background mix(black, transparent)
+          pointer-events all
+          position absolute
+          bottom 28px
+          transform translate(-50%, 50%)
+          width 35px
+          height 35px
+          padding 8px
+          border-radius borderRadiusS
+          trans()
 
-          &.router-link-active
+          &:not(.disabled)
+            hover-effect()
+
+          &.disabled
+            cursor not-allowed
             background mix(black, transparent)
 
+            &.router-link-active
+              background mix(black, transparent)
+
+            img
+              opacity 0.5
+
+          &.router-link-active
+            background colorBlockBg
+
           img
-            opacity 0.5
+            width 100%
+            height 100%
 
-        &.router-link-active
-          background colorBlockBg
+        .fight
+          left 10%
 
-        img
-          width 100%
-          height 100%
+        .tree
+          left 27%
 
-      .fight
-        left 10%
+        .map
+          left 73%
 
-      .tree
-        left 27%
+        .profile
+          left 90%
 
-      .map
-        left 73%
-
-      .profile
-        left 90%
-
-      .button-scanner
-        bottom 65px
-        left 50%
-        width 65px
-        height 65px
-        background none
+        .button-scanner
+          bottom 65px
+          left 50%
+          width 65px
+          height 65px
+          background none
 </style>
 
 <style lang="stylus">
@@ -171,57 +171,59 @@
 
 <template>
   <div class="wrapper">
-    <transition name="opacity">
-      <section class="loading-resources-toast" v-if="!isAllResourcesCached">
-        <header><img src="/static/icons/download.svg" alt="loading">Кэширование приложения...</header>
-        <ProgressBar :progress="cachingProgress" />
-        <div class="info">{{ currentCachingResource }}</div>
-      </section>
-    </transition>
-
     <router-view #default="{ Component }">
       <transition name="scale-in">
         <component :is="Component" />
       </transition>
-      <CircleLoading class="loading" v-if="!Component" />
+      <CircleLoading class="loading" v-if="true" />
     </router-view>
 
-    <section class="bottom-interface">
-      <img class="bottom-line-bg" src="/static/images/bottom-line.svg" alt="">
-      <nav class="buttons">
-        <router-link :to="{ name: 'fight' }" class="fight" :class="{ disabled: false }">
-          <img src="/static/icons/fight.svg" alt="">
-        </router-link>
-        <router-link
-          :to="{ name: 'skillsTree' }"
-          class="tree"
-          :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
-        >
-          <img src="/static/icons/tree.svg" alt="">
-        </router-link>
-        <router-link
-          :to="{ name: 'map' }"
-          class="map"
-          :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
-        >
-          <img src="/static/icons/map-2.svg" alt="">
-        </router-link>
-        <router-link
-          :to="{ name: 'profile' }"
-          class="profile"
-          :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
-        >
-          <img src="/static/icons/profile.svg" alt="">
-        </router-link>
+    <section class="overlay">
+      <transition name="opacity">
+        <section class="loading-resources-toast" v-if="!isAllResourcesCached">
+          <header><img src="/static/icons/download.svg" alt="loading">Кэширование приложения...</header>
+          <ProgressBar :progress="cachingProgress" />
+          <div class="info">{{ currentCachingResource }}</div>
+        </section>
+      </transition>
 
-        <router-link
-          :to="{ name: 'qrScanner' }"
-          class="button-scanner"
-          :class="{ disabled: isUserInFightReactiveValue && !isUserDeadReactiveValue }"
-        >
-          <img src="/static/icons/qr-scanner.svg" alt="">
-        </router-link>
-      </nav>
+      <section class="bottom-interface">
+        <img class="bottom-line-bg" src="/static/images/bottom-line.svg" alt="">
+        <nav class="buttons">
+          <router-link :to="{ name: 'fight' }" class="fight" :class="{ disabled: false }">
+            <img src="/static/icons/fight.svg" alt="">
+          </router-link>
+          <router-link
+            :to="{ name: 'skillsTree' }"
+            class="tree"
+            :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
+          >
+            <img src="/static/icons/tree.svg" alt="">
+          </router-link>
+          <router-link
+            :to="{ name: 'map' }"
+            class="map"
+            :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
+          >
+            <img src="/static/icons/map-2.svg" alt="">
+          </router-link>
+          <router-link
+            :to="{ name: 'profile' }"
+            class="profile"
+            :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
+          >
+            <img src="/static/icons/profile.svg" alt="">
+          </router-link>
+
+          <router-link
+            :to="{ name: 'qrScanner' }"
+            class="button-scanner"
+            :class="{ disabled: isUserInFightReactiveValue && !isUserDeadReactiveValue }"
+          >
+            <img src="/static/icons/qr-scanner.svg" alt="">
+          </router-link>
+        </nav>
+      </section>
     </section>
   </div>
 
