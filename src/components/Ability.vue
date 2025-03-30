@@ -19,6 +19,7 @@
       aspect-ratio 1/1
       width 100%
     .stats
+      user-select none
       position absolute
       z-index 1
       top 10px

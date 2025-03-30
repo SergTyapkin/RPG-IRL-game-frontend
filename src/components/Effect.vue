@@ -59,6 +59,7 @@
       border-bottom-left-radius 0
 
   .buffs
+    user-select none
     position absolute
     top -17px
     left -5px

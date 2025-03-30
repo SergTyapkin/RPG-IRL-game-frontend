@@ -15,11 +15,36 @@
   centered-margin()
   // overflow hidden
 
-  > *:not(.loading)
+  > *:not(.loading):not(.loading-resources-toast)
     position absolute
     width 100%
     min-height 100vh
     padding 30px 15px 180px 15px
+
+  .loading-resources-toast
+    position fixed
+    top 0
+    background colorBgLight
+    margin 10px
+    width calc(100% - 20px)
+    padding 15px
+    border-radius borderRadiusM
+    border 1px solid colorBorder
+    box-shadow 0 0 5px #000
+    z-index 999
+    header
+      font-medium()
+      margin-bottom 10px
+      display flex
+      align-items center
+      img
+        height 1lh
+        margin-right 5px
+    .info
+      margin-top 3px
+      font-small-extra()
+      color colorText5
+
 
   .loading
     centered-absolute-transform()
@@ -146,6 +171,14 @@
 
 <template>
   <div class="wrapper">
+    <transition name="opacity">
+      <section class="loading-resources-toast" v-if="!isAllResourcesCached">
+        <header><img src="/static/icons/download.svg" alt="loading">Кэширование приложения...</header>
+        <ProgressBar :progress="cachingProgress" />
+        <div class="info">{{ currentCachingResource }}</div>
+      </section>
+    </transition>
+
     <router-view #default="{ Component }">
       <transition name="scale-in">
         <component :is="Component" />
@@ -153,7 +186,7 @@
       <CircleLoading class="loading" v-if="!Component" />
     </router-view>
 
-    <div class="bottom-interface">
+    <section class="bottom-interface">
       <img class="bottom-line-bg" src="/static/images/bottom-line.svg" alt="">
       <nav class="buttons">
         <router-link :to="{ name: 'fight' }" class="fight" :class="{ disabled: false }">
@@ -189,7 +222,7 @@
           <img src="/static/icons/qr-scanner.svg" alt="">
         </router-link>
       </nav>
-    </div>
+    </section>
   </div>
 
   <Popups ref="popups" />
@@ -203,15 +236,19 @@ import API from '~/utils/API';
 import LocalStorageManager from '~/utils/localStorageManager';
 import CircleLoading from '~/components/loaders/CircleLoading.vue';
 import { saveAllAssetsByServiceWorker } from '~/utils/utils';
+import ProgressBar from '~/components/ProgressBar.vue';
 
 export default {
-  components: { CircleLoading, Modals, Popups },
+  components: { ProgressBar, CircleLoading, Modals, Popups },
 
   data() {
     return {
       transitionName: '',
       global: undefined as Record<string, any> | undefined,
       prevTouchY: 0,
+      isAllResourcesCached: true,
+      currentCachingResource: null as string | null,
+      cachingProgress: 0,
 
       isUserInFightReactiveValue: this.$user?.isInFight,
       isUserDeadReactiveValue: this.$user?.stats?.hp <= 0,
@@ -235,7 +272,11 @@ export default {
     });
 
     saveAllAssetsByServiceWorker(({current, total, progress}) => {
-      console.log(`Saved resource by SW: ${current}. Progress: ${progress}/${total}`);
+      this.isAllResourcesCached = false;
+      this.currentCachingResource = current;
+      this.cachingProgress = progress / total;
+    }, () => {
+      this.isAllResourcesCached = true;
     });
 
     const appEl = document.getElementById('app')!;

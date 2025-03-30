@@ -22,6 +22,7 @@
     height size
 
   .stats
+    user-select none
     position absolute
     top -5px
     left -5px

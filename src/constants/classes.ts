@@ -1,5 +1,10 @@
-import { ClassType, ClassTypes, DefaultAbilityImage } from '~/constants/constants';
+import { ClassType, ClassTypes } from '~/constants/constants';
 import { type Class } from '~/types/types';
+
+import ImgClassPower from '#/images/classes/power.jpg';
+import ImgClassAgility from '#/images/classes/agility.jpg';
+import ImgClassIntelligence from '#/images/classes/intelligence.jpg';
+
 
 export const Classes: { [key in ClassType]: Class } = {
   [ClassTypes.power]: {
@@ -9,7 +14,7 @@ export const Classes: { [key in ClassType]: Class } = {
 'Однако несмотря на их способности, без команды они не смогут победить и небольшую армию, так как они очень неповоротливые и обладают не самым большим уроном.
 
 За каждый уровень даёт 3 очка силы, 2 ловкости и 1 интеллекта`,
-    imageUrl: DefaultAbilityImage,
+    imageUrl: ImgClassPower,
     statsPerLevel: {
       power: 3,
       agility: 2,
@@ -23,7 +28,7 @@ export const Classes: { [key in ClassType]: Class } = {
 Но их сила не может быть раскрыта полностью без нужной поддержки, так как ловкачи являются не самыми крепкими героями, а также им требуются постоянное усиление их характеристик для эффективного ведения боя. 
 
 За каждый уровень даёт 2 очка силы, 3 ловкости и 1 интеллекта`,
-    imageUrl: DefaultAbilityImage,
+    imageUrl: ImgClassAgility,
     statsPerLevel: {
       power: 2,
       agility: 3,
@@ -37,7 +42,7 @@ export const Classes: { [key in ClassType]: Class } = {
 В мире пиратов, где магия и алхимия смешиваются с морскими легендами, этот класс становится незаменимым союзником в поисках сокровищ и сражениях с врагами. Алхимики также могут быть отличными исследователями, находя редкие материалы и раскрывая секреты мира. 
 
 За каждый уровень даёт 1 очко силы, 1 ловкости и 4 интеллекта`,
-    imageUrl: DefaultAbilityImage,
+    imageUrl: ImgClassIntelligence,
     statsPerLevel: {
       power: 1,
       agility: 1,
