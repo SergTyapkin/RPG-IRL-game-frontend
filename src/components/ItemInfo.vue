@@ -150,6 +150,9 @@
         <div v-if="[ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)" class="info">
           Действуют только если предмет экипирован!
         </div>
+        <div v-if="obj.applyable" class="info">
+          Применяются после использования предмета
+        </div>
       </div>
       <div class="effects-container">
         <Effect v-for="effect in obj.effects" :key="effect.id" :effect="effect" without-source />
@@ -161,6 +164,9 @@
         <div v-if="[ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)" class="info">
           Доступны только если предмет экипирован!
         </div>
+        <!--        <div v-if="obj.applyable" class="info">-->
+        <!--          Применяются после использования предмета-->
+        <!--        </div>-->
       </div>
       <div class="abilities-container">
         <Ability v-for="ability in obj.abilities" :key="ability.id" :ability="ability" preview />

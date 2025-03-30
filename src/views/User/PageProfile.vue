@@ -7,6 +7,7 @@
 
 .root-profile
   position relative
+
   .section-user-info
     display flex
     align-items flex-end
@@ -29,8 +30,10 @@
     display flex
     justify-content space-between
     margin-top 20px
+
     > *
       animation-float(0.5s, -20px, 0, left)
+
     .money-badge
       hover-effect()
       animation-float(0.5s, 20px, 0, right)
@@ -50,6 +53,7 @@
       align-items center
       justify-content space-between
       margin-bottom 15px
+
       .protection-badge
         animation-float(0.5s, 20px, 0, right)
 
@@ -76,6 +80,7 @@
       display flex
       flex-direction column
       gap 25px
+
       > *
         animation-float()
 
@@ -86,6 +91,7 @@
     padding-bottom 100px
     background #00000050
     backdrop-filter blur(10px)
+
     .modal
       width calc(100% - 30px)
       max-width 400px
@@ -94,6 +100,7 @@
       background colorBgLight
       border-radius borderRadiusM
       box-shadow 0 0 15px #000
+
       button
         button()
 
@@ -131,7 +138,13 @@
     <section class="section-equipment">
       <div class="top-string">
         <header>Экипировка</header>
-        <ValueBadge class="protection-badge" :type="ResourceTypes.protection" :value="String(userProtection)" :not-synced-value="0" style="--animation-index: 3" />
+        <ValueBadge
+          class="protection-badge"
+          :type="ResourceTypes.protection"
+          :value="String(userProtection)"
+          :not-synced-value="0"
+          style="--animation-index: 3"
+        />
       </div>
       <Equipment ref="equipment" @select="selectEquippedItem" />
     </section>
@@ -145,7 +158,12 @@
       <header>Эффекты</header>
       <div class="effects-container">
         <div v-if="!shownEffects.length" class="info">Эффектов нет</div>
-        <EffectComponent v-for="(effect, idx) in shownEffects" :key="effect.id" :effect="effect" :style="{'--animation-index': idx}" />
+        <EffectComponent
+          v-for="(effect, idx) in shownEffects"
+          :key="effect.id"
+          :effect="effect"
+          :style="{ '--animation-index': idx }"
+        />
       </div>
     </section>
 
@@ -187,6 +205,7 @@
               >
                 Экипировать
               </button>
+              <button v-if="selectedItem.applyable" @click="applyItem(selectedItem)" class="use">Использовать</button>
               <button @click="tradeItem(selectedItem)" class="trade">Передать</button>
             </template>
           </ItemInfo>
@@ -218,8 +237,12 @@ import { ItemTypes, NO_SERVER_MODE, QRTypes, ResourceTypes } from '~/constants/c
 import Equipment from '~/components/Equipment.vue';
 import Inventory from '~/components/Inventory.vue';
 import { UserLevels } from '~/constants/levels';
-import { getAllUserEffects, getTotalUserMaxHP, getTotalUserProtection } from '~/utils/utils';
-import { type Item } from '~/types/types';
+import {
+  type ExtendedItem,
+  getAllUserEffects,
+  getTotalUserMaxHP,
+  getTotalUserProtection,
+} from '~/utils/utils';
 import ItemInfo from '~/components/ItemInfo.vue';
 import EffectComponent from '~/components/Effect.vue';
 
@@ -229,8 +252,8 @@ export default {
   data() {
     return {
       loading: false,
-      selectedItem: undefined as Item | undefined,
-      selectedEquippedItem: undefined as Item | undefined,
+      selectedItem: undefined as ExtendedItem | undefined,
+      selectedEquippedItem: undefined as ExtendedItem | undefined,
       userProtection: 0,
       userMaxHp: 0,
 
@@ -271,11 +294,11 @@ export default {
       this.$user.stats.hp = Math.min(this.$user.stats.hp, this.userMaxHp);
     },
 
-    selectEquippedItem(item: Item) {
+    selectEquippedItem(item: ExtendedItem) {
       this.selectedItem = undefined;
       this.selectedEquippedItem = item;
     },
-    selectItem(item: Item) {
+    selectItem(item: ExtendedItem) {
       this.selectedEquippedItem = undefined;
       this.selectedItem = item;
     },
@@ -298,7 +321,7 @@ export default {
       this.$router.push({ name: 'login' });
     },
 
-    async unequipItem(item: Item) {
+    async unequipItem(item: ExtendedItem) {
       this.$user.inventory.push(this.$user.equipment[item.type]);
       this.$user.equipment[item.type] = undefined;
 
@@ -306,7 +329,7 @@ export default {
       this.saveAndUpdateInventories();
     },
 
-    async equipItem(item: Item) {
+    async equipItem(item: ExtendedItem) {
       if (item.notSynced) {
         return;
       }
@@ -338,11 +361,31 @@ export default {
       (this.$refs.equipment as typeof Equipment).update();
     },
 
-    tradeItem(item: Item) {
+    tradeItem(item: ExtendedItem) {
       this.$router.push({ name: 'trade', query: { qrValue: item.id, qrType: QRTypes.items } });
     },
     tradeMoney() {
       this.$router.push({ name: 'trade', query: { qrType: QRTypes.resource } });
+    },
+    applyItem(item: ExtendedItem) {
+      const itemIdx = this.$user.inventory.findIndex(i => i === item.id);
+      if (itemIdx === -1) {
+        this.$popups.error('Ошибка', 'Предмета с таким id нет в инвентаре');
+        this.selectedItem = undefined;
+        this.saveAndUpdateInventories();
+        return;
+      }
+      this.$user.inventory.splice(itemIdx, 1);
+
+      console.log(item);
+      const effects = this.$localStorageManager.loadFightEffects() || [];
+      console.log(effects, item.effects);
+      effects.push(...item.effects);
+      console.log(effects);
+      this.$localStorageManager.saveFightEffects(effects);
+
+      this.selectedItem = undefined;
+      this.saveAndUpdateInventories();
     },
   },
 };

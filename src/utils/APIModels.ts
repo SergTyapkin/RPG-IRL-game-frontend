@@ -98,6 +98,10 @@ export const ItemModel = {
     item: String,
   },
   description:  String,
+  applyable: {
+    type: Boolean,
+    optional: true,
+  },
 }
 
 export const ItemModelMockData = validateModel(ItemModel, {

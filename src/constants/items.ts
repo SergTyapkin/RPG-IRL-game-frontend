@@ -282,6 +282,19 @@ export const Items: { [key: string]: Item } = {
     effects: [Effects.damage_10.id],
     abilities: [],
   },
+
+  // ------------------------------------------------
+  potionRegeneration: {
+    id: String(),
+    name: 'Зелье регенерации',
+    description: 'Дает регенерацию на один следующий бой',
+    type: ItemTypes.potion,
+    imageUrl: DefaultAvatarImage,
+    buffs: {},
+    effects: [Effects.regeneration_1.id],
+    abilities: [],
+    applyable: true,
+  },
 };
 
 // Set right id's

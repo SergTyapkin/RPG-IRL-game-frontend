@@ -131,6 +131,7 @@ export interface Item {
   description: string;
   imageUrl: string;
   notSynced?: boolean;
+  applyable?: boolean;
 }
 
 export interface SyncedData {

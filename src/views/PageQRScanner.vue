@@ -37,9 +37,11 @@
       display flex
       gap 15px
       animation-float(0.5s, -20px, 0, left)
+
       .input
         width 150px
         padding 0 5px
+
       .button
         button-emp()
 
@@ -49,7 +51,13 @@
 
 <template>
   <div class="root-page-qr-scanner">
-    <UserProfileInfo class="user-info" small @contextmenu.prevent="syncData(GuildModelMockData)" style="--animation-index: 0" />
+    <UserProfileInfo
+      class="user-info"
+      small
+      @contextmenu.prevent="syncData(GuildModelMockData)"
+      style="--animation-index: 0"
+      @click.ctrl.shift.prevent="$router.push({ name: 'qrGeneration' })"
+    />
 
     <section class="section-scanner" style="--animation-index: 1">
       <QRScanner @scan="onScan" />
@@ -215,7 +223,7 @@ export default {
             this.$popups.error('Ошибка в структуре', 'Ошибка при парсинге предметов');
             return;
           }
-          this.$user.inventory.push(...(items.map(i => i.id)));
+          this.$user.inventory.push(...items.map(i => i.id));
           this.$popups.success('QR отсканирован', `Получены предметы: ${items.map(i => `"${i.name}"`).join(', ')}`);
           break;
         }
@@ -305,7 +313,6 @@ export default {
         this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
       }
     },
-
   },
 };
 </script>

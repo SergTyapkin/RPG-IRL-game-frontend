@@ -271,7 +271,10 @@ export function getAllUserEffects($user: User, isForFight?: boolean): ExtendedEf
   addEffectsFromItemId($user.equipment.boots);
 
   getAllUserItems($user).forEach(item => {
-    if (![ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(item.type)) {
+    if (
+      ![ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(item.type) &&
+      !item.applyable
+    ) {
       item.effects.forEach(e => {
         const ext = deepClone(e) as unknown as ExtendedEffect;
         ext.source = item;

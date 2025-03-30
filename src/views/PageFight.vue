@@ -16,10 +16,12 @@
     justify-content space-between
     width 100%
     margin-bottom 40px
+
     .hp-badge
       animation-float(0.5s, -20px, 0, left)
+
     .protection-badge
-      animation-float(0.5s, +20px, 0, right)
+      animation-float(0.5s, + 20px, 0, right)
 
   .section-buttons
     display flex
@@ -108,6 +110,7 @@
       display flex
       flex-direction column
       gap 25px
+
       > *
         animation-float()
 
@@ -577,10 +580,8 @@ export default {
       this.$user.isInFight = true;
       this.isUserInFightReactiveValue = true;
       this.$app.isUserInFightReactiveValue = true;
-      this.fightEffects = [];
       this.fightPowers = [];
       this.$localStorageManager.removeFightPowers();
-      this.$localStorageManager.removeFightEffects();
       this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
       this.isHpProtectionShowedOnly = true;
       this.$forceUpdate();
@@ -742,7 +743,8 @@ export default {
       if (effectsToTargets.length > 0) {
         const effectsToTargetsNames = effectsToTargets.map(e => `"${e.name}"`).join(', ');
         await this.$modals.alert(
-          `Вы накладываете эффект${effectsToTargets.length > 1 ? 'ы' : ''}: ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount > 1 ? 'ов' : 'а'}`,
+          `Вы накладываете эффект${effectsToTargets.length > 1 ? 'ы' : ''}:
+           ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount > 1 ? 'ов' : 'а'}`,
           'Выберите противников и громко скажите им, от какой способноси и сколько урона они получают. Они должны ввести его себе сами',
         );
       }
