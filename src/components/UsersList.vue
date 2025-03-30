@@ -13,6 +13,7 @@
     display flex
     gap 15px
     align-items center
+    animation-float(0.5s, -20px, 0, left)
     .avatar
       position relative
       aspect-ratio 1/1
@@ -42,7 +43,7 @@
 
 <template>
   <ul class="root-users-list">
-    <li v-for="user in users" :key="user.id" class="user">
+    <li v-for="(user, idx) in users" :key="user.id" class="user" :style="{'--animation-index': idx}">
       <div class="avatar">
         <img :src="user.imageUrl" alt="avatar">
         <div class="level">{{ user.level }}</div>

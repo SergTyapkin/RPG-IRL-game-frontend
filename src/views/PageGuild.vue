@@ -10,6 +10,7 @@
   .section-user-info
     display flex
     gap 15px
+    animation-float(0.5s, -20px, 0, left)
     .money-badge
       margin-top 10px
 
@@ -60,7 +61,7 @@
 
 <template>
   <div class="root-profile">
-    <section class="section-user-info">
+    <section class="section-user-info" style="--animation-index: 0">
       <UserProfileInfo :override-avatar="$guild?.imageUrl" :override-name="$guild?.name">
         <ValueBadge class="money-badge" :type="ResourceTypes.money" :value="String($guild?.money)" />
       </UserProfileInfo>
