@@ -16,8 +16,7 @@
     flex 1
     padding 10px
     padding-top 15px
-    background 'linear-gradient(%s, %s), var(--bg-url) 50% 50% / 100% auto no-repeat' \
-      % \
+    background 'linear-gradient(%s, %s), var(--bg-url) 50% 50% / 100% auto no-repeat' % \
       (mix(colorBgLight, transparent) mix(colorBgLight, transparent))
     border-radius borderRadiusM 0 0 borderRadiusM
 
@@ -104,45 +103,91 @@
 
     <section class="buffs">
       <div v-for="(value, buff) in effect.buffs" class="buff">
-        <img v-if="buff === BuffsTypes.maxHpIncrease" src="/static/icons/buff-dmg.svg" alt="hp">
-        <img v-else-if="buff === BuffsTypes.protectionIncrease" src="/static/icons/buff-dmg.svg" alt="protection">
-        <img v-else-if="buff === BuffsTypes.experienceModifier" src="/static/icons/buff-dmg.svg" alt="experience">
-        <img v-else-if="buff === BuffsTypes.moneyModifier" src="/static/icons/buff-dmg.svg" alt="money">
-        <img v-else-if="buff === BuffsTypes.powerCostDecrease" src="/static/icons/buff-dmg.svg" alt="power-low-cost">
+        <img
+          v-if="buff === BuffsTypes.maxHpIncrease"
+          src="/static/icons/buffs/flat/max-hp.svg"
+          alt="hp"
+        >
+        <img
+          v-else-if="buff === BuffsTypes.protectionIncrease"
+          src="/static/icons/buffs/flat/protection.svg"
+          alt="protection"
+        >
+        <img
+          v-else-if="buff === BuffsTypes.experienceModifier"
+          src="/static/icons/buffs/flat/xp.svg"
+          alt="experience"
+        >
+        <img
+          v-else-if="buff === BuffsTypes.moneyModifier"
+          src="/static/icons/buffs/flat/money.svg"
+          alt="money"
+        >
+        <img
+          v-else-if="buff === BuffsTypes.powerCostDecrease"
+          src="/static/icons/buffs/flat/stat-lower.svg"
+          alt="power-low-cost"
+        >
         <img
           v-else-if="buff === BuffsTypes.agilityCostDecrease"
-          src="/static/icons/buff-dmg.svg"
+          src="/static/icons/buffs/flat/stat-lower.svg"
           alt="agility-low-cost"
         >
         <img
           v-else-if="buff === BuffsTypes.intelligenceCostDecrease"
-          src="/static/icons/buff-dmg.svg"
+          src="/static/icons/buffs/flat/stat-lower.svg"
           alt="intelligence"
           class="intelligence-low-cost"
         >
-        <img v-else-if="buff === BuffsTypes.powerPerLevelIncrease" src="/static/icons/buff-dmg.svg" alt="power-add">
+        <img
+          v-else-if="buff === BuffsTypes.powerPerLevelIncrease"
+          src="/static/icons/buffs/flat/plus-stat.svg"
+          alt="power-add"
+        >
         <img
           v-else-if="buff === BuffsTypes.agilityPerLevelIncrease"
-          src="/static/icons/buff-dmg.svg"
+          src="/static/icons/buffs/flat/plus-stat.svg"
           alt="agility-add"
         >
         <img
           v-else-if="buff === BuffsTypes.intelligencePerLevelIncrease"
-          src="/static/icons/buff-dmg.svg"
+          src="/static/icons/buffs/flat/plus-stat.svg"
           alt="intelligence-add"
         >
-        <img v-else-if="buff === BuffsTypes.damageDoneModifier" src="/static/icons/fight.svg" alt="damage">
-        <img v-else-if="buff === BuffsTypes.damageDoneIncrease" src="/static/icons/fight.svg" alt="damage">
+        <img
+          v-else-if="buff === BuffsTypes.damageDoneModifier"
+          src="/static/icons/buffs/flat/damage.svg"
+          alt="damage"
+        >
+        <img
+          v-else-if="buff === BuffsTypes.damageDoneIncrease"
+          src="/static/icons/buffs/flat/damage.svg"
+          alt="damage"
+        >
         <img
           v-else-if="buff === BuffsTypes.hpEveryTurn && value > 0"
-          src="/static/icons/heart.svg"
+          src="/static/icons/buffs/flat/regeneration.svg"
           alt="regeneration"
         >
-        <img v-else-if="buff === BuffsTypes.hpEveryTurn && value < 0" src="/static/icons/buff-dmg.svg" alt="bleeding">
+        <img
+          v-else-if="buff === BuffsTypes.hpEveryTurn && value < 0"
+          src="/static/icons/buffs/flat/bleeding.svg"
+          alt="buffs/bleeding"
+        >
         <img
           v-else-if="buff === BuffsTypes.damageGottenModifier"
-          src="/static/icons/shield.svg"
+          src="/static/icons/buffs/flat/protection.svg"
           alt="damage-decrease"
+        >
+        <img
+          v-else-if="buff === BuffsTypes.protectionModifier"
+          src="/static/icons/buffs/flat/protection-minus.svg"
+          alt="protection-decrease"
+        >
+        <img
+          v-else-if="buff === BuffsTypes.maxHpModifier"
+          src="/static/icons/buffs/flat/max-hp-minus.svg"
+          alt="max-hp-decrease"
         >
 
         <div class="value">{{ value > 0 && value < 1 ? `${value * 100}%` : value }}</div>

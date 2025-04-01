@@ -99,15 +99,15 @@ import Validators from '~/utils/validators';
 import { Classes } from '~/constants/classes';
 import ClassComponent from '~/components/Class.vue';
 import { type Class, Guild, User } from '~/types/types';
-import { DEFAULT_USER_MAX_UP, DefaultAbilityImage, DefaultAvatarImage, NO_SERVER_MODE } from '~/constants/constants';
+import { DEFAULT_USER_MAX_UP, DefaultAvatarImage, NO_SERVER_MODE } from '~/constants/constants';
 import { v4 as uuidv4 } from 'uuid';
+import { Guilds } from '~/constants/guilds';
 
 export default {
   components: { Class: ClassComponent, FormWithErrors },
   data() {
     return {
-      guildId: this.$route.query.guildId as string,
-      guildName: this.$route.query.guildName as string,
+      guildId: Number(this.$route.query.guildId) as number,
 
       textFieldsFilledState: false,
       savedTextData: {} as {name: string, password: string, passwordAgain: string},
@@ -152,7 +152,7 @@ export default {
   },
 
   mounted() {
-    if (this.guildId === undefined || this.guildName === undefined) {
+    if (isNaN(this.guildId) || (Guilds[this.guildId] === undefined)) {
       this.$popups.error('Ошибка', 'Необходимо отсканировать QR гильдии, чтобы зарегистрироваться!');
       this.$router.push({ name: 'page404' });
     }
@@ -217,19 +217,21 @@ export default {
           inventory: [],
           equipment: {},
           role: 'user',
+          isInFight: false,
 
           isSignedIn: true,
         };
         await this.$store.commit('SET_USER', newUser);
+        const guildInfo = Guilds[this.guildId];
         const newGuild: Guild = {
           id: this.guildId,
-          name: this.guildName,
+          name: guildInfo.name,
           description: '',
           money: 0,
           experience: 0,
           inventory: [],
           level: 1,
-          imageUrl: DefaultAbilityImage,
+          imageUrl: guildInfo.imageUrl,
           leaderId: '',
           members: [],
         };

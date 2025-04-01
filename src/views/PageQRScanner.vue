@@ -237,6 +237,7 @@ export default {
         }
       }
 
+      console.log(scanError, QRType);
       if (!scanError) {
         if (QRType !== QRTypes.sync) {
           this.scannedNotSavedQrs.push({
@@ -246,6 +247,7 @@ export default {
             source: QRSource,
             value: QRValue,
           });
+          console.log(this.$user);
           this.$localStorageManager.saveScannedNotSavedQrs(this.scannedNotSavedQrs);
           this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
           this.$router.push({ name: 'profile' });

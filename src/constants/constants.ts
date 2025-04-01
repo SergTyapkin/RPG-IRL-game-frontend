@@ -55,7 +55,9 @@ export const AbilityTypes = {
 
 export const BuffsTypes = {
   maxHpIncrease: 'maxHpIncrease',
+  maxHpModifier: 'maxHpModifier',
   protectionIncrease: 'protectionIncrease',
+  protectionModifier: 'protectionModifier',
   experienceModifier: 'experienceModifier',
   moneyModifier: 'moneyModifier',
   powerCostDecrease: 'powerCostDecrease',

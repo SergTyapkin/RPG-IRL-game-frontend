@@ -363,35 +363,27 @@ export function getAllUserBuffs($user: User): Buffs[] {
 // -----------------------
 export function getTotalUserProtection($user: User): number {
   let res = DEFAULT_USER_PROTECTION;
+  let modifier = 1;
   getAllUserBuffs($user).forEach(buffs => {
     res += buffs[BuffsTypes.protectionIncrease] ?? 0;
+    modifier *= buffs[BuffsTypes.protectionModifier] ?? 1;
   });
   getAllUserEffects($user).forEach(effect => {
     if (effect.id === Effects.protectionAddHalfHp.id) {
       res += Math.round($user.stats.hp / 2);
     }
   });
+  res *= modifier;
   return res;
 }
 export function getTotalUserMaxHP($user: User): number {
   let res = DEFAULT_USER_MAX_UP;
-  res += $user.equipment.hat ? Items[$user.equipment.hat].buffs[BuffsTypes.maxHpIncrease] ?? 0 : 0;
-  res += $user.equipment.main ? Items[$user.equipment.main].buffs[BuffsTypes.maxHpIncrease] ?? 0 : 0;
-  res += $user.equipment.boots ? Items[$user.equipment.boots].buffs[BuffsTypes.maxHpIncrease] ?? 0 : 0;
-  const items = getAllUserItems($user);
-  items.forEach(item => {
-    if (![ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(item.type)) {
-      res += item.buffs[BuffsTypes.maxHpIncrease] ?? 0;
-    }
+  let modifier = 1;
+  getAllUserBuffs($user).forEach(buffs => {
+    res += buffs[BuffsTypes.protectionIncrease] ?? 0;
+    modifier *= buffs[BuffsTypes.protectionModifier] ?? 1;
   });
-  const skills = getAllUserSkills($user);
-  skills.forEach(skill => {
-    res += skill.buffs[BuffsTypes.maxHpIncrease] ?? 0;
-  });
-  const effects = getAllUserEffects($user);
-  effects.forEach(effect => {
-    res += effect.buffs[BuffsTypes.maxHpIncrease] ?? 0;
-  });
+  res *= modifier;
   return res;
 }
 

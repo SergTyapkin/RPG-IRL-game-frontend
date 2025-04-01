@@ -100,7 +100,7 @@ export const Items: { [key: string]: Item } = {
     imageUrl: ImgArtefactPhoenixLive,
     buffs: {},
     effects: [],
-    abilities: [Abilities.phoenixLive.id],
+    abilities: [],
   },
   artefactShieldKingGuardian: {
     id: String(),

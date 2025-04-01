@@ -59,7 +59,7 @@
 <template>
   <div class="root-value-badge" :class="{ small }">
     <div v-if="type === ResourceTypes.hp" class="content">
-      <img class="badge" src="/static/images/hp-badge.svg" alt="hp">
+      <img class="badge" src="/static/icons/badges/hp-badge.svg" alt="hp">
       <div class="text-block">
         <header v-if="overrideTitle">{{ overrideTitle }}</header>
         <header v-else>Здоровье</header>
@@ -73,7 +73,7 @@
       </div>
     </div>
     <div v-if="type === ResourceTypes.money" class="content">
-      <img class="badge" src="/static/images/money-badge.svg" alt="hp">
+      <img class="badge" src="/static/icons/badges/money-badge.svg" alt="hp">
       <div class="text-block">
         <header v-if="overrideTitle">{{ overrideTitle }}</header>
         <header v-else>Деньги</header>
@@ -87,7 +87,7 @@
       </div>
     </div>
     <div v-if="type === ResourceTypes.protection" class="content">
-      <img class="badge" src="/static/images/protection-badge.svg" alt="hp">
+      <img class="badge" src="/static/icons/badges/protection-badge.svg" alt="hp">
       <div class="text-block">
         <header v-if="overrideTitle">{{ overrideTitle }}</header>
         <header v-else>Защита</header>
@@ -101,7 +101,7 @@
       </div>
     </div>
     <div v-if="type === ResourceTypes.power" class="content">
-      <img class="badge" src="/static/images/power-badge.svg" alt="hp">
+      <img class="badge" src="/static/icons/badges/power-badge.svg" alt="hp">
       <div class="text-block">
         <header v-if="overrideTitle">{{ overrideTitle }}</header>
         <header v-else>Сила</header>
@@ -115,7 +115,7 @@
       </div>
     </div>
     <div v-if="type === ResourceTypes.agility" class="content">
-      <img class="badge" src="/static/images/agility-badge.svg" alt="hp">
+      <img class="badge" src="/static/icons/badges/agility-badge.svg" alt="hp">
       <div class="text-block">
         <header v-if="overrideTitle">{{ overrideTitle }}</header>
         <header v-else>Ловкость</header>
@@ -129,7 +129,7 @@
       </div>
     </div>
     <div v-else-if="type === ResourceTypes.intelligence" class="content">
-      <img class="badge" src="/static/images/intelligence-badge.svg" alt="hp">
+      <img class="badge" src="/static/icons/badges/intelligence-badge.svg" alt="hp">
       <div class="text-block">
         <header v-if="overrideTitle">{{ overrideTitle }}</header>
         <header v-else>Интеллект</header>

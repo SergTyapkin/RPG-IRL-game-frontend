@@ -140,10 +140,22 @@
     </div>
     <section class="section-stats">
       <div v-if="[ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)" class="protection">
-        <img src="/static/icons/shield.svg" alt=""> {{ obj.buffs[BuffsTypes.protectionIncrease] }}
+        <img src="/static/icons/buffs/flat/protection.svg" alt=""> {{ obj.buffs[BuffsTypes.protectionIncrease] }}
       </div>
     </section>
-    <div class="description">{{ obj.description }}</div>
+
+    <section class="description">
+      {{ obj.description }}
+      <div>
+        <div v-if="obj.buffs[BuffsTypes.maxHpIncrease]">
+          - Увеличивает макс. здоровье на {{ obj.buffs[BuffsTypes.maxHpIncrease] }}
+        </div>
+        <div v-if="obj.buffs[BuffsTypes.protectionIncrease] && ![ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)">
+          - Увеличивает защиту на {{ obj.buffs[BuffsTypes.protectionIncrease] }}
+        </div>
+      </div>
+    </section>
+
     <section v-if="obj.effects?.length" class="section-effects">
       <div class="text-block">
         <header>Эффекты</header>
@@ -197,12 +209,11 @@ export default {
   },
 
   data() {
-    return {};
+    return {
+      BuffsTypes,
+    };
   },
   computed: {
-    BuffsTypes() {
-      return BuffsTypes
-    },
     ItemTypes() {
       return ItemTypes;
     },

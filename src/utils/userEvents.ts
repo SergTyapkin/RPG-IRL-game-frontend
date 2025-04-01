@@ -5,6 +5,7 @@ import { Classes } from '~/constants/classes';
 import { BuffsTypes, ClassTypes, MONEY_LOSE_BY_DEATH_PERCENT } from '~/constants/constants';
 import { getAllUserBuffs, getAllUserEffects, getTotalUserMaxHP } from '~/utils/utils';
 import { Effects } from '~/constants/effects';
+import { ComponentCustomProperties } from 'vue';
 
 
 export function userIncreaseLevel($user: User, $modals: typeof Modals) {
@@ -66,4 +67,20 @@ export function userDead($user: User): number {
 
 export function userRevive($user: User) {
   $user.stats.hp = getTotalUserMaxHP($user);
+}
+
+export function startFight(th: ComponentCustomProperties) {
+  th.$user.isInFight = true;
+  th.$app.isUserInFightReactiveValue = true;
+  th.$localStorageManager.removeFightPowers();
+  th.$localStorageManager.saveSyncedData(th.$user, th.$guild);
+}
+
+export function finishFight(th: ComponentCustomProperties) {
+  th.$user.isInFight = false;
+  th.$app.isUserInFightReactiveValue = false;
+  th.$localStorageManager.removeAbilitiesReloads();
+  th.$localStorageManager.removeFightPowers();
+  th.$localStorageManager.removeFightEffects();
+  th.$localStorageManager.saveSyncedData(th.$user, th.$guild);
 }

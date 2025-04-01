@@ -17,11 +17,14 @@ thumb-size = 15px
   width 400px
   max-height 400px
   transition filter 0.5s ease
+
 .qr-image.invert
   filter invert(1)
+
 .qr-image.blured
   overflow hidden
   filter blur(10px)
+
 .qr-image.invert.blured
   filter invert(1) blur(10px)
 
@@ -50,18 +53,23 @@ thumb-size = 15px
   padding 10px 10px
   padding-bottom 0
   border-radius 0 0 10px 10px
+
   .switch
     margin 0 10px
+
 .range-container
   width 100%
   max-width 400px
   padding 10px
   border-radius 0 10px 10px 0
+
   .title
     display block
+
   .slider-container
     display flex
     flex-direction column
+
     .slider
       all unset
       overflow hidden
@@ -77,6 +85,7 @@ thumb-size = 15px
       @media ({mobile})
         background linear-gradient(170deg, colorBg, colorBgLight)
         box-shadow none
+
     .slider::-webkit-slider-thumb
       cursor pointer
       width thumb-size
@@ -86,6 +95,7 @@ thumb-size = 15px
       border 4px solid #333
       border-radius 50%
       box-shadow (- slider-length - 5px) 0 0 (slider-length) mix(colorEmp1, transparent, 30%)
+
     .range-labels
       display flex
       flex-direction row
@@ -96,14 +106,17 @@ thumb-size = 15px
 @media (min-width 560px)
   .range-container
     width 90px
+
     .slider-container
       display block
       flex-direction row
       height slider-length
+
       .slider
         transform-origin left
         transform rotate(-90deg) translateX(- slider-length + 3px)
         min-width slider-length
+
       .range-labels
         transform translate(slider-width + 10px, - slider-width - 10px)
         flex-direction column-reverse
@@ -119,7 +132,7 @@ thumb-size = 15px
     </div>
 
     <div class="flex-container">
-      <div ref="qr" v-html="html" class="qr-image" :class="{invert, blured: !text}" />
+      <div ref="qr" v-html="html" class="qr-image" :class="{ blured: !text }" />
 
       <div class="range-container container-bg" v-if="withRange">
         <label class="text-big title">Размер</label>
@@ -137,7 +150,7 @@ thumb-size = 15px
 </template>
 
 <script lang="ts">
-import QRCode from "qrcode-generator-es6";
+import QRCode from 'qrcode-generator-es6';
 
 export default {
   components: {},
@@ -145,7 +158,7 @@ export default {
   props: {
     initialText: {
       type: String,
-      default: ''
+      default: '',
     },
     errorCorrection: {
       type: String,
@@ -163,18 +176,17 @@ export default {
 
       size: '0',
       errorCorrectionLevel: this.$props.errorCorrection,
-      invert: false,
     };
   },
 
   mounted() {
-    this.create()
+    this.create();
+    this.regenerate();
   },
 
   unmounted() {
     this.destroy();
   },
-
 
   methods: {
     create() {
@@ -184,16 +196,13 @@ export default {
       this.qr = null;
     },
 
-
     regenerate(text?: string) {
       if (!this.qr) {
         this.create();
       }
 
-      if (text !== undefined)
-        this.text = text;
-      else if (!this.text)
-        this.text = '';
+      if (text !== undefined) this.text = text;
+      else if (!this.text) this.text = '';
 
       this.refresh();
       this.qr!.addData(this.text);
@@ -205,16 +214,12 @@ export default {
       this.create();
     },
 
-
     onInput() {
-      if (this.size === '1')
-        this.errorCorrectionLevel = 'L';
-      else if (this.size === '2')
-        this.errorCorrectionLevel = 'M';
-      else if (this.size === '3')
-        this.errorCorrectionLevel = 'H';
+      if (this.size === '1') this.errorCorrectionLevel = 'L';
+      else if (this.size === '2') this.errorCorrectionLevel = 'M';
+      else if (this.size === '3') this.errorCorrectionLevel = 'H';
       this.regenerate();
-    }
-  }
+    },
+  },
 };
 </script>

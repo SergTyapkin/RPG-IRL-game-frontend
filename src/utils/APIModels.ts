@@ -210,6 +210,36 @@ export const UserModel = {
       intelligence: Number,
     }
   },
+  notSyncedStats: {
+    type: Object,
+    fields: {
+      hp: {
+        type: Number,
+        optional: true,
+      },
+      experience: {
+        type: Number,
+        optional: true,
+      },
+      money: {
+        type: Number,
+        optional: true,
+      },
+      power: {
+        type: Number,
+        optional: true,
+      },
+      agility: {
+        type: Number,
+        optional: true,
+      },
+      intelligence: {
+        type: Number,
+        optional: true,
+      },
+    },
+    optional: true,
+  },
   guildId: {
     type: String,
   },

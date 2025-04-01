@@ -119,7 +119,7 @@
 
     <section class="section-qr">
       <header>QR-код для передачи</header>
-      <input :value="qrText">
+      <input :value="qrText" readonly>
       <QRGenerator ref="qr" v-show="selectedQRSubType && selectedQRType && selectedQRSource && QRValue" />
     </section>
   </div>

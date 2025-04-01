@@ -52,7 +52,6 @@
         color colorText5
 
     .bottom-interface
-      pointer-events none
       position fixed
       z-index 99
       bottom 0
@@ -193,28 +192,28 @@
         <img class="bottom-line-bg" src="/static/images/bottom-line.svg" alt="">
         <nav class="buttons">
           <router-link :to="{ name: 'fight' }" class="fight" :class="{ disabled: false }">
-            <img src="/static/icons/fight.svg" alt="">
+            <img src="/static/icons/buttons/fight.svg" alt="">
           </router-link>
           <router-link
             :to="{ name: 'skillsTree' }"
             class="tree"
             :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
           >
-            <img src="/static/icons/tree.svg" alt="">
+            <img src="/static/icons/buttons/tree.svg" alt="">
           </router-link>
           <router-link
             :to="{ name: 'map' }"
             class="map"
             :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
           >
-            <img src="/static/icons/map-2.svg" alt="">
+            <img src="/static/icons/buttons/map.svg" alt="">
           </router-link>
           <router-link
             :to="{ name: 'profile' }"
             class="profile"
             :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
           >
-            <img src="/static/icons/profile.svg" alt="">
+            <img src="/static/icons/buttons/profile.svg" alt="">
           </router-link>
 
           <router-link
@@ -222,7 +221,7 @@
             class="button-scanner"
             :class="{ disabled: isUserInFightReactiveValue && !isUserDeadReactiveValue }"
           >
-            <img src="/static/icons/qr-scanner.svg" alt="">
+            <img src="/static/icons/buttons/qr-scanner.svg" alt="">
           </router-link>
         </nav>
       </section>

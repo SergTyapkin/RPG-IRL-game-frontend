@@ -8,6 +8,7 @@
 .root-user-profile-info
   display flex
   gap 15px
+  align-items center
   .avatar
     overflow hidden
     aspect-ratio 1/1
@@ -52,7 +53,7 @@
     <div class="text-block">
       <strong class="name">{{ overrideName || $user.name }}</strong>
       <router-link :to="{ name: 'guild' }" class="guild-info" v-if="showGuild">
-        <img class="guild-image" :src="$guild.imageUrl" alt="">
+        <img class="guild-image" :src="$guild?.imageUrl" alt="">
         <div class="guild-name"> {{ $guild?.name }} </div>
         <div class="guild-xp-badge"> {{ $guild?.experience }} xp</div>
       </router-link>

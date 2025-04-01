@@ -124,6 +124,31 @@ export const Effects: { [key: string]: Effect } = {
   damage_10: getDamage(10),
   weakness_1: getWeakness(1),
   weakness_2: getWeakness(2),
+  // ----------------------------
+  protectionHalf: {
+    id: String(),
+    name: 'Слабая броня',
+    description: 'Ваша броня защищает вас на 50% хуже',
+    imageUrl: DefaultAbilityImage,
+    isForFight: true,
+    userCanGetInFight: true,
+    turns: Infinity,
+    buffs: {
+      [BuffsTypes.protectionModifier]: 0.5,
+    },
+  },
+  maxHpHalf: {
+    id: String(),
+    name: 'Слабое здоровьк',
+    description: 'Ваше миксимальное здоровье уменьшено на 30%',
+    imageUrl: DefaultAbilityImage,
+    isForFight: true,
+    userCanGetInFight: true,
+    turns: Infinity,
+    buffs: {
+      [BuffsTypes.protectionModifier]: 0.7,
+    },
+  },
 
   // ----- Default effects
   luck: {

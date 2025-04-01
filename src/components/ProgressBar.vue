@@ -6,7 +6,7 @@
 @import '../styles/components.styl'
 
 color = colorSuccess
-colorBarBg = colorBgLight
+colorBarBg = colorBg
 
 
 progressbar-width = 5px

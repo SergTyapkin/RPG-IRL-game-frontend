@@ -52,8 +52,8 @@
   .section-confirm
     .image
       display block
-      width 100%
       height 100px
+      margin 0 auto
       margin-bottom 10px
 
     .info
@@ -74,6 +74,8 @@
           background none
 
     .qr-codes
+      animation-float(0.5s, -20px, 0, left)
+
       header
         margin-top 20px
         color colorText3
@@ -257,8 +259,8 @@
     </section>
 
     <transition name="opacity" mode="out-in">
-      <section class="section-not-alive-info" v-if="$user.stats.hp <= 0">
-        <img class="image" src="/static/icons/fight.svg" alt="death">
+      <section class="section-not-alive-info" v-if="isUserDeadReactiveValue">
+        <img class="image" src="/static/icons/death.svg" alt="death">
         <ul class="info">
           <li style="--animation-index: 0">
             Вы погибли в бою.
@@ -279,10 +281,21 @@
         </ul>
         <section class="qr-codes">
           <header v-if="loosedMoney">{{ loosedMoney }} монет ({{ MONEY_LOSE_BY_DEATH_PERCENT * 100 }}% монет):</header>
-          <QRGenerator v-if="loosedMoney" ref="qrMoney" />
+          <QRGenerator
+            v-if="loosedMoney"
+            ref="qrMoney"
+            :initial-text="
+              generateQRText(QRTypes.resource, ResourceTypes.money, QRSources.user, String(loosedMoney))
+            "
+          />
           <header>Все недонесённые до базы QR'ы:</header>
           <div v-if="!scannedNotSavedQrs.length" class="info">Таких QR'ов нет</div>
-          <QRGenerator ref="allQrs" v-for="qr in scannedNotSavedQrs" :key="qr.id" />
+          <QRGenerator
+            ref="allQrs"
+            v-for="qr in scannedNotSavedQrs"
+            :key="qr.id"
+            :initial-text="generateQRText(qr.type, qr.subType, qr.source, qr.value, qr.id)"
+          />
         </section>
         <router-link :to="{ name: 'qrScanner' }">
           <button class="confirm-button">На страницу сканирования</button>
@@ -391,7 +404,7 @@
           <div class="value">{{ $user.stats.hp }}</div>
         </section>
         <section class="section-protection">
-          <img src="/static/icons/shield.svg" alt="">
+          <img src="/static/icons/buffs/shadow/protection.svg" alt="">
           <div class="value">{{ userProtection }}</div>
         </section>
       </section>
@@ -449,8 +462,6 @@ import {
   AbilityTypes,
   BuffsTypes,
   MONEY_LOSE_BY_DEATH_PERCENT,
-  QRSources,
-  QRTypes,
   ResourceTypes,
 } from '~/constants/constants';
 import EffectComponent from '~/components/Effect.vue';
@@ -458,6 +469,7 @@ import AbilityComponent from '~/components/Ability.vue';
 import {
   deepClone,
   effectsIdsToEffects,
+  ExtendedEffect,
   generateQRText,
   getAllUserAbilities,
   getAllUserEffects,
@@ -470,7 +482,7 @@ import { Effects, FightEffects, TeamEffectsIds } from '~/constants/effects';
 import type { AbilityChance, Effect, QRData } from '~/types/types';
 import QRGenerator from '~/components/QRGenerator.vue';
 import { nextTick } from 'vue';
-import { userDead, userRevive } from '~/utils/userEvents';
+import { finishFight, startFight, userDead, userRevive } from '~/utils/userEvents';
 import { Abilities } from '~/constants/abilities';
 import { Items } from '~/constants/items';
 
@@ -482,6 +494,7 @@ export default {
       userProtection: 0,
       userMaxHp: 0,
       isUserInFightReactiveValue: this.$user.isInFight,
+      isUserDeadReactiveValue: this.$user.stats.hp <= 0,
       isHpProtectionShowedOnly: false,
       modalState: 0,
       chosenValue: 0,
@@ -490,6 +503,10 @@ export default {
       fightEffects: [] as Effect[],
       fightPowers: [] as InFightExtendedAbility[],
       scannedNotSavedQrs: [] as QRData[],
+
+      shownEffects: [] as ExtendedEffect[],
+      effects: [] as ExtendedEffect[],
+      abilities: [] as InFightExtendedAbility[],
 
       ModalStates: {
         none: 0,
@@ -501,25 +518,13 @@ export default {
       ResourceTypes,
       FightEffects,
       MONEY_LOSE_BY_DEATH_PERCENT,
+      generateQRText,
     };
-  },
-
-  computed: {
-    shownEffects() {
-      return getAllUserEffects(this.$user, true);
-    },
-    effects() {
-      return getAllUserEffects(this.$user);
-    },
-
-    abilities() {
-      return getAllUserAbilities(this.$user) as unknown as InFightExtendedAbility[];
-    },
   },
 
   async mounted() {
     this.$app.isUserInFightReactiveValue = this.isUserInFightReactiveValue;
-    this.$app.isUserDeadReactiveValue = this.$user.stats.hp <= 0;
+    this.$app.isUserDeadReactiveValue = this.isUserDeadReactiveValue;
     this.recalculateUserStats();
 
     const abilitiesReloads = this.$localStorageManager.loadAbilitiesReloads();
@@ -551,7 +556,7 @@ export default {
       this.scannedNotSavedQrs = scannedNotSavedQrs;
     }
 
-    if (this.$user.stats.hp <= 0) {
+    if (this.isUserDeadReactiveValue) {
       await nextTick();
       this.regenerateDeadQrs();
     }
@@ -566,6 +571,10 @@ export default {
         this.userProtection += e.buffs[BuffsTypes.protectionIncrease] ?? 0;
         this.userMaxHp += e.buffs[BuffsTypes.maxHpIncrease] ?? 0;
       });
+
+      this.shownEffects = getAllUserEffects(this.$user, true);
+      this.effects = getAllUserEffects(this.$user);
+      this.abilities = getAllUserAbilities(this.$user) as unknown as InFightExtendedAbility[];
     },
 
     async startFight() {
@@ -577,13 +586,10 @@ export default {
       ) {
         return;
       }
-      this.$user.isInFight = true;
       this.isUserInFightReactiveValue = true;
-      this.$app.isUserInFightReactiveValue = true;
       this.fightPowers = [];
-      this.$localStorageManager.removeFightPowers();
-      this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
       this.isHpProtectionShowedOnly = true;
+      startFight(this);
       this.$forceUpdate();
       await this.$modals.alert(
         'Бой начат',
@@ -606,49 +612,19 @@ export default {
     },
     finishFight() {
       this.isUserInFightReactiveValue = false;
-      this.$app.isUserInFightReactiveValue = false;
-      this.$localStorageManager.removeAbilitiesReloads();
       this.fightEffects = [];
       this.fightPowers = [];
-      this.$localStorageManager.removeFightPowers();
-      this.$localStorageManager.removeFightEffects();
-      this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
+      finishFight(this);
 
       this.abilities.forEach(ability => (ability.reloadLeft = 0));
       this.$forceUpdate();
     },
 
     async playAbility(ability: InFightExtendedAbility) {
-      if (this.$user.isInFight && this.$user.stats.hp <= 0) {
-        if (ability.id === Abilities.phoenixLive.id) {
-          if (
-            !(await this.$modals.confirm(
-              'Использовать "Жизнь Феникса"?',
-              `Артефакт будет использован и пропадет из вашего инвентаря`,
-            ))
-          ) {
-            return;
-          }
-          const idx = this.$user.inventory.findIndex(i => i === Items.artefactPhoenixLive.id);
-          if (idx === -1) {
-            this.$popups.error('Ошибка', 'Предмета нет в инвентаре');
-            return;
-          }
-          this.$user.inventory.splice(idx, 1);
-          userRevive(this.$user);
-          this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
-          this.recalculateUserStats();
-          this.$forceUpdate();
-          return;
-        }
-      }
-      if (!this.$user.isInFight || this.$user.stats.hp <= 0) {
+      if (!this.$user.isInFight || this.isUserDeadReactiveValue) {
         return;
       }
       if (ability.reloadLeft) {
-        return;
-      }
-      if (ability.id === Abilities.phoenixLive.id) {
         return;
       }
       if (
@@ -724,8 +700,8 @@ export default {
           efficiencyModifiers[AbilityTypes.pistol] *= 1.3;
         }
       });
-      damage *= efficiencyModifiers[ability.type];
-      heal *= efficiencyModifiers[ability.type];
+      damage *= efficiencyModifiers[ability.type] ?? 1;
+      heal *= efficiencyModifiers[ability.type] ?? 1;
       // Calculate power affects
       this.fightPowers.forEach(power => {
         if (power.id === Abilities.powerDoubleDamage.id) {
@@ -744,7 +720,7 @@ export default {
         const effectsToTargetsNames = effectsToTargets.map(e => `"${e.name}"`).join(', ');
         await this.$modals.alert(
           `Вы накладываете эффект${effectsToTargets.length > 1 ? 'ы' : ''}:
-           ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount > 1 ? 'ов' : 'а'}`,
+${effectsToTargetsNames} на ${targetsCount} противник${targetsCount > 1 ? 'ов' : 'а'}`,
           'Выберите противников и громко скажите им, от какой способноси и сколько урона они получают. Они должны ввести его себе сами',
         );
       }
@@ -860,7 +836,7 @@ export default {
       this.$forceUpdate();
     },
     takeHeal(value: number) {
-      if (this.$user.stats.hp > 0) {
+      if (!this.isUserDeadReactiveValue) {
         this.$popups.success(
           'Лечение засчитано',
           `Вы восстановили ${Math.min(value, this.userMaxHp - this.$user.stats.hp)} HP`,
@@ -886,25 +862,40 @@ export default {
     },
 
     async userDead() {
+      // Trying to find phoenix live in inventory
+      const phoenixLiveIdx = this.$user.inventory.findIndex(i => i === Items.artefactPhoenixLive.id);
+      if (phoenixLiveIdx !== -1) {
+        if (
+          await this.$modals.confirm(
+            `Вы погибли и имеете ${this.$user.stats.hp} HP. В инвентаре есть ${Items.artefactPhoenixLive.name}.
+Хотите использовать и возродиться?`,
+            `Артефакт будет использован и пропадет из вашего инвентаря`,
+          )
+        ) {
+          this.$user.inventory.splice(phoenixLiveIdx, 1);
+          userRevive(this.$user);
+          this.$popups.success(
+            `Артефакт использован!`,
+            `Вы восстанавливаете все очки здоровья. Это не считалось за ход`,
+          );
+          this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
+          this.recalculateUserStats();
+          this.$forceUpdate();
+          return;
+        }
+      }
+
       this.loosedMoney = userDead(this.$user);
       this.$localStorageManager.saveLosedMoney(this.loosedMoney);
+      this.isUserDeadReactiveValue = true;
       this.$app.isUserDeadReactiveValue = true;
-      this.finishFight();
+      this.recalculateUserStats();
+      this.$forceUpdate();
 
       await nextTick();
       this.regenerateDeadQrs();
     },
-    regenerateDeadQrs() {
-      if (this.$refs.qrMoney) {
-        (this.$refs.qrMoney as typeof QRGenerator).regenerate(
-          generateQRText(QRTypes.resource, ResourceTypes.money, QRSources.user, String(this.loosedMoney)),
-        );
-      }
-      ((this.$refs.allQrs as (typeof QRGenerator)[]) || []).forEach((qrElem: typeof QRGenerator, idx: number) => {
-        const qr = this.scannedNotSavedQrs[idx];
-        qrElem.regenerate(generateQRText(qr.type, qr.subType, qr.source, qr.value, qr.id));
-      });
-    },
+    regenerateDeadQrs() {},
   },
 };
 </script>
