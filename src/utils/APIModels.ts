@@ -102,6 +102,10 @@ export const ItemModel = {
     type: Boolean,
     optional: true,
   },
+  notSynced: {
+    type: Boolean,
+    optional: true,
+  }
 }
 
 export const ItemModelMockData = validateModel(ItemModel, {
@@ -251,6 +255,10 @@ export const UserModel = {
     type: Array,
     item: String,
   },
+  notSyncedInventory: {
+    type: Array,
+    item: String,
+  },
   equipment: {
     type: Object,
     fields: {
@@ -288,6 +296,7 @@ export const UserModelMockData = validateModel(UserModel, {
   },
   role: 'user',
   inventory: [Items.artefactBlackStar.id, Items.artefactMainStone.id, Items.mainElitePirate.id, Items.bootsBerserk.id, Items.daggerNightCardinal.id],
+  notSyncedInventory: [Items.artefactBlackStar.id],
   equipment: {
     hat: Items.hatBerserk.id,
     main: undefined,

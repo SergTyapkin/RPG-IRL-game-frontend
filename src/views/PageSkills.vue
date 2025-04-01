@@ -54,6 +54,7 @@
         .skills
           .cell-container
             animation-float()
+
             overflow visible
 
             .cell
@@ -117,11 +118,12 @@
         .lines
           .line
             stroke colorSec1
-            stroke-width 2px
-            trans()
             stroke-dasharray 0 100%
+            stroke-width 2px
             animation line 0.5s linear forwards
+            trans()
             animation-index-delay()
+
             @keyframes line
               from
                 stroke-dasharray 0 100%

@@ -33,6 +33,7 @@ export default new Vuex.Store({
       state.user.notSyncedStats.intelligence = Number(userData.notSyncedStats?.intelligence || 0);
       state.user.skills = userData.skills;
       state.user.inventory = userData.inventory;
+      state.user.notSyncedInventory = userData.notSyncedInventory;
       state.user.equipment = userData.equipment;
       state.user.role = String(userData.role) as 'admin' | 'user';
       state.user.isInFight = String(userData.isInFight) === 'true';

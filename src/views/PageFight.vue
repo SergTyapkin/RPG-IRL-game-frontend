@@ -481,7 +481,6 @@ import Range from '~/components/Range.vue';
 import { Effects, FightEffects, TeamEffectsIds } from '~/constants/effects';
 import type { AbilityChance, Effect, QRData } from '~/types/types';
 import QRGenerator from '~/components/QRGenerator.vue';
-import { nextTick } from 'vue';
 import { finishFight, startFight, userDead, userRevive } from '~/utils/userEvents';
 import { Abilities } from '~/constants/abilities';
 import { Items } from '~/constants/items';
@@ -554,11 +553,6 @@ export default {
     const scannedNotSavedQrs = this.$localStorageManager.loadScannedNotSavedQrs();
     if (scannedNotSavedQrs) {
       this.scannedNotSavedQrs = scannedNotSavedQrs;
-    }
-
-    if (this.isUserDeadReactiveValue) {
-      await nextTick();
-      this.regenerateDeadQrs();
     }
   },
 
@@ -891,11 +885,7 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
       this.$app.isUserDeadReactiveValue = true;
       this.recalculateUserStats();
       this.$forceUpdate();
-
-      await nextTick();
-      this.regenerateDeadQrs();
     },
-    regenerateDeadQrs() {},
   },
 };
 </script>

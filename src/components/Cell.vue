@@ -75,10 +75,31 @@
         margin-right 3px
         &.targets
           margin-left 5px
+
+  .not-synced-label
+    position absolute
+    inset 0
+    background mix(colorSec1, transparent, 30%)
+    border-radius borderRadiusS
+    box-shadow 0 -2px -2px 0
+    box-shadow -1px 1px black
+    padding 20px
+    img
+      width 100%
+      height 100%
+      display block
+      opacity 0.5
+
+  &.not-synced
+    .item-img
+      opacity 0.6
+      filter saturate(0.5)
+    .stats
+      opacity 0.6
 </style>
 
 <template>
-  <div class="root-cell" :style="{ '--size': size }">
+  <div class="root-cell" :style="{ '--size': size }" :class="{'not-synced': item.notSynced}">
     <transition name="opacity">
       <img class="item-bg" v-if="bgImage" :src="bgImage" alt="">
     </transition>
@@ -136,6 +157,11 @@
         </span>
       </div>
     </section>
+
+    <section class="not-synced-label" v-if="item.notSynced">
+      <img src="/static/icons/cloud-sync-dark.svg" alt="sync">
+    </section>
+
     <slot />
   </div>
 </template>

@@ -24,6 +24,7 @@ export interface User {
   guildId: string;
   skills: string[];
   inventory: string[];
+  notSyncedInventory: string[];
   equipment: {
     hat?: string;
     main?: string;

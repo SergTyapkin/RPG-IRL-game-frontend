@@ -215,6 +215,7 @@ export default {
           guildId: String(this.guildId),
           skills: [],
           inventory: [],
+          notSyncedInventory: [],
           equipment: {},
           role: 'user',
           isInFight: false,

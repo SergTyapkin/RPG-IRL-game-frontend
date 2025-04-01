@@ -45,7 +45,7 @@
       height 30px
       background radial-gradient(#000000e0, transparent 75%)
 
-    img
+    .obj-img
       position absolute
       z-index 2
       display block
@@ -53,11 +53,26 @@
       height 100%
       object-fit contain
 
+    .not-synced-label
+      position absolute
+      inset 0
+      padding 50px
+      display block
+      z-index 3
+      opacity 0.6
+
+      img
+        width 100%
+        height 100%
+        display block
+        object-fit contain
+
   .section-stats
     top 70px
     display flex
     flex-direction column
     gap 5px
+
     > *
       centered-margin()
 
@@ -69,6 +84,7 @@
       background colorSec1
       border-radius borderRadiusMax
       centered-flex-container()
+
       &.protection
         background colorEmpProtection
 
@@ -78,6 +94,7 @@
     margin-bottom 20px
     color colorText4
 
+  .section-not-synced-info
   .section-effects
   .section-abilities
     margin-bottom 15px
@@ -126,17 +143,26 @@
 
       &.trade
         button-emp()
+
+  &.not-synced
+    .image-container .obj-img
+    .effects-container
+    .abilities-container
+      opacity 0.4
 </style>
 
 <template>
-  <div class="root-item-info">
+  <div class="root-item-info" :class="{ 'not-synced': obj.notSynced }">
     <button v-if="closable" class="close" @click="close">
       <img src="/static/icons/close.svg" alt="close">
     </button>
     <header>{{ obj.name }}</header>
     <div class="image-container" v-if="obj.imageUrl">
       <div v-if="imageWithShadow" class="shadow" />
-      <img :src="obj.imageUrl" alt="">
+      <img class="obj-img" :src="obj.imageUrl" alt="">
+      <section class="not-synced-label" v-if="obj.notSynced">
+        <img src="/static/icons/cloud-sync-dark.svg" alt="not-synced">
+      </section>
     </div>
     <section class="section-stats">
       <div v-if="[ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)" class="protection">
@@ -144,13 +170,27 @@
       </div>
     </section>
 
+    <section class="section-not-synced-info" v-if="obj.imageUrl">
+      <header>Предмет не синхронизирован!</header>
+      <div class="info">
+        Синхронизируйтесь со своей гильдией, чтобы с предметом можно было взаимодействовать и его эффекты стали
+        применяться
+      </div>
+    </section>
+
     <section class="description">
       {{ obj.description }}
       <div>
-        <div v-if="obj.buffs[BuffsTypes.maxHpIncrease]">
+        <div v-if="obj.buffs && obj.buffs[BuffsTypes.maxHpIncrease]">
           - Увеличивает макс. здоровье на {{ obj.buffs[BuffsTypes.maxHpIncrease] }}
         </div>
-        <div v-if="obj.buffs[BuffsTypes.protectionIncrease] && ![ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)">
+        <div
+          v-if="
+            obj.buffs &&
+              obj.buffs[BuffsTypes.protectionIncrease] &&
+              ![ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)
+          "
+        >
           - Увеличивает защиту на {{ obj.buffs[BuffsTypes.protectionIncrease] }}
         </div>
       </div>
@@ -162,9 +202,8 @@
         <div v-if="[ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)" class="info">
           Действуют только если предмет экипирован!
         </div>
-        <div v-if="obj.applyable" class="info">
-          Применяются после использования предмета
-        </div>
+        <div v-if="obj.applyable" class="info">Применяются после использования предмета</div>
+        <span v-if="obj.notSynced" class="info">Работают только после синхронизации с гильдией</span>
       </div>
       <div class="effects-container">
         <Effect v-for="effect in obj.effects" :key="effect.id" :effect="effect" without-source />
@@ -175,6 +214,7 @@
         <header>Способности</header>
         <div v-if="[ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)" class="info">
           Доступны только если предмет экипирован!
+          <span v-if="obj.notSynced" class="info">Работают только после синхронизации с гильдией</span>
         </div>
         <!--        <div v-if="obj.applyable" class="info">-->
         <!--          Применяются после использования предмета-->
@@ -220,8 +260,7 @@ export default {
   },
   emits: ['close'],
 
-  mounted() {
-  },
+  mounted() {},
 
   methods: {
     close() {

@@ -151,7 +151,7 @@
 
     <section class="section-inventory">
       <header>Инвентарь</header>
-      <Inventory :items-ids="$user.inventory" @select="selectItem" ref="inventory" />
+      <Inventory :items-ids="$user.inventory" :not-synced-items-ids="$user.notSyncedInventory" @select="selectItem" ref="inventory" />
     </section>
 
     <section class="section-effects">
@@ -194,7 +194,7 @@
             image-with-shadow
             closable
           >
-            <template #buttons>
+            <template #buttons v-if="!selectedItem.notSynced">
               <button
                 @click="equipItem(selectedItem)"
                 class="equip"

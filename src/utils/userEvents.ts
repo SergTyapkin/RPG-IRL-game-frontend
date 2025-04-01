@@ -2,14 +2,23 @@ import { type Modals } from '@sergtyapkin/modals-popups';
 import { User } from '~/types/types';
 import { UserLevels } from '~/constants/levels';
 import { Classes } from '~/constants/classes';
-import { BuffsTypes, ClassTypes, MONEY_LOSE_BY_DEATH_PERCENT } from '~/constants/constants';
+import { BuffsTypes, ClassTypes, MONEY_LOSE_BY_DEATH_PERCENT, NO_SERVER_MODE } from '~/constants/constants';
 import { getAllUserBuffs, getAllUserEffects, getTotalUserMaxHP } from '~/utils/utils';
 import { Effects } from '~/constants/effects';
 import { ComponentCustomProperties } from 'vue';
+import validateModel from '@sergtyapkin/models-validator';
+import { GuildModel } from '~/utils/APIModels';
 
 
-export function userIncreaseLevel($user: User, $modals: typeof Modals) {
+export function userTryToIncreaseLevel($user: User, $modals: typeof Modals) {
+  const maxLevel = Math.max(...Object.keys(UserLevels).map(Number));
+  if ($user.level >= maxLevel) {
+    return;
+  }
   const expNeedsToLevel = UserLevels[$user.level].experience;
+  if ($user.stats.experience < expNeedsToLevel) {
+    return;
+  }
   $user.stats.experience -= expNeedsToLevel;
   $user.level += 1;
 
@@ -44,12 +53,14 @@ export function userIncreaseLevel($user: User, $modals: typeof Modals) {
   $user.stats.agility += agilityAdd;
   $user.stats.intelligence += intelligenceAdd;
 
-  const maxLevel = Math.max(...Object.keys(UserLevels).map(Number));
   $modals.alert(
     'Уровень повышен!',
-    `Вы получили уровень ${$user.level}!
+    `Вы получили уровень ${$user.level}.
 Начислено ${powerAdd} силы, ${agilityAdd} ловкости и ${intelligenceAdd} интеллекта.
-${$user.level < maxLevel ? `Для уровня ${$user.level + 1} понадобится ${UserLevels[$user.level + 1].experience}xp.` : ''}`,
+
+${$user.level < maxLevel ?
+      `Для уровня ${$user.level + 1} понадобится ${UserLevels[$user.level + 1].experience}xp.` : 
+      'Вы достигли последнего уровня в игре. Но вы можете продолжать собирать опыт для прокачки гильдии'}`,
   );
 }
 
@@ -61,6 +72,7 @@ export function userDead($user: User): number {
   $user.notSyncedStats.power = 0;
   $user.notSyncedStats.agility = 0;
   $user.notSyncedStats.intelligence = 0;
+  $user.notSyncedInventory = [];
 
   return loosedMoney;
 }
@@ -82,5 +94,58 @@ export function finishFight(th: ComponentCustomProperties) {
   th.$localStorageManager.removeAbilitiesReloads();
   th.$localStorageManager.removeFightPowers();
   th.$localStorageManager.removeFightEffects();
+  th.$localStorageManager.saveSyncedData(th.$user, th.$guild);
+}
+
+export async function syncWithGuild(th: ComponentCustomProperties, guildQRValue: string) {
+  if (!NO_SERVER_MODE) {
+    const { ok } = await th.$api.syncAllData(
+      th.$user.stats.experience + th.$user.notSyncedStats.experience,
+      th.$user.stats.money + th.$user.notSyncedStats.money,
+      th.$user.inventory.concat(th.$user.notSyncedInventory),
+      {
+        hat: th.$user.equipment.hat,
+        main: th.$user.equipment.main,
+        boots: th.$user.equipment.boots,
+      },
+      th.$user.skills,
+      th.$user.stats.power + th.$user.notSyncedStats.power,
+      th.$user.stats.agility + th.$user.notSyncedStats.agility,
+      th.$user.stats.intelligence + th.$user.notSyncedStats.intelligence,
+    );
+
+    if (!ok) {
+      th.$popups.success('Ошибка сети', 'Проверьте подключение к сети и повторите попытку синхронизации');
+      return;
+    }
+    await th.$store.dispatch('GET_USER');
+    th.$popups.success('QR отсканирован', 'Ваши предметы и данные, а также данные гильдии синхронизированы');
+    return;
+  }
+
+  const guildData = validateModel(GuildModel, guildQRValue);
+  await th.$store.commit('SET_GUILD', guildData);
+  th.$popups.success('QR отсканирован', 'Данные гильдии обновлены');
+
+  th.$user.stats.hp = getTotalUserMaxHP(th.$user);
+  th.$app.isUserDeadReactiveValue = false;
+  th.$user.isInFight = false;
+  th.$app.isUserInFightReactiveValue = false;
+
+  th.$user.stats.experience += th.$user.notSyncedStats.experience;
+  th.$user.stats.money += th.$user.notSyncedStats.money;
+  th.$user.stats.power += th.$user.notSyncedStats.power;
+  th.$user.stats.agility += th.$user.notSyncedStats.agility;
+  th.$user.stats.intelligence += th.$user.notSyncedStats.intelligence;
+  th.$user.notSyncedStats.experience = 0;
+  th.$user.notSyncedStats.money = 0;
+  th.$user.notSyncedStats.power = 0;
+  th.$user.notSyncedStats.agility = 0;
+  th.$user.notSyncedStats.intelligence = 0;
+  th.$user.inventory.push(...th.$user.notSyncedInventory);
+  th.$user.notSyncedInventory = [];
+
+  userTryToIncreaseLevel(th.$user, th.$modals);
+
   th.$localStorageManager.saveSyncedData(th.$user, th.$guild);
 }
