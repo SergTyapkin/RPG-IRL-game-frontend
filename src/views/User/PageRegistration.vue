@@ -108,6 +108,7 @@ export default {
   data() {
     return {
       guildId: Number(this.$route.query.guildId) as number,
+      guildName: '',
 
       textFieldsFilledState: false,
       savedTextData: {} as {name: string, password: string, passwordAgain: string},
@@ -156,6 +157,7 @@ export default {
       this.$popups.error('Ошибка', 'Необходимо отсканировать QR гильдии, чтобы зарегистрироваться!');
       this.$router.push({ name: 'page404' });
     }
+    this.guildName = Guilds[this.guildId].name;
   },
 
   methods: {

@@ -1,5 +1,5 @@
 import { type Item } from '~/types/types';
-import { BuffsTypes, DefaultAvatarImage, ItemTypes } from '~/constants/constants';
+import { BuffsTypes, DefaultAvatarImage, EXPERIENCE_PER_BOTTLE, ItemTypes } from '~/constants/constants';
 import { Effects } from '~/constants/effects';
 import { Abilities } from '~/constants/abilities';
 
@@ -28,6 +28,9 @@ import ImgMainMagicSecret from '#/images/items/mainMagicSecret.png';
 
 import ImgBootsBerserk from '#/images/items/bootsBerserk.png';
 import ImgBootsKingSailor from '#/images/items/bootsKingSailor.png';
+
+import ImgExperienceBottle from '#/images/items/experienceBottle.png';
+
 
 export const Items: { [key: string]: Item } = {
   default: {
@@ -284,6 +287,17 @@ export const Items: { [key: string]: Item } = {
   },
 
   // ------------------------------------------------
+  experienceBottle: {
+    id: String(),
+    name: 'Бутылек опыта',
+    description: `Добавляет ${EXPERIENCE_PER_BOTTLE} опыта. Нельзя передать. Имеет смысл сразу использовать`,
+    type: ItemTypes.potion,
+    imageUrl: ImgExperienceBottle,
+    buffs: {},
+    effects: [],
+    abilities: [],
+    applyable: true,
+  },
   potionRegeneration: {
     id: String(),
     name: 'Зелье регенерации',

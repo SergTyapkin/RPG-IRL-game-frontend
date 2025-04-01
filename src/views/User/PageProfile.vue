@@ -120,6 +120,7 @@
         :cur-synced-xp="$user.stats?.experience"
         :cur-not-synced-xp="$user.notSyncedStats?.experience"
         :max-xp="UserLevels[$user.level].experience"
+        ref="level"
       />
     </section>
 
@@ -206,7 +207,7 @@
                 Экипировать
               </button>
               <button v-if="selectedItem.applyable" @click="applyItem(selectedItem)" class="use">Использовать</button>
-              <button @click="tradeItem(selectedItem)" class="trade">Передать</button>
+              <button v-if="selectedItem.id !== Items.experienceBottle.id" @click="tradeItem(selectedItem)" class="trade">Передать</button>
             </template>
           </ItemInfo>
 
@@ -233,7 +234,7 @@
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import LevelComponent from '~/components/LevelComponent.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { ItemTypes, NO_SERVER_MODE, QRTypes, ResourceTypes } from '~/constants/constants';
+import { EXPERIENCE_PER_BOTTLE, ItemTypes, NO_SERVER_MODE, QRTypes, ResourceTypes } from '~/constants/constants';
 import Equipment from '~/components/Equipment.vue';
 import Inventory from '~/components/Inventory.vue';
 import { UserLevels } from '~/constants/levels';
@@ -245,6 +246,7 @@ import {
 } from '~/utils/utils';
 import ItemInfo from '~/components/ItemInfo.vue';
 import EffectComponent from '~/components/Effect.vue';
+import { Items } from '~/constants/items';
 
 export default {
   components: { EffectComponent, ItemInfo, Inventory, Equipment, ValueBadge, LevelComponent, UserProfileInfo },
@@ -260,6 +262,7 @@ export default {
       ResourceTypes,
       UserLevels,
       ItemTypes,
+      Items,
     };
   },
 
@@ -359,6 +362,8 @@ export default {
       this.recalculateUserStats();
       (this.$refs.inventory as typeof Inventory).update();
       (this.$refs.equipment as typeof Equipment).update();
+      this.$forceUpdate();
+      (this.$refs.level as typeof LevelComponent).$forceUpdate();
     },
 
     tradeItem(item: ExtendedItem) {
@@ -377,12 +382,13 @@ export default {
       }
       this.$user.inventory.splice(itemIdx, 1);
 
-      console.log(item);
-      const effects = this.$localStorageManager.loadFightEffects() || [];
-      console.log(effects, item.effects);
-      effects.push(...item.effects);
-      console.log(effects);
-      this.$localStorageManager.saveFightEffects(effects);
+      if (item.id === Items.experienceBottle.id) {
+        this.$user.notSyncedStats.experience += EXPERIENCE_PER_BOTTLE;
+      } else {
+        const effects = this.$localStorageManager.loadFightEffects() || [];
+        effects.push(...item.effects);
+        this.$localStorageManager.saveFightEffects(effects);
+      }
 
       this.selectedItem = undefined;
       this.saveAndUpdateInventories();

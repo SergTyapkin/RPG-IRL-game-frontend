@@ -170,7 +170,7 @@
       </div>
     </section>
 
-    <section class="section-not-synced-info" v-if="obj.imageUrl">
+    <section class="section-not-synced-info" v-if="obj.notSynced">
       <header>Предмет не синхронизирован!</header>
       <div class="info">
         Синхронизируйтесь со своей гильдией, чтобы с предметом можно было взаимодействовать и его эффекты стали

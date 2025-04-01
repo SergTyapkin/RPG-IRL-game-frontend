@@ -13,7 +13,9 @@
 
   position relative
   width 100%
-  animation progress 1s ease forwards
+  animation progress 1s ease
+  --cur-anim var(--cur)
+  --cur-add-anim var(--cur-add)
   .number-bg
     width 50px
     height 50px
@@ -160,20 +162,11 @@ export default {
       default: undefined,
     },
   },
-  emits: ['update:modelValue'],
 
   mounted() {
-    const savedData = localStorage.getItem(this.uniqueName);
-    if (savedData !== null) {
-      this.$emit('update:modelValue', savedData);
-    }
   },
 
   methods: {
-    onInput() {
-      localStorage.setItem(this.uniqueName, this.modelValue);
-      this.$emit('update:modelValue', this.modelValue);
-    },
   },
 };
 </script>

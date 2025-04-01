@@ -109,7 +109,11 @@
       <ul class="list">
         <li
           v-for="[key, val] in Object.entries(Items)"
-          @click="onClickItem(val)"
+          @click="() => {
+            onClickItem(val);
+            selectedQRType = QRTypes.items;
+            selectedQRSubType = '_';
+          }"
           :class="{ selected: QRValue.indexOf(key) !== -1 }"
         >
           {{ key }}
