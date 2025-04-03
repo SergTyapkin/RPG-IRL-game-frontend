@@ -54,7 +54,6 @@
     "qrcode-generator-es6": "^1.1.4",
     "stylus": "^0.54.7",
     "typescript": "^4.6.2",
-    "uuid": "^11.1.0",
     "vite": "^5.4.11",
     "vite-plugin-dynamic-import": "^1.6.0",
     "vite-plugin-eslint": "^1.8.1",
