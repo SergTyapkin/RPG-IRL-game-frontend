@@ -83,7 +83,7 @@ export const Abilities: { [key: string]: Ability } = {
     effectsToTargets: [Effects.bleeding_2.id],
     effectsForMe: [],
     damage: 6,
-    targetsCount: 0,
+    targetsCount: 1,
     heal: 0,
     reload: 2,
     chances: [],

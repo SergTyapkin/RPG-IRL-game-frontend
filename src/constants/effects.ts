@@ -139,8 +139,8 @@ export const Effects: { [key: string]: Effect } = {
   },
   maxHpHalf: {
     id: String(),
-    name: 'Слабое здоровьк',
-    description: 'Ваше миксимальное здоровье уменьшено на 30%',
+    name: 'Слабое здоровье',
+    description: 'Ваше миксимальное здоровье становится равным 70% от текущего',
     imageUrl: DefaultAbilityImage,
     isForFight: true,
     userCanGetInFight: true,
