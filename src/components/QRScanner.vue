@@ -29,7 +29,6 @@
 <template>
   <div class="root-qr-scanner roll-active" :class="{closed: closed}">
     <section class="section-scanner">
-      <header class="header">Сканирование QR-кода</header>
       <video class="qr-scanner-video" ref="video" />
       <div v-if="!noCamerasSelection" class="camera-buttons-container scrollable">
         <button

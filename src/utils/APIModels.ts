@@ -7,7 +7,7 @@ import {
   DefaultAvatarImage,
   DefaultKnifeImage,
   QRSources,
-  QRTypes,
+  QRTypes, UserRoles,
 } from '~/constants/constants';
 import { Items } from '~/constants/items';
 import { Ability, Effect, Guild, Item, SyncedData, User } from '~/types/types';
@@ -64,6 +64,10 @@ export const AbilityModel = {
     item: String,
   },
   damage: Number,
+  piercingDamage: {
+    type: Number,
+    optional: true,
+  },
   targetsCount: Number,
   heal: Number,
   reload: Number,
@@ -148,13 +152,18 @@ export const GuildModel = {
         name: String,
         imageUrl: String,
         level: Number,
+        experience: Number,
       }
     },
-  }
+  },
+  hidden: {
+    type: Boolean,
+    optional: true,
+  },
 }
 
 export const GuildModelMockData = validateModel(GuildModel, {
-  id: 'GUILD_ID_1',
+  id: '3',
   name: 'Ушкуйники',
   description: 'Описание гильдии (ушкуйники блин)',
   money: 80,
@@ -170,24 +179,28 @@ export const GuildModelMockData = validateModel(GuildModel, {
       name: 'Тяпкин Сергей',
       imageUrl: DefaultAvatarImage,
       level: 8,
+      experience: 300,
     },
     {
       id: 'GMR_1',
       name: 'Никита Лаврентьев',
       imageUrl: DefaultAbilityImage,
       level: 8,
+      experience: 500,
     },
     {
       id: 'GMR_2',
       name: 'Аня',
       imageUrl: DefaultKnifeImage,
       level: 7,
+      experience: 100,
     },
     {
       id: 'GMR_3',
       name: 'Катя Сумцова',
       imageUrl: DefaultAbilityImage,
       level: 9,
+      experience: 1000,
     },
   ],
 }) as Guild;
@@ -199,7 +212,7 @@ export const UserModel = {
     type: String,
   },
   level: Number,
-  role: new Set(['admin', 'user']),
+  role: new Set(Object.keys(UserRoles)),
   classType: {
     type: String,
   },
@@ -277,6 +290,11 @@ export const UserModel = {
     },
   },
   isInFight: Boolean,
+  scannedQRs: {
+    type: Array,
+    item: String,
+    optional: true,
+  },
 };
 
 

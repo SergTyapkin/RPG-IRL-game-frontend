@@ -17,6 +17,8 @@ import PageFight from '~/views/PageFight.vue';
 import PageQRScanner from '~/views/PageQRScanner.vue';
 import PageTrade from '~/views/PageTrade.vue';
 import PageQRGeneration from '~/views/PageQRGeneration.vue';
+import PageProfileGuild from '~/views/User/PageProfileGuild.vue';
+import PageProfileQR from '~/views/User/PageProfileQR.vue';
 
 type MyRoute = RouteRecordRaw & {
   path: keyof typeof routes,
@@ -35,12 +37,15 @@ export default function createVueRouter(Store: Store): Router {
     { path: '/signup', name: 'signup', component: PageRegistration, meta: {noLoginRequired: true} },
     { path: '/password/change', name: 'changePassword', component: PageChangePassword, meta: {loginRequired: true} },
 
+    { path: '/profile/qr', name: 'profileQR', component: PageProfileQR, meta: {loginRequired: true} },
     { path: '/fight', name: 'fight', component: PageFight, meta: {loginRequired: true} },
     { path: '/skills', name: 'skillsTree', component: PageSkills, meta: {loginRequired: true} },
     { path: '/map', name: 'map', component: PageMap, meta: {loginRequired: true} },
     { path: '/qr-scanner', name: 'qrScanner', component: PageQRScanner, meta: {loginRequired: true} },
     { path: '/guild', name: 'guild', component: PageGuild, meta: {loginRequired: true} },
     { path: '/trade', name: 'trade', component: PageTrade, meta: {loginRequired: true} },
+
+    { path: '/profile-guild', name: 'guildProfile', component: PageProfileGuild, meta: {loginRequired: true} },
 
     { path: '/qr-generation-i2819jd98jsiaodm12asd1', name: 'qrGeneration', component: PageQRGeneration },
 

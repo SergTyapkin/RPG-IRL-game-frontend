@@ -31,18 +31,19 @@
   <div class="root-map">
     <DraggableComponent
       ref="draggableEl"
-      :min-scale="0.3"
-      :max-scale="5"
+      :min-scale="0.2"
+      :max-scale="2"
       :min-x-offset="200"
       :max-x-offset="200"
       :min-y-offset="200"
       :max-y-offset="200"
-      :default-scale="1"
+      :default-scale="0.5"
+      unique-name="map"
       class="draggable-element"
     >
       <div class="maps">
-        <img class="image blured" src="/static/images/map_google_3k.svg" alt="">
-        <img class="image" src="/static/images/map_google_3k.svg" alt="" ref="image">
+        <img class="image blured" src="/static/images/map.png" alt="">
+        <img class="image" src="/static/images/map.png" alt="" ref="image">
       </div>
     </DraggableComponent>
   </div>
@@ -50,6 +51,7 @@
 
 <script lang="ts">
 import DraggableComponent from '~/components/DraggableComponent.vue';
+import { nextTick } from 'vue';
 
 export default {
   components: { DraggableComponent },
@@ -59,7 +61,10 @@ export default {
     };
   },
 
-  async mounted() {},
+  async mounted() {
+    await nextTick();
+    (this.$refs.draggableEl as typeof DraggableComponent).$forceUpdate();
+  },
 
   methods: {},
 };

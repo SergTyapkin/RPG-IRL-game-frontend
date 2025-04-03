@@ -188,7 +188,7 @@
         </section>
       </transition>
 
-      <section class="bottom-interface">
+      <section class="bottom-interface" v-if="userRoleReactiveValue !== UserRoles.guild">
         <img class="bottom-line-bg" src="/static/images/bottom-line.svg" alt="">
         <nav class="buttons">
           <router-link :to="{ name: 'fight' }" class="fight" :class="{ disabled: false }">
@@ -240,6 +240,7 @@ import LocalStorageManager from '~/utils/localStorageManager';
 import CircleLoading from '~/components/loaders/CircleLoading.vue';
 import { saveAllAssetsByServiceWorker } from '~/utils/utils';
 import ProgressBar from '~/components/ProgressBar.vue';
+import { UserRoles } from '~/constants/constants';
 
 export default {
   components: { ProgressBar, CircleLoading, Modals, Popups },
@@ -255,6 +256,9 @@ export default {
 
       isUserInFightReactiveValue: this.$user?.isInFight,
       isUserDeadReactiveValue: this.$user?.stats?.hp <= 0,
+      userRoleReactiveValue: this.$user?.role,
+
+      UserRoles,
     };
   },
 

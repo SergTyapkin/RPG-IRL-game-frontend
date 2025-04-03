@@ -1,4 +1,4 @@
-import { AbilityType, BuffType, ClassType, ItemType, QRSource, QRType, ResourceType } from '~/constants/constants';
+import { AbilityType, BuffType, ClassType, ItemType, QRSource, QRType, ResourceType, UserRole } from '~/constants/constants';
 
 export interface User {
   id: string;
@@ -30,7 +30,8 @@ export interface User {
     main?: string;
     boots?: string;
   };
-  role: 'admin' | 'user';
+  scannedQRs?: string[];
+  role: UserRole;
   isInFight: boolean;
 
   isSignedIn: boolean;
@@ -68,6 +69,7 @@ export interface Ability {
   type: AbilityType;
 
   damage: number;
+  piercingDamage?: number;
   targetsCount: number;
   heal: number;
   reload: number;
@@ -119,7 +121,9 @@ export interface Guild {
     name: string;
     imageUrl: string;
     level: number;
+    experience: number;
   }[];
+  hidden?: boolean;
 }
 
 export interface Item {

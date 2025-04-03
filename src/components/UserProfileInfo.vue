@@ -16,6 +16,7 @@
     height 100px
     border 2px solid colorBorder
     border-radius borderRadiusMax
+    hover-effect()
     img
       width 100%
       height 100%
@@ -23,6 +24,7 @@
     .name
       font-large()
       font-bold()
+      hover-effect()
     .guild-info
       display flex
       gap 5px
@@ -49,9 +51,13 @@
 
 <template>
   <div class="root-user-profile-info" :class="{small}">
-    <div class="avatar"><img :src="overrideAvatar || $user.imageUrl" alt="avatar"></div>
+    <router-link :to="{name: 'profileQR'}">
+      <div class="avatar"><img :src="overrideAvatar || $user.imageUrl" alt="avatar"></div>
+    </router-link>
     <div class="text-block">
-      <strong class="name">{{ overrideName || $user.name }}</strong>
+      <router-link :to="{name: 'profileQR'}">
+        <strong class="name">{{ overrideName || $user.name }}</strong>
+      </router-link>
       <router-link :to="{ name: 'guild' }" class="guild-info" v-if="showGuild">
         <img class="guild-image" :src="$guild?.imageUrl" alt="">
         <div class="guild-name"> {{ $guild?.name }} </div>
@@ -64,6 +70,7 @@
 
 <script lang="ts">
 export default {
+  components: {},
   props: {
     showGuild: Boolean,
     small: Boolean,

@@ -17,6 +17,12 @@ thumb-size = 15px
   width 400px
   max-height 400px
   transition filter 0.5s ease
+  border-radius borderRadiusM
+  overflow hidden
+  aspect-ratio 1/1
+  svg
+    display block
+
 
 .qr-image.invert
   filter invert(1)

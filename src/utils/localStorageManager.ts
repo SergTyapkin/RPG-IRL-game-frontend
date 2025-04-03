@@ -2,7 +2,7 @@
 
 import { Ability, Effect, Guild, QRData, SyncedData, type User } from '~/types/types';
 import validateModel from '@sergtyapkin/models-validator';
-import { AbilityModel, EffectModel, QRDataModel, SyncDataModel } from '~/utils/APIModels';
+import { AbilityModel, EffectModel, GuildModel, QRDataModel, SyncDataModel } from '~/utils/APIModels';
 import { ExtendedAbility, InFightExtendedAbility } from '~/utils/utils';
 
 /**
@@ -18,6 +18,8 @@ const _PropertyNames = {
   scannedSavedQrs: 'scanned-saved-qrs',
   scannedNotSavedQrs: 'scanned-not-saved-qrs',
   loosedMoney: 'loosed-money',
+  allGuildsData: 'all-guilds',
+  guildScannedQrs: 'guild-scanned-qrs',
 };
 
 /**
@@ -144,30 +146,19 @@ export default class LocalStorageManager {
   }
 
   // ---- scannedSavedQrs ----
-  saveScannedSavedQrs(scannedSavedQrs: QRData[]) {
-    localStorage.setItem(_PropertyNames.scannedSavedQrs, JSON.stringify({ qrs: scannedSavedQrs }));
+  saveScannedSavedQrs(scannedSavedQrIds: string[]) {
+    localStorage.setItem(_PropertyNames.scannedSavedQrs, JSON.stringify({
+      ids: scannedSavedQrIds
+    }));
   }
 
-  loadScannedSavedQrs(): QRData[] | null {
+  loadScannedSavedQrs(): string[] | null {
     const res = localStorage.getItem(_PropertyNames.scannedSavedQrs);
     if (!res) {
       return null;
     }
     try {
-      return (
-        validateModel(
-          {
-            qrs: {
-              type: Array,
-              item: {
-                type: Object,
-                fields: QRDataModel,
-              },
-            },
-          },
-          res,
-        ) as { qrs: QRData[] }
-      ).qrs;
+      return (JSON.parse(res) as { ids: string[] }).ids;
     } catch {
       return null;
     }
@@ -226,5 +217,77 @@ export default class LocalStorageManager {
 
   removeLosedMoney() {
     localStorage.removeItem(_PropertyNames.loosedMoney);
+  }
+
+  // ---- allGuildsData ----
+  saveAllGuildsData(data: {[key: number]: Guild}) {
+    localStorage.setItem(_PropertyNames.allGuildsData, JSON.stringify(data));
+  }
+
+  loadAllGuildsData(): {[key: number]: Guild} | null {
+    const res = localStorage.getItem(_PropertyNames.allGuildsData);
+    if (!res) {
+      return null;
+    }
+
+    let jsoned: {[key: string]: object} = {};
+    try {
+      jsoned = JSON.parse(res);
+    } catch {
+      return null;
+    }
+
+    const resOut: {[key: number]: Guild} = {};
+    try {
+      Object.keys(jsoned).forEach((key: string) => {
+        resOut[Number(key)] = validateModel(GuildModel, jsoned[key]) as Guild;
+      });
+    } catch {
+      return null;
+    }
+
+    return resOut;
+  }
+
+  removeAllGuildsData() {
+    localStorage.removeItem(_PropertyNames.allGuildsData);
+  }
+
+  // ---- guildScannedQrs ----
+  saveGuildScannedQrs(data: {userId: string, qrId: string}[]) {
+    localStorage.setItem(_PropertyNames.guildScannedQrs, JSON.stringify({ids: data}));
+  }
+
+  loadGuildScannedQrs(): {userId: string, qrId: string}[] | null {
+    const res = localStorage.getItem(_PropertyNames.guildScannedQrs);
+    if (!res) {
+      return null;
+    }
+
+    try {
+      return (
+        validateModel(
+          {
+            ids: {
+              type: Array,
+              item: {
+                type: Object,
+                fields: {
+                  userId: String,
+                  qrId: String,
+                },
+              },
+            },
+          },
+          res,
+        ) as { ids: { userId: string; qrId: string }[] }
+      ).ids;
+    } catch {
+      return null;
+    }
+  }
+
+  removeGuildScannedQrs() {
+    localStorage.removeItem(_PropertyNames.guildScannedQrs);
   }
 }

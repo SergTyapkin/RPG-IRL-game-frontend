@@ -186,12 +186,12 @@ export default {
       this.confirmed = true;
       if (this.qrType === QRTypes.items) {
         (this.$refs.qr as typeof QRGenerator).regenerate(
-          generateQRText(QRTypes.items, '_', QRSources.user, JSON.stringify([this.qrValue])),
+          await generateQRText(QRTypes.items, '_', QRSources.user, JSON.stringify([this.qrValue])),
         );
         this.$user.inventory.splice(this.itemIdxInInventory, 1);
       } else if (this.qrType === QRTypes.resource) {
         (this.$refs.qr as typeof QRGenerator).regenerate(
-          generateQRText(QRTypes.resource, ResourceTypes.money, QRSources.user, String(this.moneyToTrade)),
+          await generateQRText(QRTypes.resource, ResourceTypes.money, QRSources.user, String(this.moneyToTrade)),
         );
         this.$user.stats.money -= this.moneyToTrade;
       }

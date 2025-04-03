@@ -4,6 +4,7 @@ export default {
 
   // User pages
   '/profile': true,
+  '/profile/qr': false,
   '/login': true,
   '/signup': true,
   '/password/change': false,
@@ -13,6 +14,8 @@ export default {
   '/map': true,
   '/guild': true,
   '/trade': false,
+
+  '/profile-guild': false,
 
   '/qr-generation-i2819jd98jsiaodm12asd1': false,
 

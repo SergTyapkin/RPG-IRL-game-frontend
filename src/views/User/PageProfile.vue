@@ -234,7 +234,7 @@
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import LevelComponent from '~/components/LevelComponent.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { EXPERIENCE_PER_BOTTLE, ItemTypes, NO_SERVER_MODE, QRTypes, ResourceTypes } from '~/constants/constants';
+import { EXPERIENCE_PER_BOTTLE, ItemTypes, NO_SERVER_MODE, QRTypes, ResourceTypes, UserRoles } from '~/constants/constants';
 import Equipment from '~/components/Equipment.vue';
 import Inventory from '~/components/Inventory.vue';
 import { UserLevels } from '~/constants/levels';
@@ -273,6 +273,11 @@ export default {
   },
 
   mounted() {
+    if (this.$user.role === UserRoles.guild) {
+      this.$router.push({name: 'guildProfile'});
+      return;
+    }
+
     this.recalculateUserStats();
     window.addEventListener('keydown', this.onKeyPress);
   },

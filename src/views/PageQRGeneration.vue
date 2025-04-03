@@ -157,8 +157,8 @@ export default {
   mounted() {},
 
   methods: {
-    regenerateQR() {
-      this.qrText = generateQRText(this.selectedQRType!, this.selectedQRSubType!, this.selectedQRSource!, this.QRValue);
+    async regenerateQR() {
+      this.qrText = await generateQRText(this.selectedQRType!, this.selectedQRSubType!, this.selectedQRSource!, this.QRValue);
       (this.$refs.qr as typeof QRGenerator).regenerate(this.qrText);
     },
 

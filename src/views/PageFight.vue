@@ -224,9 +224,17 @@
             filter brightness(1.2)
             outline colorEmp1 2px solid
 
+      .buttons
+        display flex
+        justify-content space-between
+        gap 15px
+
       .button-submit
         margin-top 30px
         button-emp()
+
+        &.emp
+          button()
 
     .section-choose-heal
       .range
@@ -281,21 +289,10 @@
         </ul>
         <section class="qr-codes">
           <header v-if="loosedMoney">{{ loosedMoney }} монет ({{ MONEY_LOSE_BY_DEATH_PERCENT * 100 }}% монет):</header>
-          <QRGenerator
-            v-if="loosedMoney"
-            ref="qrMoney"
-            :initial-text="
-              generateQRText(QRTypes.resource, ResourceTypes.money, QRSources.user, String(loosedMoney))
-            "
-          />
+          <QRGenerator v-if="loosedMoney" ref="qrMoney" />
           <header>Все недонесённые до базы QR'ы:</header>
           <div v-if="!scannedNotSavedQrs.length" class="info">Таких QR'ов нет</div>
-          <QRGenerator
-            ref="allQrs"
-            v-for="qr in scannedNotSavedQrs"
-            :key="qr.id"
-            :initial-text="generateQRText(qr.type, qr.subType, qr.source, qr.value, qr.id)"
-          />
+          <QRGenerator ref="allQrs" v-for="qr in scannedNotSavedQrs" :key="qr.id" />
         </section>
         <router-link :to="{ name: 'qrScanner' }">
           <button class="confirm-button">На страницу сканирования</button>
@@ -419,7 +416,10 @@
             </button>
             <header>Введите кол-во урона</header>
             <Range class="range" :min="1" :max="15" v-model="chosenValue" :labels-count="14" />
-            <button class="button-submit" @click="takeDamage(chosenValue)">Выбрать</button>
+            <section class="buttons">
+              <button class="button-submit" @click="takeDamage(chosenValue)">Обычный</button>
+              <button class="button-submit emp" @click="takeDamage(chosenValue, true)">Пробивающий</button>
+            </section>
           </section>
           <section class="section-choose-heal" v-else-if="modalState === ModalStates.chooseHeal" @click.stop>
             <button class="close">
@@ -458,12 +458,7 @@
 <script lang="ts">
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import {
-  AbilityTypes,
-  BuffsTypes,
-  MONEY_LOSE_BY_DEATH_PERCENT,
-  ResourceTypes,
-} from '~/constants/constants';
+import { AbilityTypes, BuffsTypes, MONEY_LOSE_BY_DEATH_PERCENT, QRSources, QRTypes, ResourceTypes } from '~/constants/constants';
 import EffectComponent from '~/components/Effect.vue';
 import AbilityComponent from '~/components/Ability.vue';
 import {
@@ -484,6 +479,7 @@ import QRGenerator from '~/components/QRGenerator.vue';
 import { finishFight, startFight, userDead, userRevive } from '~/utils/userEvents';
 import { Abilities } from '~/constants/abilities';
 import { Items } from '~/constants/items';
+import { nextTick } from 'vue';
 
 export default {
   components: { QRGenerator, Range, AbilityComponent, EffectComponent, ValueBadge, UserProfileInfo },
@@ -517,7 +513,6 @@ export default {
       ResourceTypes,
       FightEffects,
       MONEY_LOSE_BY_DEATH_PERCENT,
-      generateQRText,
     };
   },
 
@@ -554,6 +549,8 @@ export default {
     if (scannedNotSavedQrs) {
       this.scannedNotSavedQrs = scannedNotSavedQrs;
     }
+
+    await this.regenerateDeadQRs();
   },
 
   methods: {
@@ -804,6 +801,7 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
     },
 
     takeDamage(value: number, isPiercing = false) {
+      // Calculate damage
       let resultDamage = 0;
       if (isPiercing) {
         resultDamage = value;
@@ -817,7 +815,10 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
       resultDamage *= damageGottenModifier;
       resultDamage = Math.round(resultDamage);
 
+      // Decrease hp
       this.$user.stats.hp -= resultDamage;
+
+      // Inform user
       this.$popups.success('Урон получен', `Вы потеряли ${resultDamage} HP`);
       if (this.$user.stats.hp <= 0) {
         this.userDead();
@@ -885,6 +886,23 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
       this.$app.isUserDeadReactiveValue = true;
       this.recalculateUserStats();
       this.$forceUpdate();
+      await this.regenerateDeadQRs();
+    },
+
+    async regenerateDeadQRs() {
+      await nextTick();
+      const qrMoney = this.$refs.qrMoney as typeof QRGenerator;
+      if (qrMoney) {
+        qrMoney.regenerate(
+          await generateQRText(QRTypes.resource, ResourceTypes.money, QRSources.user, String(this.loosedMoney)),
+        );
+      }
+      const allQrs = this.$refs.allQrs as typeof QRGenerator[];
+      if (allQrs) {
+        allQrs.forEach(async qr => qr.regenerate(
+          await generateQRText(qr.type, qr.subType, qr.source, qr.value, qr.id)
+        ));
+      }
     },
   },
 };

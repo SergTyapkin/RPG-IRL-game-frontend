@@ -8,14 +8,15 @@ import {
   QR_CODE_ID_SPLITTER,
   QRSource,
   QRType,
-  ResourceType,
+  ResourceType, UUID_LENGTH,
 } from '~/constants/constants';
 import { Items } from '~/constants/items';
 import { Abilities, InFightAbility } from '~/constants/abilities';
 import { Effects } from '~/constants/effects';
-import { v4 as uuidv4 } from 'uuid';
 
 import swAPI from '~/serviceWorker/swAPI';
+import { UserLevels } from '~/constants/levels';
+import { myDecoding, myEncoding } from '~/utils/encodeDecode';
 
 export function getCookie(name: string) {
   const matches = document.cookie.match(
@@ -386,31 +387,72 @@ export function getTotalUserMaxHP($user: User): number {
   res *= modifier;
   return res;
 }
+export function getTotalUserExperience($user: User): number {
+  let res = 0;
+  for (let level = 1; level < $user.level; level++) {
+    res += UserLevels[level].experience;
+  }
+  res += $user.stats.experience;
+  return res;
+}
 
 
 // -----------------
-export function generateQRText(QRType: QRType, QRSubType: ResourceType | '_', QRSource: QRSource, QRValue: string, QRId?: string) {
-  QRId = QRId || uuidv4();
-  return btoa(`${QRType}${QRSubType}${QRSource}${QRValue}${QR_CODE_ID_SPLITTER}${QRId}`);
+export async function generateQRText(QRType: QRType, QRSubType: ResourceType | '_', QRSource: QRSource, QRValue: string, QRId?: string): Promise<string> {
+  QRId = QRId || myUuid();
+  const qrText = `${QRType}${QRSubType}${QRSource}${QRValue}${QR_CODE_ID_SPLITTER}${QRId}`;
+  return await myEncoding(qrText);
 }
-export function parseQRText(text: string): QRData | null {
-  try {
-    text = atob(text);
-    const splitted = text.split(QR_CODE_ID_SPLITTER);
-    if (splitted.length !== 2) {
-      console.error('QR not splitted by splitter symbol');
-      return null;
-    }
-    const [textVal, textId] = splitted;
-    return {
-      type: textVal[0] as QRType,
-      subType: textVal[1] as ResourceType | '_',
-      source: textVal[2] as QRSource,
-      value: textVal.slice(3),
-      id: textId,
-    };
-  } catch {
+
+export async function parseQRText(text: string): Promise<QRData | null> {
+  const qrText = await myDecoding(text)
+
+  // work with data
+  const splitted = qrText.split(QR_CODE_ID_SPLITTER);
+  if (splitted.length !== 2) {
+    console.error('QR not splitted by splitter symbol');
     return null;
+  }
+  const [textVal, textId] = splitted;
+  return {
+    type: textVal[0] as QRType,
+    subType: textVal[1] as ResourceType | '_',
+    source: textVal[2] as QRSource,
+    value: textVal.slice(3),
+    id: textId,
+  };
+}
+// ----------------
+const ranges = [
+  [0x100, 0x17F],  // Latin Extended-A
+  [0x180, 0x24F],  // Latin Extended-B
+  [0x370, 0x3FF],  // Greek
+  [0x400, 0x4FF],  // Cyrillic
+  [0x1F00, 0x1FFF], // Greek Extended
+  [0x2DE0, 0x2DFF], // Cyrillic Extended
+  [0x3000, 0x33FF]  // Пунктуация, технические символы
+];
+
+let SAFE_UNICODE_ALPHABET = '';
+for (const [start, end] of ranges) {
+  for (let i = start; i <= end; i++) {
+    const char = String.fromCharCode(i);
+    // Фильтруем "плохие" символы
+    if (/[\p{L}\p{Nd}]/u.test(char) && !/\s/.test(char)) {
+      SAFE_UNICODE_ALPHABET += char;
+    }
   }
 }
 
+export function myUuid() {
+  const alphabet = SAFE_UNICODE_ALPHABET;
+  let id = '';
+  const randomValues = new Uint32Array(UUID_LENGTH);
+  crypto.getRandomValues(randomValues);
+
+  for (let i = 0; i < UUID_LENGTH; i++) {
+    id += alphabet[randomValues[i] % alphabet.length];
+  }
+
+  return id;
+}

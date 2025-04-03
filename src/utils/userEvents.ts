@@ -1,5 +1,5 @@
 import { type Modals } from '@sergtyapkin/modals-popups';
-import { User } from '~/types/types';
+import { Guild, User } from '~/types/types';
 import { UserLevels } from '~/constants/levels';
 import { Classes } from '~/constants/classes';
 import { BuffsTypes, ClassTypes, MONEY_LOSE_BY_DEATH_PERCENT, NO_SERVER_MODE } from '~/constants/constants';
@@ -97,6 +97,31 @@ export function finishFight(th: ComponentCustomProperties) {
   th.$localStorageManager.saveSyncedData(th.$user, th.$guild);
 }
 
+export interface ExtendedGuild extends Guild {
+  scannedQRs: {userId: string, qrId: string}[]
+}
+
+export function parseGuildData(th: ComponentCustomProperties, qrData: string) {
+  try {
+    return validateModel(Object.assign({},
+      GuildModel,
+      {
+        scannedQrs: {
+          type: Array,
+          item: {
+            type: Object,
+            fields: {
+              userId: Number,
+              qrId: Number,
+            }
+          }
+        }
+      }), qrData) as ExtendedGuild;
+  } catch {
+    th.$popups.success('Ошибка чтения данных гильдии', `С QR'ом что-то не так`);
+    return;
+  }
+}
 export async function syncWithGuild(th: ComponentCustomProperties, guildQRValue: string) {
   if (!NO_SERVER_MODE) {
     const { ok } = await th.$api.syncAllData(
@@ -123,7 +148,10 @@ export async function syncWithGuild(th: ComponentCustomProperties, guildQRValue:
     return;
   }
 
-  const guildData = validateModel(GuildModel, guildQRValue);
+  const guildData = parseGuildData(th, guildQRValue);
+  if (!guildData) {
+    return;
+  }
   await th.$store.commit('SET_GUILD', guildData);
   th.$popups.success('QR отсканирован', 'Данные гильдии обновлены');
 

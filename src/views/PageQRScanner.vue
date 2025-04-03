@@ -60,6 +60,7 @@
     />
 
     <section class="section-scanner" style="--animation-index: 1">
+      <header class="header">Сканирование QR-кода</header>
       <QRScanner @scan="onScan" />
 
       <div class="info" style="--animation-index: 2">Или введите код:</div>
@@ -81,11 +82,11 @@
 import QRScanner from '~/components/QRScanner.vue';
 import { BuffsTypes, QRSources, QRTypes, ResourceTypes } from '~/constants/constants';
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
-import { ExtendedItem, getAllUserBuffs, getTotalUserMaxHP, itemsIdsToItems, parseQRText } from '~/utils/utils';
+import { ExtendedItem, getAllUserBuffs, getTotalUserMaxHP, itemIdToItem, itemsIdsToItems, parseQRText } from '~/utils/utils';
 import CircleLoading from '~/components/loaders/CircleLoading.vue';
 import { GuildModelMockData } from '~/utils/APIModels';
 import { type QRData } from '~/types/types';
-import { syncWithGuild, userDead } from '~/utils/userEvents';
+import { parseGuildData, syncWithGuild, userDead } from '~/utils/userEvents';
 
 export default {
   components: { CircleLoading, UserProfileInfo, QRScanner },
@@ -96,7 +97,7 @@ export default {
 
       textInput: '',
       scanResult: '',
-      scannedSavedQrs: [] as QRData[],
+      scannedSavedQrs: [] as string[],
       scannedNotSavedQrs: [] as QRData[],
 
       GuildModelMockData,
@@ -122,14 +123,14 @@ export default {
     async onScan(text: string) {
       this.scanResult = text;
 
-      const qrData = parseQRText(text);
+      const qrData = await parseQRText(text);
       if (!qrData) {
         this.$popups.error('Отсканирован неизвестный QR', 'Проверьте, действительно ли этот QR от этой игры');
         return;
       }
       const { type: QRType, source: QRSource, subType: QRSubType, value: QRValue, id: QRId } = qrData;
 
-      const idxSaved = this.scannedSavedQrs.findIndex(qr => qr.id === QRId);
+      const idxSaved = this.scannedSavedQrs.findIndex(qrId => qrId === QRId);
       const idxNotSaved = this.scannedNotSavedQrs.findIndex(qr => qr.id === QRId);
       if (idxSaved !== -1 || idxNotSaved !== -1) {
         this.$popups.error('QR отсканирован повторно', 'Вы уже сканировали этот QR');
@@ -186,29 +187,15 @@ export default {
               this.$user.notSyncedStats.intelligence += Number(QRValue);
               this.$popups.success('QR отсканирован', `Добавлено ${QRValue} очков интеллекта`);
               break;
+            case ResourceTypes.hp:
+              this.$user.stats.hp += Number(QRValue);
+              this.$user.stats.hp = Math.min(this.$user.stats.hp, getTotalUserMaxHP(this.$user));
+              this.$popups.success('QR отсканирован', `Добавлено ${QRValue} здоровья`);
+              if (this.$user.stats.hp <= 0) {
+                userDead(this.$user);
+              }
+              break;
           }
-          break;
-        }
-        case QRTypes.damage: {
-          if (this.$user.stats.hp <= 0) {
-            this.$popups.error('Вы погиблил в бою', 'Прежде чем совершать любые действия, восстановитесь на базе');
-            return;
-          }
-          this.$user.stats.hp -= Number(QRValue);
-          this.$popups.success('QR отсканирован', `Получено ${QRValue} урона`);
-          if (this.$user.stats.hp <= 0) {
-            userDead(this.$user);
-          }
-          break;
-        }
-        case QRTypes.heal: {
-          if (this.$user.stats.hp <= 0) {
-            this.$popups.error('Вы погиблил в бою', 'Прежде чем совершать любые действия, восстановитесь на базе');
-            return;
-          }
-          this.$user.stats.hp += Number(QRValue);
-          this.$user.stats.hp = Math.min(this.$user.stats.hp, getTotalUserMaxHP(this.$user));
-          this.$popups.success('QR отсканирован', `Вылечено ${QRValue} здоровья`);
           break;
         }
         case QRTypes.items: {
@@ -228,8 +215,12 @@ export default {
           this.$popups.success('QR отсканирован', `Получены предметы: ${items.map(i => `"${i.name}"`).join(', ')}`);
           break;
         }
-        case QRTypes.sync: {
+        case QRTypes.guildData: {
           await this.syncData(QRValue);
+          break;
+        }
+        case QRTypes.userData: {
+          this.$popups.error('Этот QR-код может сканироваться только гильдией', 'Покажите его на основном экране в центральном месте');
           break;
         }
         default: {
@@ -239,7 +230,7 @@ export default {
       }
 
       if (!scanError) {
-        if (QRType !== QRTypes.sync) {
+        if (QRType !== QRTypes.guildData) {
           this.scannedNotSavedQrs.push({
             id: QRId,
             type: QRType,
@@ -255,13 +246,83 @@ export default {
     },
 
     async syncData(QRValue: string) {
-      this.loading = true;
-      await syncWithGuild(this, QRValue);
-      this.loading = false;
-      this.scannedSavedQrs.push(...this.scannedNotSavedQrs);
+      const guildData = parseGuildData(this, QRValue);
+      if (!guildData) {
+        return;
+      }
+
+      // Save guild QRs
+      this.scannedSavedQrs.push(...(guildData.scannedQRs.map(qr => qr.qrId)));
+      // Check not saved QRs
+      this.scannedNotSavedQrs.forEach(qr => {
+        const qrIdxInGuilds = guildData.scannedQRs.findIndex(q => (q.qrId === qr.id && q.userId !== this.$user.id));
+        if (qrIdxInGuilds !== -1) {
+          // QR Already scanned
+          this.$modals.alert(
+            'Один из QR-кодов уже отсканирован другим человеком до вас',
+            `ID кода: ${qr.id}, тип кода: ${qr.type}, подтип: ${qr.subType}, значение: ${qr.value}`
+          );
+          // Decrease qr stats
+          switch (qr.type) {
+            case QRTypes.resource: {
+              switch (qr.subType) {
+                case ResourceTypes.money: {
+                  this.$user.notSyncedStats.money -= Number(qr.value);
+                  break;
+                }
+                case ResourceTypes.hp: {
+                  this.$user.stats.hp -= Number(qr.value);
+                  break;
+                }
+                case ResourceTypes.experience: {
+                  this.$user.notSyncedStats.experience -= Number(qr.value);
+                  break;
+                }
+                case ResourceTypes.power: {
+                  this.$user.notSyncedStats.power -= Number(qr.value);
+                  break;
+                }
+                case ResourceTypes.agility: {
+                  this.$user.notSyncedStats.agility -= Number(qr.value);
+                  break;
+                }
+                case ResourceTypes.intelligence: {
+                  this.$user.notSyncedStats.intelligence -= Number(qr.value);
+                  break;
+                }
+              }
+              break;
+            }
+            case QRTypes.items: {
+              let itemsIds: string[];
+              try {
+                itemsIds = JSON.parse(QRValue);
+              } catch {
+                this.$popups.error('Ошибка в структуре', 'Ошибка при парсинге предметов');
+                return;
+              }
+              itemsIds.forEach(itemId => {
+                const idx = this.$user.notSyncedInventory.findIndex(i => i === itemId);
+                if (idx !== -1) {
+                  this.$user.notSyncedInventory.splice(idx, 1);
+                  this.$popups.error('Удален предмет', `"${itemIdToItem(itemId).name}"`);
+                }
+              });
+              break;
+            }
+          }
+          return;
+        }
+        this.scannedSavedQrs.push(...(this.scannedNotSavedQrs.map(qr => qr.id)));
+      });
       this.scannedNotSavedQrs = [];
       this.$localStorageManager.saveScannedSavedQrs(this.scannedSavedQrs);
       this.$localStorageManager.saveScannedNotSavedQrs(this.scannedNotSavedQrs);
+
+      // Update user stats
+      this.loading = true;
+      await syncWithGuild(this, QRValue);
+      this.loading = false;
     },
   },
 };

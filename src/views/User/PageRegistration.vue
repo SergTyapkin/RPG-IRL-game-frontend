@@ -94,13 +94,12 @@ bg = colorBgDark
 
 <script lang="ts">
 import FormWithErrors from '~/components/FormWithErrors.vue';
-import { detectBrowser, detectOS } from '~/utils/utils';
+import { detectBrowser, detectOS, myUuid } from '~/utils/utils';
 import Validators from '~/utils/validators';
 import { Classes } from '~/constants/classes';
 import ClassComponent from '~/components/Class.vue';
 import { type Class, Guild, User } from '~/types/types';
-import { DEFAULT_USER_MAX_UP, DefaultAvatarImage, NO_SERVER_MODE } from '~/constants/constants';
-import { v4 as uuidv4 } from 'uuid';
+import { DEFAULT_USER_MAX_UP, DefaultAvatarImage, NO_SERVER_MODE, UserRoles } from '~/constants/constants';
 import { Guilds } from '~/constants/guilds';
 
 export default {
@@ -108,6 +107,8 @@ export default {
   data() {
     return {
       guildId: Number(this.$route.query.guildId) as number,
+      userRole: this.$route.query.userRole as string,
+
       guildName: '',
 
       textFieldsFilledState: false,
@@ -194,7 +195,7 @@ export default {
         }
       } else {
         const newUser: User = {
-          id: uuidv4(),
+          id: myUuid(),
           name: this.savedTextData.name,
           level: 1,
           imageUrl: DefaultAvatarImage,
@@ -219,7 +220,7 @@ export default {
           inventory: [],
           notSyncedInventory: [],
           equipment: {},
-          role: 'user',
+          role: this.userRole || UserRoles.user,
           isInFight: false,
 
           isSignedIn: true,
@@ -227,7 +228,7 @@ export default {
         await this.$store.commit('SET_USER', newUser);
         const guildInfo = Guilds[this.guildId];
         const newGuild: Guild = {
-          id: this.guildId,
+          id: String(this.guildId),
           name: guildInfo.name,
           description: '',
           money: 0,
