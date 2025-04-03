@@ -121,6 +121,7 @@ export const Effects: { [key: string]: Effect } = {
   // ----------------------------
   damage_1: getDamage(1),
   damage_2: getDamage(2),
+  damage_5: getDamage(5),
   damage_10: getDamage(10),
   weakness_1: getWeakness(1),
   weakness_2: getWeakness(2),

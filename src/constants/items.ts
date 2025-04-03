@@ -275,14 +275,14 @@ export const Items: { [key: string]: Item } = {
   bootsKingSailor: {
     id: String(),
     name: 'Сапоги королевских мореходцев',
-    description: 'Усиливает любое заклинание, применяемое на вас, в 2 раза',
+    description: 'Увеличивает наносимый урон на 5',
     type: ItemTypes.boots,
     imageUrl: ImgBootsKingSailor,
     buffs: {
       [BuffsTypes.protectionIncrease]: 8,
       [BuffsTypes.maxHpIncrease]: 12,
     },
-    effects: [Effects.damage_10.id],
+    effects: [Effects.damage_5.id],
     abilities: [],
   },
 
