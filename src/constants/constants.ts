@@ -85,8 +85,6 @@ export const BuffsTypes = {
 export const QRTypes = {
   resource: 'R',
   items: 'I',
-  heal: 'H',
-  damage: 'D',
   guildData: 'G',
   userData: 'U',
 }
