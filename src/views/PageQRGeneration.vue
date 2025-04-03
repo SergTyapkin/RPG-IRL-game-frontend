@@ -33,6 +33,18 @@
           padding 10px
           border 1px solid
 
+      &.items
+        > *
+          display flex
+          gap 5px
+          justify-content space-between
+          width 33%
+          @media({mobile})
+            flex-direction column
+          img
+            width 40px
+            height 40px
+
       img
         width 100%
         height 100%
@@ -106,7 +118,7 @@
         <input v-model="QRValue">
         <button class="button-clear" @click="QRValue = ''"><img src="/static/icons/close.svg" alt="clear"></button>
       </div>
-      <ul class="list">
+      <ul class="list items">
         <li
           v-for="[key, val] in Object.entries(Items)"
           @click="() => {
@@ -116,6 +128,7 @@
           }"
           :class="{ selected: QRValue.indexOf(key) !== -1 }"
         >
+          <img :src="val.imageUrl" alt="">
           {{ key }}
         </li>
       </ul>
