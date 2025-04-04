@@ -172,7 +172,8 @@
     <section class="text-container">
       <header class="name">{{ ability.name }}</header>
       <div class="description">{{ ability.description }}</div>
-      <div class="reload-info">{{ ability.reload }} хода на перезарядку</div>
+      <div class="reload-info" v-if="isFinite(ability.reload)">{{ ability.reload }} хода на перезарядку</div>
+      <div class="reload-info" v-else>Один раз за бой</div>
     </section>
 
     <section class="section-reloading">

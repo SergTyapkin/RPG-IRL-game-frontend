@@ -87,6 +87,11 @@
 
       &.protection
         background colorEmpProtection
+        padding 5px 10px
+        img
+          width 20px
+          height 20px
+          display block
 
   .description
     font-small()

@@ -92,6 +92,8 @@ export default {
     return {
       allGuildsData: {} as {[key: number]: ExtendedGuild},
 
+      showHiddenGuilds: (this.$route.query.showHidden === 'true'),
+
       scannedQRs: [] as {userId: string, qrId: string}[],
     };
   },
@@ -108,7 +110,7 @@ export default {
       Object.keys(Guilds).forEach(guildId => {
         const guildIdNum = Number(guildId)
         const guild = Guilds[guildIdNum];
-        if (guild && !guild.hidden) {
+        if (guild && (this.showHiddenGuilds || !guild.hidden)) {
           this.allGuildsData[guildIdNum] = {
             id: guildId,
             name: guild.name,

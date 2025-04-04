@@ -54,7 +54,6 @@
     <UserProfileInfo
       class="user-info"
       small
-      @contextmenu.prevent="syncData(GuildModelMockData)"
       style="--animation-index: 0"
       @click.ctrl.shift.prevent="$router.push({ name: 'qrGeneration' })"
       show-class
