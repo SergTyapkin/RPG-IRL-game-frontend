@@ -263,7 +263,6 @@ export default {
 
     async syncData(QRValue: string) {
       const guildData = parseGuildData(this, QRValue);
-      console.log(guildData);
       if (!guildData) {
         return;
       }

@@ -156,7 +156,6 @@ export async function syncWithGuild(th: ComponentCustomProperties, guildQRValue:
   await th.$store.commit('SET_GUILD', guildData);
   th.$popups.success('QR отсканирован', 'Данные гильдии обновлены');
 
-  th.$user.stats.hp = getTotalUserMaxHP(th.$user);
   th.$app.isUserDeadReactiveValue = false;
   th.$user.isInFight = false;
   th.$app.isUserInFightReactiveValue = false;
@@ -173,6 +172,8 @@ export async function syncWithGuild(th: ComponentCustomProperties, guildQRValue:
   th.$user.notSyncedStats.intelligence = 0;
   th.$user.inventory.push(...th.$user.notSyncedInventory);
   th.$user.notSyncedInventory = [];
+
+  th.$user.stats.hp = getTotalUserMaxHP(th.$user);
 
   userTryToIncreaseLevel(th.$user, th.$modals);
 
