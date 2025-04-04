@@ -14,6 +14,10 @@
   border-radius borderRadiusS
 
   .item-bg
+    padding 10%
+    opacity 0.5
+
+  .item-bg
   .item-img
     position absolute
     top padding
@@ -79,15 +83,15 @@
   .not-synced-label
     position absolute
     inset 0
+    padding 20px
     background mix(colorSec1, transparent, 30%)
     border-radius borderRadiusS
     box-shadow 0 -2px -2px 0
     box-shadow -1px 1px black
-    padding 20px
     img
+      display block
       width 100%
       height 100%
-      display block
       opacity 0.5
 
   &.not-synced

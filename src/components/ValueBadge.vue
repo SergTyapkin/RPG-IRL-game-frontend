@@ -42,9 +42,9 @@
           box-shadow -1px 1px black
 
           img
+            display block
             width 100%
             height 100%
-            display block
 
   &.small
     .badge

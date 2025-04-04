@@ -14,12 +14,12 @@ thumb-size = 15px
   overflow hidden
 
 .qr-image
-  width 400px
-  max-height 400px
-  transition filter 0.5s ease
-  border-radius borderRadiusM
   overflow hidden
   aspect-ratio 1/1
+  width 400px
+  max-height 400px
+  border-radius borderRadiusM
+  transition filter 0.5s ease
   svg
     display block
 

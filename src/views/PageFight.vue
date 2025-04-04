@@ -226,8 +226,8 @@
 
       .buttons
         display flex
-        justify-content space-between
         gap 15px
+        justify-content space-between
 
       .button-submit
         margin-top 30px

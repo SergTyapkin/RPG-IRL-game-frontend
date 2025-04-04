@@ -55,16 +55,16 @@
 
     .not-synced-label
       position absolute
-      inset 0
-      padding 50px
-      display block
       z-index 3
+      inset 0
+      display block
+      padding 50px
       opacity 0.6
 
       img
+        display block
         width 100%
         height 100%
-        display block
         object-fit contain
 
   .section-stats

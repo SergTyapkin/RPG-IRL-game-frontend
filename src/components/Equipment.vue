@@ -55,11 +55,10 @@
 <script lang="ts">
 import Cell from '~/components/Cell.vue';
 
-import DefaultHatImage from '#/icons/guild.svg';
-import DefaultMainImage from '#/icons/guild.svg';
-import DefaultBootsImage from '#/icons/guild.svg';
-import { Item } from '~/types/types';
-import { itemIdToItem } from '~/utils/utils';
+import DefaultHatImage from '#/icons/helmet.svg';
+import DefaultMainImage from '#/icons/main.svg';
+import DefaultBootsImage from '#/icons/boots.svg';
+import { ExtendedItem, itemIdToItem } from '~/utils/utils';
 
 export default {
   components: { Cell },
@@ -70,9 +69,9 @@ export default {
 
   data() {
     return {
-      hat: null as Item | null,
-      main: null as Item | null,
-      boots: null as Item | null,
+      hat: null as ExtendedItem | null,
+      main: null as ExtendedItem | null,
+      boots: null as ExtendedItem | null,
 
       loaded: false,
 

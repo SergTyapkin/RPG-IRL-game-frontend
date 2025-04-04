@@ -10,12 +10,12 @@
   --cur-progress unquote('min(calc(var(--cur-anim) / var(--max) * 100%), 100%)')
   --cur-add-progress unquote('min(calc(var(--cur-add-anim) / var(--max) * 100%), calc(100% - var(--cur-progress)))')
   --cur-total-progress unquote('min(calc((var(--cur-anim) + var(--cur-add-anim)) / var(--max) * 100%), 100%)')
+  --cur-anim var(--cur)
+  --cur-add-anim var(--cur-add)
 
   position relative
   width 100%
   animation progress 1s ease
-  --cur-anim var(--cur)
-  --cur-add-anim var(--cur-add)
   .number-bg
     width 50px
     height 50px
@@ -101,9 +101,9 @@
           box-shadow 0 -2px -2px 0
           box-shadow -1px 1px black
           img
+            display block
             width 100%
             height 100%
-            display block
 
   @keyframes progress
     0%
