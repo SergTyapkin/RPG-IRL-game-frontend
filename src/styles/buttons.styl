@@ -83,14 +83,14 @@ button-no-fill()
     background mix(bg-color, transparent, 40%)
 
 button-danger()
-  button()
+  button-emp()
 
-  background mix(colorError, transparent)
+  background colorError
   border-color colorError
 
   &:hover
-    color colorText1
-    border-color mix(colorError, white)
+    background mix(colorError, white, 70%)
+    border-color mix(colorError, white, 70%)
 
 button-success()
   button()

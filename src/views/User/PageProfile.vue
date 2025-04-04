@@ -111,7 +111,7 @@
 <template>
   <div class="root-profile">
     <section class="section-user-info" style="--animation-index: 0">
-      <UserProfileInfo show-guild @contextmenu.prevent="logout" />
+      <UserProfileInfo show-guild show-class />
     </section>
 
     <section class="section-level" style="--animation-index: 1">
@@ -234,7 +234,7 @@
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import LevelComponent from '~/components/LevelComponent.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { EXPERIENCE_PER_BOTTLE, ItemTypes, NO_SERVER_MODE, QRTypes, ResourceTypes, UserRoles } from '~/constants/constants';
+import { EXPERIENCE_PER_BOTTLE, ItemTypes, QRTypes, ResourceTypes, UserRoles } from '~/constants/constants';
 import Equipment from '~/components/Equipment.vue';
 import Inventory from '~/components/Inventory.vue';
 import { UserLevels } from '~/constants/levels';
@@ -253,7 +253,6 @@ export default {
 
   data() {
     return {
-      loading: false,
       selectedItem: undefined as ExtendedItem | undefined,
       selectedEquippedItem: undefined as ExtendedItem | undefined,
       userProtection: 0,
@@ -309,24 +308,6 @@ export default {
     selectItem(item: ExtendedItem) {
       this.selectedEquippedItem = undefined;
       this.selectedItem = item;
-    },
-
-    async logout() {
-      if (!(await this.$modals.confirm('Вы уверены, что хотите выйти из профиля?'))) {
-        return;
-      }
-      if (!NO_SERVER_MODE) {
-        this.loading = true;
-        const { ok } = await this.$api.logout();
-        this.loading = true;
-
-        if (!ok) {
-          this.$popups.error('Не получилось выйти из аккаунта', 'Неизвестная ошибка');
-          return;
-        }
-      }
-      this.$store.dispatch('DELETE_USER');
-      this.$router.push({ name: 'login' });
     },
 
     async unequipItem(item: ExtendedItem) {

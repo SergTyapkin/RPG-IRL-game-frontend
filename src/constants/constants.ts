@@ -13,8 +13,8 @@ export const EXPERIENCE_PER_BOTTLE = 250;
 
 export const MONEY_LOSE_BY_DEATH_PERCENT = 0.5;
 
-export const QR_CODE_ID_SPLITTER = String.fromCharCode(31); // 31 ascii = Unit Separator symbol
-export const UUID_LENGTH = 3;
+export const QR_CODE_ID_SPLITTER = '||';
+export const UUID_LENGTH = 4;
 export const MAX_UUIDS_PER_QR = Math.round(1000 / UUID_LENGTH);
 
 

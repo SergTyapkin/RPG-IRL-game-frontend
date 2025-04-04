@@ -175,7 +175,7 @@
 <template>
   <div class="root-page-skills">
     <section class="section-user-info" style="--animation-index: 0">
-      <UserProfileInfo small />
+      <UserProfileInfo small show-class />
     </section>
 
     <section class="section-resources">

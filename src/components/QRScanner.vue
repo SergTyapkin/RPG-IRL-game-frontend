@@ -60,15 +60,21 @@ export default {
   data() {
     return {
       active: false,
-      existingCameras: [],
-      scanner: null,
+      existingCameras: [] as QrScanner.Camera[],
+      scanner: null as QrScanner | null,
+      prevValue: '',
     };
   },
 
   async mounted() {
     this.existingCameras = await QrScanner.listCameras(true);
 
-    this.scanner = new QrScanner(this.$refs.video, (result) => {
+    this.scanner = new QrScanner(this.$refs.video as HTMLVideoElement, (result) => {
+      const text = result.data;
+      if (text === this.prevValue) {
+        return;
+      }
+      this.prevValue = text;
       this.$emit('scan', result.data);
     }, {
       highlightScanRegion: true,
@@ -79,14 +85,14 @@ export default {
   },
 
   unmounted() {
-    this.scanner.destroy();
+    this.scanner!.destroy();
   },
 
   methods: {
     async start() {
       if (!this.active) {
         try {
-          await this.scanner.start()
+          await this.scanner!.start()
         } catch {
           this.$modals.alert("Не предоставлены права доступа к камере", "Настройте доступ к камере для этого сайта в браузере");
         }
@@ -94,12 +100,12 @@ export default {
       }
     },
 
-    selectCamera(camera) {
-      this.scanner.setCamera(camera.id);
+    selectCamera(camera: QrScanner.Camera) {
+      this.scanner!.setCamera(camera.id);
     },
 
     stop() {
-      this.scanner.stop();
+      this.scanner!.stop();
       this.active = false;
     },
   }

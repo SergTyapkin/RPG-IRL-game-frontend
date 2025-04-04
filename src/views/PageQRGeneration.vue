@@ -39,11 +39,12 @@
           gap 5px
           justify-content space-between
           width 33%
-          @media({mobile})
-            flex-direction column
           img
             width 40px
             height 40px
+
+          @media ({mobile})
+            flex-direction column
 
       img
         width 100%
@@ -53,6 +54,8 @@
       width 100%
       padding 5px
       font-medium()
+      &.id
+        width 100px
     .input-container
       display flex
 
@@ -118,6 +121,7 @@
         <input v-model="QRValue">
         <button class="button-clear" @click="QRValue = ''"><img src="/static/icons/close.svg" alt="clear"></button>
       </div>
+      <div class="id">id: <input :value="qrId" readonly class="id"></div>
       <ul class="list items">
         <li
           v-for="[key, val] in Object.entries(Items)"
@@ -144,7 +148,7 @@
 
 <script lang="ts">
 import QRGenerator from '~/components/QRGenerator.vue';
-import { generateQRText } from '~/utils/utils';
+import { generateQRText, myUuid } from '~/utils/utils';
 import { QRSource, QRSources, QRType, QRTypes, ResourceType, ResourceTypes } from '~/constants/constants';
 import { Items } from '~/constants/items';
 import { Item } from '~/types/types';
@@ -160,6 +164,8 @@ export default {
       QRValue: '',
       qrText: '',
 
+      qrId: '',
+
       Items,
       QRTypes,
       QRSources,
@@ -171,7 +177,8 @@ export default {
 
   methods: {
     async regenerateQR() {
-      this.qrText = await generateQRText(this.selectedQRType!, this.selectedQRSubType!, this.selectedQRSource!, this.QRValue);
+      this.qrId = myUuid();
+      this.qrText = await generateQRText(this.selectedQRType!, this.selectedQRSubType!, this.selectedQRSource!, this.QRValue, this.qrId);
       (this.$refs.qr as typeof QRGenerator).regenerate(this.qrText);
     },
 

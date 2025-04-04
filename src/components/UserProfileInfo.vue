@@ -25,6 +25,11 @@
       font-large()
       font-bold()
       hover-effect()
+    .class
+      margin-bottom 5px
+      font-small()
+
+      color colorText2
     .guild-info
       display flex
       gap 5px
@@ -57,6 +62,7 @@
     <div class="text-block">
       <router-link :to="{name: 'profileQR'}">
         <strong class="name">{{ overrideName || $user.name }}</strong>
+        <div class="class" v-if="showClass">{{ userClassTypesToNames[$user.classType] }}</div>
       </router-link>
       <router-link :to="{ name: 'guild' }" class="guild-info" v-if="showGuild">
         <img class="guild-image" :src="$guild?.imageUrl" alt="">
@@ -69,6 +75,8 @@
 </template>
 
 <script lang="ts">
+import { ClassTypes } from '~/constants/constants';
+
 export default {
   components: {},
   props: {
@@ -83,6 +91,21 @@ export default {
       type: String,
       default: undefined,
     },
+
+    showClass: Boolean,
+  },
+
+  data() {
+    return {
+      userClassTypesToNames: {
+        [ClassTypes.power]: 'Танк',
+        [ClassTypes.agility]: 'Ловкач',
+        [ClassTypes.intelligence]: 'Алхимик',
+      }
+    }
+  },
+
+  computed: {
   },
 
   mounted() {

@@ -94,7 +94,8 @@ export default new Vuex.Store({
     },
     DELETE_USER(this: Store, state: State) {
       this.$app.$localStorageManager.removeSyncedData();
-      this.$app.$localStorageManager.removeScannedQrs();
+      this.$app.$localStorageManager.removeScannedSavedQrs();
+      this.$app.$localStorageManager.removeScannedNotSavedQrs();
       state.commit('DELETE_USER');
     },
   },

@@ -7,18 +7,21 @@
 
 .root-profile
   position relative
-  padding 30px 0 !important
   columns = 6
+  padding 30px 0 !important
   .section-qrs-grid
     position fixed
     top 0
     left 0
-    padding 20px
     display flex
     flex-wrap wrap
-    justify-content center
     gap 15px
+    justify-content center
     width 100%
+    padding 20px
+    .qr-data
+      width 100%
+      opacity 0.1
     .qr-container
     .webcam
       width 'calc((100% - 15px * %s) / %s)' % ((columns - 1) columns)
@@ -26,7 +29,22 @@
         margin-bottom 5px
       header
         centered-flex-container()
+
         gap 5px
+      .input-container
+        position absolute
+        left 0
+        display flex
+        width 100%
+        opacity 0.1
+        input
+          flex 1
+          width 100%
+          padding 5px
+        button
+          button()
+
+          flex 0
 </style>
 
 <template>
@@ -38,11 +56,16 @@
           <img :src="guildData?.imageUrl" alt="logo">
           {{ guildData?.name }}
         </header>
+        <input ref="qrInputs" readonly class="qr-data">
       </div>
 
       <br>
       <section class="webcam">
         <QRScanner @scan="onScan" no-cameras-selection @click.ctrl.shift="fakeScan" />
+        <div class="input-container">
+          <input class="input" v-model="textInput">
+          <button class="button" @click="onScan(textInput)">Отправить</button>
+        </div>
       </section>
     </section>
   </div>
@@ -55,7 +78,7 @@ import QRScanner from '~/components/QRScanner.vue';
 import { deepClone, generateQRText, parseQRText } from '~/utils/utils';
 import { MAX_UUIDS_PER_QR, QRSources, QRTypes } from '~/constants/constants';
 import validateModel from '@sergtyapkin/models-validator';
-import { UserModel, UserModelMockData } from '~/utils/APIModels';
+import { UserModel } from '~/utils/APIModels';
 import { User } from '~/types/types';
 import { GuildLevels, UserLevels } from '~/constants/levels';
 import { nextTick } from 'vue';
@@ -118,6 +141,7 @@ export default {
   methods: {
     async regenerateGuildQr(guildId: number) {
       const qrElements = this.$refs.qrs as typeof QRGenerator[];
+      const qrInputs = this.$refs.qrInputs as HTMLInputElement[];
       const qrIdx = Object.keys(this.allGuildsData).findIndex(gId => Number(gId) === Number(guildId))
       const guild = this.allGuildsData[guildId];
       const guildDataCopy = deepClone(guild);
@@ -127,6 +151,7 @@ export default {
       );
       if (qrElements && qrIdx !== -1 && qrElements[qrIdx]) {
         qrElements[qrIdx].regenerate(qrData);
+        qrInputs[qrIdx].value = qrData;
       }
     },
     regenerateQRs() {
@@ -227,9 +252,9 @@ export default {
     },
 
     async fakeScan() {
-      const userData = UserModelMockData;
-      userData.stats.experience = 40;
-      this.onScan(await generateQRText(QRTypes.userData, '_', QRSources.user, JSON.stringify(userData)));
+      // const userData = UserModelMockData;
+      // userData.stats.experience = 40;
+      // this.onScan(await generateQRText(QRTypes.userData, '_', QRSources.user, JSON.stringify(userData)));
     }
   }
 };

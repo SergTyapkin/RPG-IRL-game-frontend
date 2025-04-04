@@ -406,6 +406,9 @@ export async function generateQRText(QRType: QRType, QRSubType: ResourceType | '
 
 export async function parseQRText(text: string): Promise<QRData | null> {
   const qrText = await myDecoding(text)
+  if (!qrText) {
+    return null;
+  }
 
   // work with data
   const splitted = qrText.split(QR_CODE_ID_SPLITTER);
@@ -424,16 +427,12 @@ export async function parseQRText(text: string): Promise<QRData | null> {
 }
 // ----------------
 const ranges = [
-  [0x100, 0x17F],  // Latin Extended-A
-  [0x180, 0x24F],  // Latin Extended-B
-  [0x370, 0x3FF],  // Greek
-  [0x400, 0x4FF],  // Cyrillic
-  [0x1F00, 0x1FFF], // Greek Extended
-  [0x2DE0, 0x2DFF], // Cyrillic Extended
-  [0x3000, 0x33FF]  // Пунктуация, технические символы
+  [0x0020, 0x007E],  // латиница и ASCII
+  // [0x0370, 0x03FF],  // греческий
+  // [0x410, 0x44F],  // Кириллица
 ];
 
-let SAFE_UNICODE_ALPHABET = '';
+let SAFE_UNICODE_ALPHABET = '!@#$%^&*()_+{}[]|\\/\'"`~:;><';
 for (const [start, end] of ranges) {
   for (let i = start; i <= end; i++) {
     const char = String.fromCharCode(i);

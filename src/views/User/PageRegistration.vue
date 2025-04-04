@@ -157,6 +157,7 @@ export default {
     if (isNaN(this.guildId) || (Guilds[this.guildId] === undefined)) {
       this.$popups.error('Ошибка', 'Необходимо отсканировать QR гильдии, чтобы зарегистрироваться!');
       this.$router.push({ name: 'page404' });
+      return;
     }
     this.guildName = Guilds[this.guildId].name;
   },

@@ -106,19 +106,20 @@ export function parseGuildData(th: ComponentCustomProperties, qrData: string) {
     return validateModel(Object.assign({},
       GuildModel,
       {
-        scannedQrs: {
+        scannedQRs: {
           type: Array,
           item: {
             type: Object,
             fields: {
-              userId: Number,
-              qrId: Number,
+              userId: String,
+              qrId: String,
             }
           }
         }
       }), qrData) as ExtendedGuild;
-  } catch {
-    th.$popups.success('Ошибка чтения данных гильдии', `С QR'ом что-то не так`);
+  } catch (err) {
+    console.error("Qrr with QR:", err, " | QR Data:", qrData);
+    th.$popups.error('Ошибка чтения данных гильдии', `С QR'ом что-то не так`);
     return;
   }
 }

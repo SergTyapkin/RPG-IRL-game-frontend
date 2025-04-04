@@ -33,6 +33,11 @@
       margin-bottom 15px
       color colorText2
       font-bold()
+    .info
+      font-small()
+
+      color colorText5
+      text-align center
 
   .section-members
     margin-top 30px
@@ -77,12 +82,14 @@
 
     <section class="section-leader">
       <header>Лидер гильдии</header>
-      <UsersList :users="guildLeader ? [guildLeader] : []" />
+      <div class="info" v-if="guildLeader">Нет данных</div>
+      <UsersList v-else :users="guildLeader ? [guildLeader] : []" />
     </section>
 
     <section class="section-members">
       <header>Участники гильдии</header>
-      <UsersList :users="$guild.members" />
+      <div class="info" v-if="$guild.members?.length">Нет данных. Отсканируйте QR гильдии</div>
+      <UsersList v-else :users="$guild.members" />
     </section>
 
     <section class="section-inventory">

@@ -47,7 +47,7 @@
       <FormWithErrors v-if="!NO_SERVER_MODE" ref="form" :fields="fields" submit-text="Вход" :loading="loading" @success="login" />
       <div v-else class="info">
         <br>
-        Сайт работает в безсерверном режиме и входа нет. Выхода тоже :) <br>
+        Сайт работает в бессерверном режиме и входа нет. Выхода тоже :) <br>
         <br>
         Чтобы начать играть, нужно зарегистрироваться по QR-коду гильдии
       </div>
