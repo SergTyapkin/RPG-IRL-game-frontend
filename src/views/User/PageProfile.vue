@@ -207,7 +207,7 @@
                 Экипировать
               </button>
               <button v-if="selectedItem.applyable" @click="applyItem(selectedItem)" class="use">Использовать</button>
-              <button v-if="![Items.moneyPouchSmall.id, Items.moneyPouchMid.id, Items.moneyPouchBig.id, Items.expBottleSmall.id, Items.expBottleSmall.id, Items.expBottleBig.id].includes(selectedItem.id)" @click="tradeItem(selectedItem)" class="trade">Передать</button>
+              <button v-if="true" @click="tradeItem(selectedItem)" class="trade">Передать</button>
             </template>
           </ItemInfo>
 
