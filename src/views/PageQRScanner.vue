@@ -257,6 +257,9 @@ export default {
           this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
           this.$router.push({ name: 'profile' });
         }
+        if (QRType === QRTypes.guildData) {
+          this.$router.push({ name: 'profile' });
+        }
       }
     },
 
