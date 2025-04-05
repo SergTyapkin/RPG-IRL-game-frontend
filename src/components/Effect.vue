@@ -190,7 +190,7 @@
           alt="max-hp-decrease"
         >
 
-        <div class="value">{{ value > 0 && value < 1 ? `${value * 100}%` : value }}</div>
+        <div class="value">{{ Math.round(value) !== value ? `${value * 100}%` : value }}</div>
       </div>
     </section>
   </div>

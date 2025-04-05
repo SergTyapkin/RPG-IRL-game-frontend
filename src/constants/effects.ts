@@ -111,6 +111,7 @@ export const Effects: { [key: string]: Effect } = {
   // ----- Fight effects
   teamBleeding_1: getTeamBleeding(1),
   teamBleeding_2: getTeamBleeding(2),
+  teamRegeneration_2: getTeamRegeneration(2),
   teamRegeneration_3: getTeamRegeneration(3),
   // -----------------------------
   bleeding_1: getBleeding(1),
@@ -125,6 +126,7 @@ export const Effects: { [key: string]: Effect } = {
   damage_10: getDamage(10),
   weakness_1: getWeakness(1),
   weakness_2: getWeakness(2),
+  weakness_5: getWeakness(5),
   // ----------------------------
   protectionHalf: {
     id: String(),
@@ -214,6 +216,15 @@ export const Effects: { [key: string]: Effect } = {
     imageUrl: DefaultAbilityImage,
     buffs: {
       [BuffsTypes.damageGottenModifier]: 0.3,
+    },
+  },
+  damageGotten20perc: {
+    id: String(),
+    name: 'Поглощение урона',
+    description: 'Вы получаете на 20% меньше урона по здоровью',
+    imageUrl: DefaultAbilityImage,
+    buffs: {
+      [BuffsTypes.damageGottenModifier]: 0.2,
     },
   },
   // -------------------------------------------------------

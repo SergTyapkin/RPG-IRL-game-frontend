@@ -31,6 +31,22 @@ import ImgBootsKingSailor from '#/images/items/bootsKingSailor.png';
 
 import ImgExperienceBottle from '#/images/items/experienceBottle.png';
 
+import ImgFakeEye from '#/images/items/fakeEye.png';
+
+import ImgSwordZirael from '#/images/items/ziraelSword.png';
+import ImgPotionSpecific from '#/images/items/specificPoison.png';
+import ImgPotionOtvorot from '#/images/items/otvorotPoison.png';
+import ImgSwordShadow from '#/images/items/swordShadow.png';
+import ImgPistolFuture from '#/images/items/futurePistol.png';
+import ImgHatAncient from '#/images/items/maskAnciet.png';
+import ImgMainAncient from '#/images/items/oldMagiManti.png';
+import ImgArtefactEarthKnowledgesStone from '#/images/items/stoneKnowledge.png';
+import ImgSwordDark from '#/images/items/swordDark.png';
+import ImgKingWheel from '#/images/items/helmKing.png';
+import ImgKingAnchor from '#/images/items/anchorKing.png';
+
+import ImgCaramel from '#/images/items/caramelParticle.png';
+
 
 export const Items: { [key: string]: Item } = {
   default: {
@@ -308,6 +324,161 @@ export const Items: { [key: string]: Item } = {
     effects: [Effects.regeneration_1.id],
     abilities: [],
     applyable: true,
+  },
+
+  // LEGENDARY ---------------------------------------------
+  swordZirael: {
+    id: String(),
+    name: 'Меч Зираэль (Ласточка)',
+    description: '',
+    type: ItemTypes.other,
+    imageUrl: ImgSwordZirael,
+    buffs: {},
+    effects: [Effects.damage_5.id],
+    abilities: [Abilities.swordZirael.id],
+  },
+  specificPotion: {
+    id: String(),
+    name: 'Специфический раствор',
+    description: 'Накладывает случайный эффект',
+    type: ItemTypes.potion,
+    imageUrl: ImgPotionSpecific,
+    buffs: {},
+    effects: [],
+    abilities: [],
+    applyable: true,
+  },
+  otvorotPotion: {
+    id: String(),
+    name: 'Отворотное зелье',
+    description: '',
+    type: ItemTypes.potion,
+    imageUrl: ImgPotionOtvorot,
+    buffs: {},
+    effects: [],
+    abilities: [],
+  },
+  swordShadow: {
+    id: String(),
+    name: 'Клинки Владыки Теней',
+    description: '',
+    type: ItemTypes.other,
+    imageUrl: ImgSwordShadow,
+    buffs: {},
+    effects: [Effects.damage_10.id, Effects.protectionHalf.id],
+    abilities: [Abilities.swordShadow.id],
+  },
+  pistolFuture: {
+    id: String(),
+    name: 'Пистоль будущего',
+    description: '',
+    type: ItemTypes.pistol,
+    imageUrl: ImgPistolFuture,
+    buffs: {
+      [BuffsTypes.maxHpIncrease]: 5,
+    },
+    effects: [Effects.damage_10.id, Effects.protectionHalf.id],
+    abilities: [Abilities.pistolFuture.id],
+  },
+  hatAncient: {
+    id: String(),
+    name: 'Маска древних',
+    description: '',
+    type: ItemTypes.hat,
+    imageUrl: ImgHatAncient,
+    buffs: {
+      [BuffsTypes.maxHpIncrease]: 4,
+      [BuffsTypes.protectionIncrease]: 5,
+    },
+    effects: [Effects.damageGotten20perc.id],
+    abilities: [],
+  },
+  mainAncient: {
+    id: String(),
+    name: 'Маска древнего мага',
+    description: '',
+    type: ItemTypes.main,
+    imageUrl: ImgMainAncient,
+    buffs: {
+      [BuffsTypes.maxHpIncrease]: 10,
+      [BuffsTypes.protectionIncrease]: 1,
+    },
+    effects: [Effects.intelligenceAddPerLevel_3.id],
+    abilities: [],
+  },
+  artefactStoneKnowledge: {
+    id: String(),
+    name: 'Камень знаний земли',
+    description: '',
+    type: ItemTypes.main,
+    imageUrl: ImgArtefactEarthKnowledgesStone,
+    buffs: {
+      [BuffsTypes.maxHpIncrease]: 2,
+    },
+    effects: [
+      Effects.swordEfficiency.id,
+      Effects.daggerEfficiency.id,
+      Effects.pistolEfficiency.id,
+      Effects.luck.id,
+    ],
+    abilities: [],
+  },
+  swordBlack: {
+    id: String(),
+    name: 'Одноручный меч Черного мечника',
+    description: '',
+    type: ItemTypes.sword,
+    imageUrl: ImgSwordDark,
+    buffs: {},
+    effects: [
+      Effects.powerLowCost.id,
+      Effects.powerAddPerLevel_1.id,
+    ],
+    abilities: [Abilities.swordBlack.id],
+  },
+  artefactWheelKing: {
+    id: String(),
+    name: 'Штурвал Короля пиратов',
+    description: '',
+    type: ItemTypes.artefact,
+    imageUrl: ImgKingWheel,
+    buffs: {
+      [BuffsTypes.protectionModifier]: 1.5,
+    },
+    effects: [],
+    abilities: [Abilities.artefactWheelKing.id],
+  },
+  artefactAnchorKing: {
+    id: String(),
+    name: 'Якорь королевского линкора',
+    description: '',
+    type: ItemTypes.artefact,
+    imageUrl: ImgKingAnchor,
+    buffs: {},
+    effects: [Effects.teamRegeneration_2.id],
+    abilities: [],
+  },
+
+  // QUESTS ------------------------------------------------
+  fakeEye: {
+    id: String(),
+    name: 'Вставной глаз',
+    description: 'Неприятный вставной глаз',
+    type: ItemTypes.other,
+    imageUrl: ImgFakeEye,
+    buffs: {},
+    effects: [],
+    abilities: [],
+  },
+  caramel: {
+    id: String(),
+    name: 'Карамелька',
+    description: 'Выглядит сладко, как и на вкус',
+    type: ItemTypes.other,
+    imageUrl: ImgCaramel,
+    buffs: {},
+    effects: [],
+    abilities: [],
   },
 };
 
