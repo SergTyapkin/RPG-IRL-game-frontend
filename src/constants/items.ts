@@ -1,5 +1,5 @@
 import { type Item } from '~/types/types';
-import { BuffsTypes, DefaultAvatarImage, EXPERIENCE_PER_BOTTLE, ItemTypes } from '~/constants/constants';
+import { BuffsTypes, DefaultAvatarImage, ItemTypes } from '~/constants/constants';
 import { Effects } from '~/constants/effects';
 import { Abilities } from '~/constants/abilities';
 
@@ -29,7 +29,12 @@ import ImgMainMagicSecret from '#/images/items/mainMagicSecret.png';
 import ImgBootsBerserk from '#/images/items/bootsBerserk.png';
 import ImgBootsKingSailor from '#/images/items/bootsKingSailor.png';
 
-import ImgExperienceBottle from '#/images/items/experienceBottle.png';
+import ImgExpBottleSmall from '#/images/items/smallExp.png';
+import ImgExpBottleMid from '#/images/items/midExp.png';
+import ImgExpBottleBig from '#/images/items/bigExp.png';
+import ImgMoneySmall from '#/images/items/smallGold.png';
+import ImgMoneyMid from '#/images/items/midGold.png';
+import ImgMoneyBig from '#/images/items/bigGold.png';
 
 import ImgFakeEye from '#/images/items/fakeEye.png';
 import ImgDaveyKey from '#/images/items/daveyKey.png';
@@ -348,30 +353,6 @@ export const Items: { [key: string]: Item } = {
     },
     effects: [Effects.damage_5.id],
     abilities: [],
-  },
-
-  // ------------------------------------------------
-  experienceBottle: {
-    id: String(),
-    name: 'Бутылек опыта',
-    description: `Добавляет ${EXPERIENCE_PER_BOTTLE} опыта. Нельзя передать. Имеет смысл сразу использовать`,
-    type: ItemTypes.other,
-    imageUrl: ImgExperienceBottle,
-    buffs: {},
-    effects: [],
-    abilities: [],
-    applyable: true,
-  },
-  moneyPouch: {
-    id: String(),
-    name: 'Мешочек монет',
-    description: `Добавляет ${EXPERIENCE_PER_BOTTLE} монет. Нельзя передать. Имеет смысл сразу использовать`,
-    type: ItemTypes.other,
-    imageUrl: ImgExperienceBottle,
-    buffs: {},
-    effects: [],
-    abilities: [],
-    applyable: true,
   },
 
   // LEGENDARY ---------------------------------------------
@@ -1044,6 +1025,75 @@ export const Items: { [key: string]: Item } = {
     buffs: {},
     effects: [],
     abilities: [],
+  },
+
+  // ------------------------------------------------
+  moneyPouchSmall: {
+    id: String(),
+    name: 'Мешочек монет мал.',
+    description: `Добавляет 75 монет. Нельзя передать. Имеет смысл сразу использовать`,
+    type: ItemTypes.other,
+    imageUrl: ImgMoneySmall,
+    buffs: {},
+    effects: [],
+    abilities: [],
+    applyable: true,
+  },
+  moneyPouchMid: {
+    id: String(),
+    name: 'Мешочек монет ср.',
+    description: `Добавляет 125 монет. Нельзя передать. Имеет смысл сразу использовать`,
+    type: ItemTypes.other,
+    imageUrl: ImgMoneyMid,
+    buffs: {},
+    effects: [],
+    abilities: [],
+    applyable: true,
+  },
+  moneyPouchBig: {
+    id: String(),
+    name: 'Мешочек монет бол.',
+    description: `Добавляет 200 монет. Нельзя передать. Имеет смысл сразу использовать`,
+    type: ItemTypes.other,
+    imageUrl: ImgMoneyBig,
+    buffs: {},
+    effects: [],
+    abilities: [],
+    applyable: true,
+  },
+
+  expBottleSmall: {
+    id: String(),
+    name: 'Бутылочка опыта мал.',
+    description: `Добавляет 75 монет. Нельзя передать. Имеет смысл сразу использовать`,
+    type: ItemTypes.other,
+    imageUrl: ImgExpBottleSmall,
+    buffs: {},
+    effects: [],
+    abilities: [],
+    applyable: true,
+  },
+  expBottleMid: {
+    id: String(),
+    name: 'Бутылочка опыта ср.',
+    description: `Добавляет 125 монет. Нельзя передать. Имеет смысл сразу использовать`,
+    type: ItemTypes.other,
+    imageUrl: ImgExpBottleMid,
+    buffs: {},
+    effects: [],
+    abilities: [],
+    applyable: true,
+  },
+  expBottleBig: {
+    id: String(),
+    name: 'Бутылочка опыта бол.',
+    description: `Добавляет 200 монет. Нельзя передать. Имеет смысл сразу использовать`,
+    type: ItemTypes.other,
+    imageUrl: ImgExpBottleBig,
+    buffs: {},
+    effects: [],
+    abilities: [],
+    applyable: true,
   },
 };
 

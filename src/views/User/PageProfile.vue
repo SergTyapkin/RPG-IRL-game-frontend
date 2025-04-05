@@ -234,7 +234,7 @@
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import LevelComponent from '~/components/LevelComponent.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
-import { EXPERIENCE_PER_BOTTLE, ItemTypes, QRTypes, ResourceTypes, UserRoles } from '~/constants/constants';
+import { ItemTypes, QRTypes, ResourceTypes, UserRoles } from '~/constants/constants';
 import Equipment from '~/components/Equipment.vue';
 import Inventory from '~/components/Inventory.vue';
 import { UserLevels } from '~/constants/levels';
@@ -368,8 +368,18 @@ export default {
       }
       this.$user.inventory.splice(itemIdx, 1);
 
-      if (item.id === Items.experienceBottle.id) {
-        this.$user.notSyncedStats.experience += EXPERIENCE_PER_BOTTLE;
+      if (item.id === Items.moneyPouchSmall.id) {
+        this.$user.notSyncedStats.money += 75;
+      } else if (item.id === Items.moneyPouchMid.id) {
+        this.$user.notSyncedStats.money += 125;
+      } else if (item.id === Items.moneyPouchBig.id) {
+        this.$user.notSyncedStats.money += 200;
+      } else if (item.id === Items.expBottleSmall.id) {
+        this.$user.notSyncedStats.experience += 200;
+      } else if (item.id === Items.expBottleMid.id) {
+        this.$user.notSyncedStats.experience += 350;
+      } else if (item.id === Items.expBottleBig.id) {
+        this.$user.notSyncedStats.experience += 500;
       } else {
         const effects = this.$localStorageManager.loadFightEffects() || [];
         effects.push(...item.effects);
