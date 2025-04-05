@@ -82,9 +82,9 @@
 import QRScanner from '~/components/QRScanner.vue';
 import { BuffsTypes, QRSources, QRTypes, ResourceTypes } from '~/constants/constants';
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
-import { ExtendedItem, getAllUserBuffs, getTotalUserMaxHP, itemIdToItem, itemsIdsToItems, parseQRText } from '~/utils/utils';
+import { ExtendedItem, getAllUserBuffs, getTotalUserMaxHP, itemsIdsToItems, parseQRText } from '~/utils/utils';
 import CircleLoading from '~/components/loaders/CircleLoading.vue';
-import { GuildModelMockData } from '~/utils/APIModels';
+// import { GuildModelMockData } from '~/utils/APIModels';
 import { type QRData } from '~/types/types';
 import { parseGuildData, syncWithGuild, userDead } from '~/utils/userEvents';
 
@@ -100,7 +100,7 @@ export default {
       scannedSavedQrs: [] as string[],
       scannedNotSavedQrs: [] as QRData[],
 
-      GuildModelMockData,
+      // GuildModelMockData,
     };
   },
 
@@ -274,108 +274,108 @@ export default {
       if (!guildData) {
         return;
       }
-      if (Number(guildData.id) !== Number(this.$user.guildId)) {
-        this.$popups.error('QR не вашей гильдии!', `Это QR гильдии ${guildData.name}`);
-        return;
-      }
+      // if (Number(guildData.id) !== Number(this.$user.guildId)) {
+      //   this.$popups.error('QR не вашей гильдии!', `Это QR гильдии ${guildData.name}`);
+      //   return;
+      // }
 
-      // Check not saved QRs
-      for (const qr of this.scannedNotSavedQrs) {
-        // Check all not saved QRs
-        const qrIdxInGuilds = guildData.scannedQRs.findIndex(q => q.qrId === qr.id);
-        if (qrIdxInGuilds === -1) {
-          this.$modals.alert(
-            'Сперва необходимо показать свой QR гильдии',
-            `Свой QR можно найти, нажав на иконку вашего профиля`
-          );
-          return;
-        }
-      }
+      // // Check not saved QRs
+      // for (const qr of this.scannedNotSavedQrs) {
+      //   // Check all not saved QRs
+      //   const qrIdxInGuilds = guildData.scannedQRs.findIndex(q => q.qrId === qr.id);
+      //   if (qrIdxInGuilds === -1) {
+      //     this.$modals.alert(
+      //       'Сперва необходимо показать свой QR гильдии',
+      //       `Свой QR можно найти, нажав на иконку вашего профиля`
+      //     );
+      //     return;
+      //   }
+      // }
 
-      for (const qr of this.scannedNotSavedQrs) {
-        const qrIdxInGuilds = guildData.scannedQRs.findIndex(q => q.qrId === qr.id);
-        if (qrIdxInGuilds === -1) {
-          this.$popups.error('Ошибка логики', 'QR не найдет в списке отсканированных даже после проверки');
-          return;
-        }
-        const guildQrData = guildData.scannedQRs[qrIdxInGuilds];
-        if (guildQrData.userId === this.$user.id) {
-          // QR is ok. Owner is this user
-          continue;
-        }
-        // QR not ok. Owner is another user
-
-        const qrTypesToNames = {
-          [QRTypes.resource]: 'ресурс',
-          [QRTypes.items]: 'предмет(ы)',
-        }
-        const qrSubTypesToNames = {
-          [ResourceTypes.money]: 'деньги',
-          [ResourceTypes.hp]: 'здоровье',
-          [ResourceTypes.experience]: 'опыт',
-          [ResourceTypes.power]: 'очки силы',
-          [ResourceTypes.agility]: 'очки ловкости',
-          [ResourceTypes.intelligence]: 'очки интеллекта',
-        }
-        this.$modals.alert(
-          'Один из QR-кодов уже отсканирован другим человеком до вас',
-          `Тип кода: ${qrTypesToNames[qr.type] || ''} ${qrSubTypesToNames[qr.subType] || ''}, значение: ${qr.value}, ID: ${qr.id}`
-        );
-        // Decrease qr stats
-        switch (qr.type) {
-          case QRTypes.resource: {
-            switch (qr.subType) {
-              case ResourceTypes.money: {
-                // this.$user.notSyncedStats.money -= Number(qr.value);
-                this.$user.stats.money -= Number(qr.value);
-                break;
-              }
-              case ResourceTypes.hp: {
-                this.$user.stats.hp -= Number(qr.value);
-                break;
-              }
-              case ResourceTypes.experience: {
-                // this.$user.notSyncedStats.experience -= Number(qr.value);
-                this.$user.stats.experience -= Number(qr.value);
-                break;
-              }
-              case ResourceTypes.power: {
-                // this.$user.notSyncedStats.power -= Number(qr.value);
-                this.$user.stats.power -= Number(qr.value);
-                break;
-              }
-              case ResourceTypes.agility: {
-                // this.$user.notSyncedStats.agility -= Number(qr.value);
-                this.$user.stats.agility -= Number(qr.value);
-                break;
-              }
-              case ResourceTypes.intelligence: {
-                // this.$user.notSyncedStats.intelligence -= Number(qr.value);
-                this.$user.stats.intelligence -= Number(qr.value);
-                break;
-              }
-            }
-            break;
-          }
-          case QRTypes.items: {
-            let itemsIds: string[] = [];
-            try {
-              itemsIds = JSON.parse(qr.value);
-            } catch {
-              this.$popups.error('Ошибка в структуре', 'Ошибка при парсинге предметов');
-              return;
-            }
-            itemsIds.forEach(itemId => {
-              const idx = this.$user.notSyncedInventory.findIndex(i => i === itemId);
-              if (idx !== -1) {
-                this.$user.notSyncedInventory.splice(idx, 1);
-                this.$popups.alert('Удален предмет', `"${itemIdToItem(itemId).name}"`);
-              }
-            });
-            break;
-          }
-        }
-      }
+      // for (const qr of this.scannedNotSavedQrs) {
+      //   const qrIdxInGuilds = guildData.scannedQRs.findIndex(q => q.qrId === qr.id);
+      //   if (qrIdxInGuilds === -1) {
+      //     this.$popups.error('Ошибка логики', 'QR не найдет в списке отсканированных даже после проверки');
+      //     return;
+      //   }
+      //   const guildQrData = guildData.scannedQRs[qrIdxInGuilds];
+      //   if (guildQrData.userId === this.$user.id) {
+      //     // QR is ok. Owner is this user
+      //     continue;
+      //   }
+      //   // QR not ok. Owner is another user
+      //
+      //   const qrTypesToNames = {
+      //     [QRTypes.resource]: 'ресурс',
+      //     [QRTypes.items]: 'предмет(ы)',
+      //   }
+      //   const qrSubTypesToNames = {
+      //     [ResourceTypes.money]: 'деньги',
+      //     [ResourceTypes.hp]: 'здоровье',
+      //     [ResourceTypes.experience]: 'опыт',
+      //     [ResourceTypes.power]: 'очки силы',
+      //     [ResourceTypes.agility]: 'очки ловкости',
+      //     [ResourceTypes.intelligence]: 'очки интеллекта',
+      //   }
+      //   this.$modals.alert(
+      //     'Один из QR-кодов уже отсканирован другим человеком до вас',
+      //     `Тип кода: ${qrTypesToNames[qr.type] || ''} ${qrSubTypesToNames[qr.subType] || ''}, значение: ${qr.value}, ID: ${qr.id}`
+      //   );
+      //   // Decrease qr stats
+      //   switch (qr.type) {
+      //     case QRTypes.resource: {
+      //       switch (qr.subType) {
+      //         case ResourceTypes.money: {
+      //           // this.$user.notSyncedStats.money -= Number(qr.value);
+      //           this.$user.stats.money -= Number(qr.value);
+      //           break;
+      //         }
+      //         case ResourceTypes.hp: {
+      //           this.$user.stats.hp -= Number(qr.value);
+      //           break;
+      //         }
+      //         case ResourceTypes.experience: {
+      //           // this.$user.notSyncedStats.experience -= Number(qr.value);
+      //           this.$user.stats.experience -= Number(qr.value);
+      //           break;
+      //         }
+      //         case ResourceTypes.power: {
+      //           // this.$user.notSyncedStats.power -= Number(qr.value);
+      //           this.$user.stats.power -= Number(qr.value);
+      //           break;
+      //         }
+      //         case ResourceTypes.agility: {
+      //           // this.$user.notSyncedStats.agility -= Number(qr.value);
+      //           this.$user.stats.agility -= Number(qr.value);
+      //           break;
+      //         }
+      //         case ResourceTypes.intelligence: {
+      //           // this.$user.notSyncedStats.intelligence -= Number(qr.value);
+      //           this.$user.stats.intelligence -= Number(qr.value);
+      //           break;
+      //         }
+      //       }
+      //       break;
+      //     }
+      //     case QRTypes.items: {
+      //       let itemsIds: string[] = [];
+      //       try {
+      //         itemsIds = JSON.parse(qr.value);
+      //       } catch {
+      //         this.$popups.error('Ошибка в структуре', 'Ошибка при парсинге предметов');
+      //         return;
+      //       }
+      //       itemsIds.forEach(itemId => {
+      //         const idx = this.$user.notSyncedInventory.findIndex(i => i === itemId);
+      //         if (idx !== -1) {
+      //           this.$user.notSyncedInventory.splice(idx, 1);
+      //           this.$popups.alert('Удален предмет', `"${itemIdToItem(itemId).name}"`);
+      //         }
+      //       });
+      //       break;
+      //     }
+      //   }
+      // }
 
       // Save guild QRs
       guildData.scannedQRs.map(qr => this.addScannedSavedQR(qr.qrId))
