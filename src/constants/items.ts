@@ -388,7 +388,7 @@ export const Items: { [key: string]: Item } = {
   specificPotion: {
     id: String(),
     name: 'Специфический раствор',
-    description: 'Накладывает случайный эффект',
+    description: 'Накладывает случайный эффект, или ничего',
     type: ItemTypes.potion,
     imageUrl: ImgPotionSpecific,
     buffs: {},
