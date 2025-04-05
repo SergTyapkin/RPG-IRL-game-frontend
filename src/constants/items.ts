@@ -32,6 +32,7 @@ import ImgBootsKingSailor from '#/images/items/bootsKingSailor.png';
 import ImgExperienceBottle from '#/images/items/experienceBottle.png';
 
 import ImgFakeEye from '#/images/items/fakeEye.png';
+import ImgDaveyKey from '#/images/items/daveyKey.png';
 
 import ImgSwordZirael from '#/images/items/ziraelSword.png';
 import ImgPotionSpecific from '#/images/items/specificPoison.png';
@@ -46,6 +47,53 @@ import ImgKingWheel from '#/images/items/helmKing.png';
 import ImgKingAnchor from '#/images/items/anchorKing.png';
 
 import ImgCaramel from '#/images/items/caramelParticle.png';
+
+import ImgSilentDamass from '#/images/items/silentDamass.png';
+import ImgSwordAnger from '#/images/items/swordAnger.png';
+import ImgNefritDanger from '#/images/items/nefritDanger.png';
+import ImgBookRoyalMagi from '#/images/items/bookRoyalMagi.png';
+import ImgMainAvanture from '#/images/items/worldVest.png';
+import ImgHatAvanture from '#/images/items/worldHat.png';
+import ImgArtefactMagicSphere from '#/images/items/eightMagi.png';
+import ImgArtefactRingSea from '#/images/items/seaRIng.png';
+import ImgArtefactGoldSun from '#/images/items/goldSun.png';
+
+import ImgSwordProPirate from '#/images/items/proPirateSword.png';
+import ImgPistolAmateur from '#/images/items/amateurPistol.png';
+import ImgMainAristokrat from '#/images/items/aristoMantu.png';
+import ImgBootsSoldier from '#/images/items/soldierBoots.png';
+import ImgArtefactGlassesAlchemist from '#/images/items/alchemistGlasses.png';
+import ImgPistolRecet from '#/images/items/recetPistol.png';
+import ImgDaggerHookMeat from '#/images/items/meatHook.png';
+import ImgSurikenDamass from '#/images/items/damasSuriken.png';
+import ImgSwordShipbuilder from '#/images/items/shipbuilderMolot.png';
+import ImgSwordAxeRogatina from '#/images/items/axeRogatin.png';
+import ImgSwordBraidPeasant from '#/images/items/braidPeasant.png';
+import ImgArtefactLuckySix from '#/images/items/luckySix.png';
+import ImgDaggerPirateRake from '#/images/items/pirateRake.png';
+import ImgDaggerChinaSai from '#/images/items/chinaSai.png';
+import ImgSwordHandmadeBat from '#/images/items/handmadeBat.png';
+import ImgPotionYenifer from '#/images/items/poisonYenifer.png';
+import ImgPotionTriss from '#/images/items/poisonTriss.png';
+import ImgHatRoyalGuard from '#/images/items/royalGuard.png';
+import ImgMainCloakNirf from '#/images/items/cloakNilf.png';
+import ImgBootsSpeeds from '#/images/items/bootsOfSeven.png';
+import ImgArtefactBookAlchemist from '#/images/items/proAlchemistBook.png';
+import ImgArtefactScissorsPro from '#/images/items/proSciccors.png';
+import ImgPistolCrossbow from '#/images/items/warriorCrossbow.png';
+import ImgArtefactShieldOsman from '#/images/items/osmanShield.png';
+import ImgArtefactUnknownThing from '#/images/items/uncommonThing.png';
+import ImgHatWizard from '#/images/items/wizardHatPro.png';
+import ImgMainWizard from '#/images/items/cityWizard.png';
+import ImgSwordMaster from '#/images/items/pirateMaster.png';
+import ImgPistolLinkor from '#/images/items/pistolLinkor.png';
+import ImgArtefactCrestGoverness from '#/images/items/crestGoverness.png';
+
+import ImgPotionFelix from '#/images/items/felixFelicisPoison.png';
+import ImgPotionPoison from '#/images/items/poisonPoison.png';
+import ImgRootNirn from '#/images/items/rootNirna.png';
+import ImgParticleMain from '#/images/items/particleMain.png';
+
 
 
 export const Items: { [key: string]: Item } = {
@@ -307,21 +355,21 @@ export const Items: { [key: string]: Item } = {
     id: String(),
     name: 'Бутылек опыта',
     description: `Добавляет ${EXPERIENCE_PER_BOTTLE} опыта. Нельзя передать. Имеет смысл сразу использовать`,
-    type: ItemTypes.potion,
+    type: ItemTypes.other,
     imageUrl: ImgExperienceBottle,
     buffs: {},
     effects: [],
     abilities: [],
     applyable: true,
   },
-  potionRegeneration: {
+  moneyPouch: {
     id: String(),
-    name: 'Зелье регенерации',
-    description: 'Дает регенерацию на один следующий бой',
-    type: ItemTypes.potion,
-    imageUrl: DefaultAvatarImage,
+    name: 'Мешочек монет',
+    description: `Добавляет ${EXPERIENCE_PER_BOTTLE} монет. Нельзя передать. Имеет смысл сразу использовать`,
+    type: ItemTypes.other,
+    imageUrl: ImgExperienceBottle,
     buffs: {},
-    effects: [Effects.regeneration_1.id],
+    effects: [],
     abilities: [],
     applyable: true,
   },
@@ -459,6 +507,483 @@ export const Items: { [key: string]: Item } = {
     abilities: [],
   },
 
+  // VERY RARE (EPIC) ------------------------------------------------
+  silentDamass: {
+    id: String(),
+    name: 'Дамасский тихий убийца',
+    description: '',
+    type: ItemTypes.dagger,
+    imageUrl: ImgSilentDamass,
+    buffs: {},
+    effects: [],
+    abilities: [Abilities.silentDamass.id],
+  },
+  swordAnger: {
+    id: String(),
+    name: 'Меч гнева',
+    description: '',
+    type: ItemTypes.sword,
+    imageUrl: ImgSwordAnger,
+    buffs: {},
+    effects: [
+      Effects.agilityAddPerLevel_1.id,
+    ],
+    abilities: [Abilities.swordAnger.id],
+  },
+  nefritDanger: {
+    id: String(),
+    name: 'Нефритовая опасность',
+    description: '',
+    type: ItemTypes.pistol,
+    imageUrl: ImgNefritDanger,
+    buffs: {},
+    effects: [],
+    abilities: [Abilities.nefritDanger.id],
+  },
+  bookRoyalMagic: {
+    id: String(),
+    name: 'Книга королевского мага',
+    description: '',
+    type: ItemTypes.artefact,
+    imageUrl: ImgBookRoyalMagi,
+    buffs: {},
+    effects: [Effects.damage_2.id],
+    abilities: [Abilities.bookRoyalMagic.id],
+  },
+  mainAvanture: {
+    id: String(),
+    name: 'Жилет авантюриста мирового класса',
+    description: '',
+    type: ItemTypes.artefact,
+    imageUrl: ImgMainAvanture,
+    buffs: {
+      [BuffsTypes.protectionIncrease]: 4,
+    },
+    effects: [Effects.agilityLowCost.id],
+    abilities: [],
+  },
+  hatAvanture: {
+    id: String(),
+    name: 'Шляпа авантюриста мирового класса',
+    description: '',
+    type: ItemTypes.artefact,
+    imageUrl: ImgHatAvanture,
+    buffs: {
+      [BuffsTypes.protectionIncrease]: 4,
+    },
+    effects: [Effects.agilityLowCost.id],
+    abilities: [],
+  },
+  artefactMagicSphere: {
+    id: String(),
+    name: 'Шар магии восьми морей',
+    description: '',
+    type: ItemTypes.artefact,
+    imageUrl: ImgArtefactMagicSphere,
+    buffs: {
+      [BuffsTypes.damageDoneModifier]: 1.3,
+    },
+    effects: [
+      Effects.potionEfficiency.id,
+      Effects.spellEfficiency.id,
+    ],
+    abilities: [],
+  },
+  artefactRingSea: {
+    id: String(),
+    name: 'Кольцо морвластия',
+    description: '',
+    type: ItemTypes.artefact,
+    imageUrl: ImgArtefactRingSea,
+    buffs: {},
+    effects: [Effects.regeneration_1.id],
+    abilities: [],
+  },
+  artefactGoldSun: {
+    id: String(),
+    name: 'Амулет золотого солнца',
+    description: '',
+    type: ItemTypes.artefact,
+    imageUrl: ImgArtefactGoldSun,
+    buffs: {},
+    effects: [
+      Effects.powerAddPerLevel_1.id,
+      Effects.agilityAddPerLevel_1.id,
+      Effects.intelligenceAddPerLevel_1.id,
+    ],
+    abilities: [],
+  },
+
+  // RARE -----------------------------------------
+  swordProPirate: {
+    id: String(),
+    name: 'Шпага бывалого пирата',
+    description: '',
+    type: ItemTypes.sword,
+    imageUrl: ImgSwordProPirate,
+    buffs: {
+      [BuffsTypes.damageDoneModifier]: 1.3,
+    },
+    effects: [],
+    abilities: [Abilities.swordProPirate.id],
+  },
+  pistolAmateur: {
+    id: String(),
+    name: 'Пистоль пирата-авантюриста',
+    description: '',
+    type: ItemTypes.pistol,
+    imageUrl: ImgPistolAmateur,
+    buffs: {
+    },
+    effects: [Effects.powerAddPerLevel_1.id],
+    abilities: [Abilities.pistolAmateur.id],
+  },
+  mainAristokrat: {
+    id: String(),
+    name: 'Накидка аристократа',
+    description: '',
+    type: ItemTypes.main,
+    imageUrl: ImgMainAristokrat,
+    buffs: {
+      [BuffsTypes.protectionIncrease]: 1,
+      [BuffsTypes.damageDoneModifier]: 1.5,
+    },
+    effects: [],
+    abilities: [],
+  },
+  bootsSoldier: {
+    id: String(),
+    name: 'Самоги морского солдата',
+    description: '',
+    type: ItemTypes.boots,
+    imageUrl: ImgBootsSoldier,
+    buffs: {
+      [BuffsTypes.protectionIncrease]: 2,
+    },
+    effects: [],
+    abilities: [],
+  },
+  artefactGlassesAlch: {
+    id: String(),
+    name: 'Очки алхимика',
+    description: '',
+    type: ItemTypes.artefact,
+    imageUrl: ImgArtefactGlassesAlchemist,
+    buffs: {},
+    effects: [
+      Effects.spellEfficiency.id,
+    ],
+    abilities: [],
+  },
+  pistolRecet: {
+    id: String(),
+    name: 'Пистоль рэкетира',
+    description: '',
+    type: ItemTypes.pistol,
+    imageUrl: ImgPistolRecet,
+    buffs: {},
+    effects: [],
+    abilities: [Abilities.pistolRecet.id],
+  },
+  daggerHookMeat: {
+    id: String(),
+    name: 'Хук мясника',
+    description: '',
+    type: ItemTypes.dagger,
+    imageUrl: ImgDaggerHookMeat,
+    buffs: {},
+    effects: [],
+    abilities: [Abilities.hookMeat.id],
+  },
+  surikenDamass: {
+    id: String(),
+    name: 'Сюрикен из Дамаса',
+    description: '',
+    type: ItemTypes.pistol,
+    imageUrl: ImgSurikenDamass,
+    buffs: {},
+    effects: [],
+    abilities: [Abilities.surikenDamass.id],
+  },
+  swordShipbuilder: {
+    id: String(),
+    name: 'Молот судостроителя',
+    description: '',
+    type: ItemTypes.sword,
+    imageUrl: ImgSwordShipbuilder,
+    buffs: {},
+    effects: [],
+    abilities: [Abilities.shipbuilder.id],
+  },
+  swordAxeRogatina: {
+    id: String(),
+    name: 'Топор-рогатина',
+    description: '',
+    type: ItemTypes.sword,
+    imageUrl: ImgSwordAxeRogatina,
+    buffs: {},
+    effects: [],
+    abilities: [Abilities.axeRogatina.id],
+  },
+  swordBraidPeasant: {
+    id: String(),
+    name: 'Коса крестьянина',
+    description: '',
+    type: ItemTypes.sword,
+    imageUrl: ImgSwordBraidPeasant,
+    buffs: {},
+    effects: [],
+    abilities: [Abilities.braidPeasant.id],
+  },
+  artefactLuckySix: {
+    id: String(),
+    name: 'Вальтовая шестерка крестей',
+    description: '',
+    type: ItemTypes.artefact,
+    imageUrl: ImgArtefactLuckySix,
+    buffs: {
+      [BuffsTypes.maxHpIncrease]: 20,
+      [BuffsTypes.maxHpModifier]: 0.5,
+    },
+    effects: [
+      Effects.spellEfficiency.id,
+    ],
+    abilities: [],
+  },
+  daggerPirateRake: {
+    id: String(),
+    name: 'Кочерга пиратской котельни',
+    description: '',
+    type: ItemTypes.dagger,
+    imageUrl: ImgDaggerPirateRake,
+    buffs: {},
+    effects: [],
+    abilities: [Abilities.pirateRake.id],
+  },
+  daggerChinaSai: {
+    id: String(),
+    name: 'Китайские саи',
+    description: '',
+    type: ItemTypes.dagger,
+    imageUrl: ImgDaggerChinaSai,
+    buffs: {},
+    effects: [],
+    abilities: [Abilities.chinaSai.id],
+  },
+  swordHandmadeBat: {
+    id: String(),
+    name: 'Самодельная палка',
+    description: '',
+    type: ItemTypes.sword,
+    imageUrl: ImgSwordHandmadeBat,
+    buffs: {},
+    effects: [],
+    abilities: [Abilities.handmadeBat.id],
+  },
+  potionYenifer: {
+    id: String(),
+    name: 'Зелье из сирени и кринжовника',
+    description: 'Можно использовать. Эффект будет действовать до конца следующего боя',
+    type: ItemTypes.potion,
+    imageUrl: ImgPotionYenifer,
+    buffs: {},
+    effects: [
+      Effects.damage_2.id,
+      Effects.protectionDecrease.id,
+    ],
+    abilities: [],
+    applyable: true,
+  },
+  potionTriss: {
+    id: String(),
+    name: 'Зелье из миндаля и клубники',
+    description: 'Можно использовать. Моментально восстанавливает здоровье',
+    type: ItemTypes.potion,
+    imageUrl: ImgPotionTriss,
+    buffs: {
+      [BuffsTypes.maxHpIncrease]: 10,
+    },
+    effects: [],
+    abilities: [],
+    applyable: true,
+  },
+  hatRoyalQuard: {
+    id: String(),
+    name: 'Шлем королевского воина',
+    description: '',
+    type: ItemTypes.hat,
+    imageUrl: ImgHatRoyalGuard,
+    buffs: {
+      [BuffsTypes.protectionIncrease]: 3,
+      [BuffsTypes.maxHpIncrease]: 1,
+    },
+    effects: [],
+    abilities: [],
+  },
+  mainNirfCloak: {
+    id: String(),
+    name: 'Плащ Нильфов',
+    description: '',
+    type: ItemTypes.main,
+    imageUrl: ImgMainCloakNirf,
+    buffs: {
+      [BuffsTypes.protectionIncrease]: 2,
+    },
+    effects: [Effects.daggerEfficiency.id],
+    abilities: [],
+  },
+  bootsSpeeds: {
+    id: String(),
+    name: 'Плащ Нильфов',
+    description: '',
+    type: ItemTypes.boots,
+    imageUrl: ImgBootsSpeeds,
+    buffs: {
+      [BuffsTypes.protectionIncrease]: 2,
+    },
+    effects: [Effects.agilityLowCost.id],
+    abilities: [],
+  },
+  artefactBookAlchemist: {
+    id: String(),
+    name: 'Книга алхимика продвинутого уровня',
+    description: '',
+    type: ItemTypes.artefact,
+    imageUrl: ImgArtefactBookAlchemist,
+    buffs: {
+      [BuffsTypes.maxHpIncrease]: 1,
+    },
+    effects: [
+      Effects.spellEfficiency.id,
+      Effects.intelligenceAddPerLevel_1.id,
+    ],
+    abilities: [],
+  },
+  daggerScissorsPro: {
+    id: String(),
+    name: 'Ножницы цирюльника',
+    description: '',
+    type: ItemTypes.dagger,
+    imageUrl: ImgArtefactScissorsPro,
+    buffs: {},
+    effects: [
+      Effects.daggerEfficiency.id,
+    ],
+    abilities: [Abilities.scissorsPro.id],
+  },
+  pistolCrossbow: {
+    id: String(),
+    name: 'Арбалет пехотинца',
+    description: '',
+    type: ItemTypes.pistol,
+    imageUrl: ImgPistolCrossbow,
+    buffs: {},
+    effects: [],
+    abilities: [Abilities.pistolCrossbow.id],
+  },
+  artefactShieldOsman: {
+    id: String(),
+    name: 'Щит Османцев',
+    description: '',
+    type: ItemTypes.artefact,
+    imageUrl: ImgArtefactShieldOsman,
+    buffs: {
+      [BuffsTypes.protectionIncrease]: 5,
+    },
+    effects: [],
+    abilities: [],
+  },
+  artefactUnknownThing: {
+    id: String(),
+    name: 'Непонятная штука',
+    description: '',
+    type: ItemTypes.artefact,
+    imageUrl: ImgArtefactUnknownThing,
+    buffs: {
+      [BuffsTypes.damageDoneIncrease]: 3,
+      [BuffsTypes.maxHpIncrease]: 2,
+    },
+    effects: [],
+    abilities: [],
+  },
+  hatWizard: {
+    id: String(),
+    name: 'Шляпа болотной ведьмы',
+    description: '',
+    type: ItemTypes.hat,
+    imageUrl: ImgHatWizard,
+    buffs: {
+      [BuffsTypes.protectionIncrease]: 1,
+    },
+    effects: [Effects.spellEfficiency.id],
+    abilities: [],
+  },
+  mainWizard: {
+    id: String(),
+    name: 'Мантия городской ведьмы',
+    description: '',
+    type: ItemTypes.main,
+    imageUrl: ImgMainWizard,
+    buffs: {
+      [BuffsTypes.protectionIncrease]: 3,
+    },
+    effects: [Effects.spellEfficiency.id],
+    abilities: [],
+  },
+  swordMaster: {
+    id: String(),
+    name: 'Сабля пиратского мастера',
+    description: '',
+    type: ItemTypes.sword,
+    imageUrl: ImgSwordMaster,
+    buffs: {
+      [BuffsTypes.maxHpIncrease]: 2,
+    },
+    effects: [],
+    abilities: [Abilities.swordMaster.id],
+  },
+  pistolLinkor: {
+    id: String(),
+    name: 'Пистоль с королевского линкора',
+    description: '',
+    type: ItemTypes.pistol,
+    imageUrl: ImgPistolLinkor,
+    buffs: {},
+    effects: [],
+    abilities: [Abilities.pistolLinkor.id],
+  },
+  artefactGoverness: {
+    id: String(),
+    name: 'Гребень гувернантки',
+    description: '',
+    type: ItemTypes.artefact,
+    imageUrl: ImgArtefactCrestGoverness,
+    buffs: {
+      [BuffsTypes.maxHpIncrease]: 4,
+    },
+    effects: [
+      Effects.damageGotten20perc.id,
+    ],
+    abilities: [],
+  },
+
+  potionFelixFelicis: {
+    id: String(),
+    name: 'Феликс фелицис',
+    description: 'Можно использовать и получить нереальное усиление до первого боя',
+    type: ItemTypes.potion,
+    imageUrl: ImgPotionFelix,
+    buffs: {},
+    effects: [
+      Effects.damage_20.id,
+      Effects.bleeding_4.id,
+      Effects.weakness_5.id,
+      Effects.damageGottenHalf.id,
+    ],
+    abilities: [],
+  },
+
+
   // QUESTS ------------------------------------------------
   fakeEye: {
     id: String(),
@@ -476,6 +1001,46 @@ export const Items: { [key: string]: Item } = {
     description: 'Выглядит сладко, как и на вкус',
     type: ItemTypes.other,
     imageUrl: ImgCaramel,
+    buffs: {},
+    effects: [],
+    abilities: [],
+  },
+  daveyKey: {
+    id: String(),
+    name: 'Ключ от сундука Дейви Джонса',
+    description: 'Открывает что-то интересное',
+    type: ItemTypes.other,
+    imageUrl: ImgDaveyKey,
+    buffs: {},
+    effects: [],
+    abilities: [],
+  },
+  potionPoison: {
+    id: String(),
+    name: 'Яд',
+    description: '"А откуда травит?..."',
+    type: ItemTypes.other,
+    imageUrl: ImgPotionPoison,
+    buffs: {},
+    effects: [],
+    abilities: [],
+  },
+  rootNirn: {
+    id: String(),
+    name: 'Корень Нирна',
+    description: 'Очень редкий корень',
+    type: ItemTypes.other,
+    imageUrl: ImgRootNirn,
+    buffs: {},
+    effects: [],
+    abilities: [],
+  },
+  particleMain: {
+    id: String(),
+    name: 'Частица Камня укрощения стихии',
+    description: 'Частица очень могущественного артефакта',
+    type: ItemTypes.other,
+    imageUrl: ImgParticleMain,
     buffs: {},
     effects: [],
     abilities: [],

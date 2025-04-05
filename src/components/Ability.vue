@@ -52,6 +52,9 @@
           &.targets
             margin-left 5px
 
+        &.piercing-damage
+          background colorEmpHP
+
         &.damage
           background colorEmpPower
 
@@ -152,6 +155,22 @@
               {{ ability.damage }}
               <span class="shadow">{{ ability.damage }}</span>
               <span class="main">{{ ability.damage }}</span>
+            </span>
+            <img src="/static/icons/buffs/shadow/person.svg" v-if="ability.targetsCount > 1" alt="targets" class="targets">
+            <span class="targets-container" v-if="ability.targetsCount > 1">
+              {{ ability.targetsCount }}
+              <span class="shadow">{{ ability.targetsCount }}</span>
+              <span class="main">{{ ability.targetsCount }}</span>
+            </span>
+          </div>
+        </div>
+        <div class="damage-piercing-group">
+          <div v-if="ability.piercingDamage" class="stat piercing-damage">
+            <img src="/static/icons/buffs/shadow/damage.svg" alt="damage">
+            <span class="main-container">
+              {{ ability.piercingDamage }}
+              <span class="shadow">{{ ability.piercingDamage }}</span>
+              <span class="main">{{ ability.piercingDamage }}</span>
             </span>
             <img src="/static/icons/buffs/shadow/person.svg" v-if="ability.targetsCount > 1" alt="targets" class="targets">
             <span class="targets-container" v-if="ability.targetsCount > 1">

@@ -124,6 +124,7 @@ export const Effects: { [key: string]: Effect } = {
   damage_2: getDamage(2),
   damage_5: getDamage(5),
   damage_10: getDamage(10),
+  damage_20: getDamage(20),
   weakness_1: getWeakness(1),
   weakness_2: getWeakness(2),
   weakness_5: getWeakness(5),
@@ -251,6 +252,15 @@ export const Effects: { [key: string]: Effect } = {
     description: 'Ваша броня увеличивается на число, равное половине текущего значения здоровья',
     imageUrl: DefaultAbilityImage,
     buffs: {},
+  },
+  protectionDecrease: {
+    id: String(),
+    name: 'Слабая броня',
+    description: 'Ваша броня уменьшается на 2',
+    imageUrl: DefaultAbilityImage,
+    buffs: {
+      [BuffsTypes.protectionIncrease]: -2,
+    },
   },
   swordEfficiency: {
     id: String(),

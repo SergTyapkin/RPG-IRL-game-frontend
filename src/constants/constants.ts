@@ -1,6 +1,6 @@
 import DefaultKnifeImage from '#/images/items/daggerNightCardinal.png';
 import DefaultAbilityImage from '#/images/ability-image-example.png';
-import DefaultAvatarImage from '#/images/user-avatar-example.png';
+import DefaultAvatarImage from '#/icons/buffs/shadow/person.svg';
 
 export {DefaultKnifeImage, DefaultAbilityImage, DefaultAvatarImage};
 
