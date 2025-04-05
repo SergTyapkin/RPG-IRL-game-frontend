@@ -157,7 +157,7 @@
 </style>
 
 <template>
-  <div class="root-item-info" :class="{ 'not-synced': obj.notSynced }">
+  <div class="root-item-info" :class="{ 'not-synced': false }">
     <button v-if="closable" class="close" @click="close">
       <img src="/static/icons/close.svg" alt="close">
     </button>
@@ -165,7 +165,7 @@
     <div class="image-container" v-if="obj.imageUrl">
       <div v-if="imageWithShadow" class="shadow" />
       <img class="obj-img" :src="obj.imageUrl" alt="">
-      <section class="not-synced-label" v-if="obj.notSynced">
+      <section class="not-synced-label" v-if="false">
         <img src="/static/icons/cloud-sync-dark.svg" alt="not-synced">
       </section>
     </div>
@@ -175,7 +175,7 @@
       </div>
     </section>
 
-    <section class="section-not-synced-info" v-if="obj.notSynced">
+    <section class="section-not-synced-info" v-if="false">
       <header>Предмет не синхронизирован!</header>
       <div class="info">
         Синхронизируйтесь со своей гильдией, чтобы с предметом можно было взаимодействовать и его эффекты стали
@@ -208,7 +208,7 @@
           Действуют только если предмет экипирован!
         </div>
         <div v-if="obj.applyable" class="info">Применяются после использования предмета</div>
-        <span v-if="obj.notSynced" class="info">Работают только после синхронизации с гильдией</span>
+        <span v-if="false" class="info">Работают только после синхронизации с гильдией</span>
       </div>
       <div class="effects-container">
         <Effect v-for="effect in obj.effects" :key="effect.id" :effect="effect" without-source />
@@ -219,7 +219,7 @@
         <header>Способности</header>
         <div v-if="[ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(obj.type)" class="info">
           Доступны только если предмет экипирован!
-          <span v-if="obj.notSynced" class="info">Работают только после синхронизации с гильдией</span>
+          <span v-if="false" class="info">Работают только после синхронизации с гильдией</span>
         </div>
         <!--        <div v-if="obj.applyable" class="info">-->
         <!--          Применяются после использования предмета-->

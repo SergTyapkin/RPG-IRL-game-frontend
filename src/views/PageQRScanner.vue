@@ -171,7 +171,8 @@ export default {
               value *= valueModifier;
               value = Math.round(value);
 
-              this.$user.notSyncedStats.money += value;
+              // this.$user.notSyncedStats.money += value;
+              this.$user.stats.money += value;
               this.$popups.success('QR отсканирован', `Добавлено ${value} монет`);
               break;
             }
@@ -186,20 +187,24 @@ export default {
               value *= valueModifier;
               value = Math.round(value);
 
-              this.$user.notSyncedStats.experience += value;
+              // this.$user.notSyncedStats.experience += value;
+              this.$user.stats.experience += value;
               this.$popups.success('QR отсканирован', `Добавлено ${value} опыта`);
               break;
             }
             case ResourceTypes.power:
-              this.$user.notSyncedStats.power += Number(QRValue);
+              // this.$user.notSyncedStats.power += Number(QRValue);
+              this.$user.stats.power += Number(QRValue);
               this.$popups.success('QR отсканирован', `Добавлено ${QRValue} очков силы`);
               break;
             case ResourceTypes.agility:
-              this.$user.notSyncedStats.agility += Number(QRValue);
+              // this.$user.notSyncedStats.agility += Number(QRValue);
+              this.$user.stats.agility += Number(QRValue);
               this.$popups.success('QR отсканирован', `Добавлено ${QRValue} очков ловкости`);
               break;
             case ResourceTypes.intelligence:
-              this.$user.notSyncedStats.intelligence += Number(QRValue);
+              // this.$user.notSyncedStats.intelligence += Number(QRValue);
+              this.$user.stats.intelligence += Number(QRValue);
               this.$popups.success('QR отсканирован', `Добавлено ${QRValue} очков интеллекта`);
               break;
             case ResourceTypes.hp:
@@ -226,7 +231,8 @@ export default {
             this.$popups.error('Ошибка в структуре', 'Ошибка при парсинге предметов');
             return;
           }
-          this.$user.notSyncedInventory.push(...items.map(i => i.id));
+          // this.$user.notSyncedInventory.push(...items.map(i => i.id));
+          this.$user.inventory.push(...items.map(i => i.id));
           this.$popups.success('QR отсканирован', `Получены предметы: ${items.map(i => `"${i.name}"`).join(', ')}`);
           break;
         }
@@ -320,7 +326,8 @@ export default {
           case QRTypes.resource: {
             switch (qr.subType) {
               case ResourceTypes.money: {
-                this.$user.notSyncedStats.money -= Number(qr.value);
+                // this.$user.notSyncedStats.money -= Number(qr.value);
+                this.$user.stats.money -= Number(qr.value);
                 break;
               }
               case ResourceTypes.hp: {
@@ -328,19 +335,23 @@ export default {
                 break;
               }
               case ResourceTypes.experience: {
-                this.$user.notSyncedStats.experience -= Number(qr.value);
+                // this.$user.notSyncedStats.experience -= Number(qr.value);
+                this.$user.stats.experience -= Number(qr.value);
                 break;
               }
               case ResourceTypes.power: {
-                this.$user.notSyncedStats.power -= Number(qr.value);
+                // this.$user.notSyncedStats.power -= Number(qr.value);
+                this.$user.stats.power -= Number(qr.value);
                 break;
               }
               case ResourceTypes.agility: {
-                this.$user.notSyncedStats.agility -= Number(qr.value);
+                // this.$user.notSyncedStats.agility -= Number(qr.value);
+                this.$user.stats.agility -= Number(qr.value);
                 break;
               }
               case ResourceTypes.intelligence: {
-                this.$user.notSyncedStats.intelligence -= Number(qr.value);
+                // this.$user.notSyncedStats.intelligence -= Number(qr.value);
+                this.$user.stats.intelligence -= Number(qr.value);
                 break;
               }
             }

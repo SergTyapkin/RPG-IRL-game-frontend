@@ -103,7 +103,7 @@
 </style>
 
 <template>
-  <div class="root-cell" :style="{ '--size': size }" :class="{'not-synced': item.notSynced}">
+  <div class="root-cell" :style="{ '--size': size }" :class="{'not-synced': false}">
     <transition name="opacity">
       <img class="item-bg" v-if="bgImage" :src="bgImage" alt="">
     </transition>
@@ -162,7 +162,7 @@
       </div>
     </section>
 
-    <section class="not-synced-label" v-if="item.notSynced">
+    <section class="not-synced-label" v-if="false">
       <img src="/static/icons/cloud-sync-dark.svg" alt="sync">
     </section>
 

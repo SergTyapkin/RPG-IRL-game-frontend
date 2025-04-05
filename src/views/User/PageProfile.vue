@@ -195,13 +195,13 @@
             image-with-shadow
             closable
           >
-            <template #buttons v-if="!selectedItem.notSynced">
+            <template #buttons v-if="!false">
               <button
                 @click="equipItem(selectedItem)"
                 class="equip"
                 v-if="
                   [ItemTypes.hat, ItemTypes.main, ItemTypes.boots].includes(selectedItem.type) &&
-                    !selectedItem.notSynced
+                    !false
                 "
               >
                 Экипировать
@@ -319,9 +319,9 @@ export default {
     },
 
     async equipItem(item: ExtendedItem) {
-      if (item.notSynced) {
-        return;
-      }
+      // if (item.notSynced) {
+      //   return;
+      // }
 
       if (this.$user.equipment[item.type]) {
         if (
@@ -369,17 +369,23 @@ export default {
       this.$user.inventory.splice(itemIdx, 1);
 
       if (item.id === Items.moneyPouchSmall.id) {
-        this.$user.notSyncedStats.money += 75;
+        // this.$user.notSyncedStats.money += 75;
+        this.$user.stats.money += 75;
       } else if (item.id === Items.moneyPouchMid.id) {
-        this.$user.notSyncedStats.money += 125;
+        // this.$user.notSyncedStats.money += 125;
+        this.$user.stats.money += 125;
       } else if (item.id === Items.moneyPouchBig.id) {
-        this.$user.notSyncedStats.money += 200;
+        // this.$user.notSyncedStats.money += 200;
+        this.$user.stats.money += 200;
       } else if (item.id === Items.expBottleSmall.id) {
-        this.$user.notSyncedStats.experience += 200;
+        // this.$user.notSyncedStats.experience += 200;
+        this.$user.stats.experience += 200;
       } else if (item.id === Items.expBottleMid.id) {
-        this.$user.notSyncedStats.experience += 350;
+        // this.$user.notSyncedStats.experience += 350;
+        this.$user.stats.experience += 350;
       } else if (item.id === Items.expBottleBig.id) {
-        this.$user.notSyncedStats.experience += 500;
+        // this.$user.notSyncedStats.experience += 500;
+        this.$user.stats.experience += 500;
       } else {
         const effects = this.$localStorageManager.loadFightEffects() || [];
         effects.push(...item.effects);
