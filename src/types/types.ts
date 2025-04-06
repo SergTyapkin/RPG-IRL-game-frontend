@@ -63,7 +63,7 @@ export interface Ability {
   id: string;
   name: string;
   description: string;
-  imageUrl: string;
+  imageUrl?: string;
   effectsToTargets: string[];
   effectsForMe: string[];
   type: AbilityType;
@@ -151,3 +151,27 @@ export interface QRData {
   source: QRSource,
   value: string,
 }
+
+export interface QRUserData {
+  id: string,
+  n: string,
+  iU: number,
+  l: number,
+  cT: string,
+  st: {
+    e: number,
+    m: number,
+    p: number,
+    a: number,
+    i: number,
+  },
+  gId: string,
+  i: number[],
+  e: {
+    h?: number,
+    m?: number,
+    b?: number,
+  },
+  newQrs: string[],
+}
+

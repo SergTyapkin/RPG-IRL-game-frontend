@@ -73,11 +73,15 @@
 
 <script lang="ts">
 import QRGenerator from '~/components/QRGenerator.vue';
-import { deepClone, generateQRText } from '~/utils/utils';
+import { generateQRText } from '~/utils/utils';
 import { NO_SERVER_MODE, QRSources, QRTypes } from '~/constants/constants';
 import { nextTick } from 'vue';
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import { QRData } from '~/types/types';
+import validateModel from '@sergtyapkin/models-validator';
+import { QRUserModel } from '~/utils/APIModels';
+import { InventoryIdsToNumbers } from '~/constants/items';
+import { UserAvatars } from '~/constants/userAvatars';
 
 export default {
   components: { UserProfileInfo, QRGenerator },
@@ -108,10 +112,29 @@ export default {
 
   methods: {
     async updateQR() {
-      const userCopy = deepClone(this.$user);
-      userCopy.scannedQRs = this.scannedSavedQrs
-        .concat(this.scannedNotSavedQrs.map(qr => qr.id));
-      const qrText = await generateQRText(QRTypes.userData, '_', QRSources.user, JSON.stringify(userCopy));
+      const userQRData = validateModel(QRUserModel, {
+        id: this.$user.id,
+        n: this.$user.name,
+        iU: UserAvatars.findIndex(i => i === this.$user.imageUrl),
+        l: this.$user.level,
+        cT: this.$user.classType,
+        st: {
+          e: this.$user.stats.experience,
+          m: this.$user.stats.money,
+          p: this.$user.stats.power,
+          a: this.$user.stats.agility,
+          i: this.$user.stats.intelligence,
+        },
+        gId: this.$user.guildId,
+        i: this.$user.inventory.map(i => InventoryIdsToNumbers[i]),
+        e: {
+          h: this.$user.equipment.hat ? InventoryIdsToNumbers[this.$user.equipment.hat] : undefined,
+          m: this.$user.equipment.main ? InventoryIdsToNumbers[this.$user.equipment.main] : undefined,
+          b: this.$user.equipment.boots ? InventoryIdsToNumbers[this.$user.equipment.boots] : undefined,
+        },
+        newQrs: this.scannedNotSavedQrs.map(qr => qr.id),
+      });
+      const qrText = await generateQRText(QRTypes.userData, '_', QRSources.user, JSON.stringify(userQRData));
       (this.$refs.qr as typeof QRGenerator).regenerate(qrText);
       (this.$refs.input as HTMLInputElement).value = qrText;
     },

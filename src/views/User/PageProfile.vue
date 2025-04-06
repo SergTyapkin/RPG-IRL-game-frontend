@@ -207,7 +207,7 @@
                 Экипировать
               </button>
               <button v-if="selectedItem.applyable" @click="applyItem(selectedItem)" class="use">Использовать</button>
-              <button v-if="selectedItem.id !== Items.experienceBottle.id" @click="tradeItem(selectedItem)" class="trade">Передать</button>
+              <button @click="tradeItem(selectedItem)" class="trade">Передать</button>
             </template>
           </ItemInfo>
 
@@ -261,7 +261,6 @@ export default {
       ResourceTypes,
       UserLevels,
       ItemTypes,
-      Items,
     };
   },
 

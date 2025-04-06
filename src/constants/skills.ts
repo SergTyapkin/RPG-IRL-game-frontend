@@ -9,7 +9,7 @@ import ImgIntelligence from '#/images/skills/intelligentSkill.png';
 export const SkillTrees: { [key in ResourceType]: Skill } = {
   [ResourceTypes.power]: {
     name: 'Зарождение силы',
-    description: '+2 HP',
+    description: '',
     abilities: [],
     buffs: {
       [BuffsTypes.maxHpIncrease]: 2,
@@ -21,7 +21,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
     children: [
       {
         name: 'Продолжение силы',
-        description: '+4 HP',
+        description: '',
         abilities: [],
         buffs: {
           [BuffsTypes.maxHpIncrease]: 4,
@@ -33,7 +33,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
         children: [
           {
             name: 'Миксимальная сила',
-            description: '+10 HP',
+            description: '',
             abilities: [],
             buffs: {
               [BuffsTypes.maxHpIncrease]: 8,
@@ -48,7 +48,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
           },
           {
             name: 'Миксимальный урон',
-            description: '+8 урона',
+            description: '',
             abilities: [],
             buffs: {
               [BuffsTypes.damageDoneIncrease]: 8,
@@ -63,10 +63,10 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
           },
           {
             name: 'Дополнительная сила',
-            description: '+3 урона',
+            description: '',
             abilities: [],
             buffs: {
-              [BuffsTypes.maxHpModifier]: 3,
+              [BuffsTypes.maxHpModifier]: 1.8,
             },
             effects: [],
             cost: 6,
@@ -75,7 +75,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
             children: [
               {
                 name: 'Сильнейшее мореходство',
-                description: '+5 защиты, +8 здоровья',
+                description: '',
                 abilities: [],
                 buffs: {
                   [BuffsTypes.maxHpIncrease]: 8,
@@ -107,7 +107,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
       },
       {
         name: 'Начало защиты',
-        description: '+2 защиты',
+        description: '',
         abilities: [],
         buffs: {
           [BuffsTypes.protectionIncrease]: 2,
@@ -119,7 +119,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
         children: [
           {
             name: 'Защита II',
-            description: '+3 защиты',
+            description: '',
             abilities: [],
             buffs: {
               [BuffsTypes.protectionIncrease]: 3,
@@ -134,7 +134,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
           },
           {
             name: 'Защита + Здоровье',
-            description: '+3 защиты, +3 здоровья',
+            description: '',
             abilities: [],
             buffs: {
               [BuffsTypes.protectionIncrease]: 3,
@@ -150,7 +150,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
           },
           {
             name: 'Здоровье + Защита II',
-            description: '+4 здоровья, +5 зашщиты',
+            description: '',
             abilities: [],
             buffs: {
               [BuffsTypes.protectionIncrease]: 5,
@@ -163,7 +163,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
             children: [
               {
                 name: 'Ультимативная защита',
-                description: '+10 защиты',
+                description: '',
                 abilities: [],
                 buffs: {
                   [BuffsTypes.protectionIncrease]: 10,
@@ -185,19 +185,19 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
 
   [ResourceTypes.agility]: {
     name: 'Зарождение урона',
-    description: '+1 урона',
+    description: '',
     abilities: [],
     buffs: {
       [BuffsTypes.damageDoneIncrease]: 1,
     },
     effects: [],
     cost: 1,
-    position: [75, 0],
+    position: [100, 0],
     imageUrl: ImgAgility,
     children: [
       {
         name: 'Защита от злых сил',
-        description: '+2 защиты',
+        description: '',
         abilities: [],
         buffs: {
           [BuffsTypes.protectionIncrease]: 2,
@@ -209,7 +209,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
         children: [
           {
             name: 'Еще урон?',
-            description: '+2 урона, +2 защита',
+            description: '',
             abilities: [],
             buffs: {
               [BuffsTypes.damageDoneIncrease]: 2,
@@ -223,7 +223,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
           },
           {
             name: 'ЕЩЁ УРОН??',
-            description: '+4 урона',
+            description: '',
             abilities: [],
             buffs: {
               [BuffsTypes.damageDoneIncrease]: 4,
@@ -236,7 +236,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
           },
           {
             name: 'И ЕЩЁЁ УРОН??',
-            description: '+5 урона',
+            description: '',
             abilities: [],
             buffs: {
               [BuffsTypes.damageDoneIncrease]: 4,
@@ -248,7 +248,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
             children: [
               {
                 name: 'Убийственная сила',
-                description: '+4 урона',
+                description: '',
                 abilities: [],
                 buffs: {
                   [BuffsTypes.damageDoneIncrease]: 4,
@@ -277,7 +277,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
       },
       {
         name: 'УРОН??',
-        description: '+4 урона',
+        description: '',
         abilities: [],
         buffs: {
           [BuffsTypes.damageDoneIncrease]: 4,
@@ -290,7 +290,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
       },
       {
         name: 'Продолжение урона',
-        description: '+2 урона',
+        description: '',
         abilities: [],
         buffs: {
           [BuffsTypes.damageDoneIncrease]: 2,
@@ -302,7 +302,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
         children: [
           {
             name: 'Финальный урон',
-            description: '+10 урона',
+            description: '',
             abilities: [],
             buffs: {
               [BuffsTypes.damageDoneIncrease]: 15,
@@ -320,19 +320,19 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
 
   [ResourceTypes.intelligence]: {
     name: 'Зарождение магии',
-    description: '+5 макс. здоровья',
+    description: '',
     abilities: [],
     buffs: {
       [BuffsTypes.maxHpIncrease]: 5,
     },
     effects: [],
     cost: 3,
-    position: [150, 0],
+    position: [200, 0],
     imageUrl: ImgIntelligence,
     children: [
       {
         name: 'Магия огня',
-        description: 'Открывает доступ к ветке огня. +3 hp',
+        description: 'Открывает доступ к ветке огня',
         abilities: [],
         buffs: {
           [BuffsTypes.maxHpIncrease]: 3,
@@ -392,7 +392,7 @@ export const SkillTrees: { [key in ResourceType]: Skill } = {
       },
       {
         name: 'Магия воды',
-        description: 'Открывает доступ к ветке воды. +3 hp',
+        description: 'Открывает доступ к ветке воды',
         cost: 3,
         abilities: [],
         buffs: {

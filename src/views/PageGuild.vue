@@ -7,10 +7,12 @@
 
 .root-profile
   position relative
+
   .section-user-info
     display flex
     gap 15px
     animation-float(0.5s, -20px, 0, left)
+
     .money-badge
       margin-top 10px
 
@@ -21,6 +23,7 @@
     display flex
     justify-content space-between
     margin-top 20px
+
     .money-badge
       hover-effect()
 
@@ -33,6 +36,7 @@
       margin-bottom 15px
       color colorText2
       font-bold()
+
     .info
       font-small()
 
@@ -49,6 +53,7 @@
     padding-bottom 100px
     background #00000050
     backdrop-filter blur(10px)
+
     .modal
       width calc(100% - 30px)
       max-width 400px
@@ -57,6 +62,7 @@
       background colorBgLight
       border-radius borderRadiusM
       box-shadow 0 0 15px #000
+
       button
         button()
 
@@ -68,7 +74,7 @@
   <div class="root-profile">
     <section class="section-user-info" style="--animation-index: 0">
       <UserProfileInfo :override-avatar="$guild?.imageUrl" :override-name="$guild?.name">
-        <ValueBadge class="money-badge" :type="ResourceTypes.money" :value="String($guild?.money)" />
+        <!--        <ValueBadge class="money-badge" :type="ResourceTypes.money" :value="String($guild?.money)" />-->
       </UserProfileInfo>
     </section>
 
@@ -82,21 +88,20 @@
 
     <section class="section-leader">
       <header>Лидер гильдии</header>
-      <div class="info" v-if="guildLeader">Нет данных</div>
+      <div class="info" v-if="!guildLeader">Нет данных</div>
       <UsersList v-else :users="guildLeader ? [guildLeader] : []" />
     </section>
 
     <section class="section-members">
       <header>Участники гильдии</header>
-      <div class="info" v-if="$guild.members?.length">Нет данных. Отсканируйте QR гильдии</div>
+      <div class="info" v-if="!$guild.members?.length">Нет данных. Отсканируйте QR гильдии</div>
       <UsersList v-else :users="$guild.members" />
     </section>
 
-    <section class="section-inventory">
-      <header>Инвентарь</header>
-      <Inventory :items-ids="$guild.inventory" @select="selectItem" />
-    </section>
-
+    <!--    <section class="section-inventory">-->
+    <!--      <header>Инвентарь</header>-->
+    <!--      <Inventory :items-ids="$guild.inventory" @select="selectItem" />-->
+    <!--    </section>-->
 
     <transition mode="out-in" name="opacity">
       <section
@@ -128,22 +133,18 @@
 <script lang="ts">
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import LevelComponent from '~/components/LevelComponent.vue';
-import ValueBadge from '~/components/ValueBadge.vue';
-import { ResourceTypes } from '~/constants/constants';
-import Inventory from '~/components/Inventory.vue';
 import UsersList from '~/components/UsersList.vue';
 import { GuildLevels } from '~/constants/levels';
 import ItemInfo from '~/components/ItemInfo.vue';
 import type { Item } from '~/types/types';
 
 export default {
-  components: { ItemInfo, UsersList, Inventory, ValueBadge, LevelComponent, UserProfileInfo },
+  components: { ItemInfo, UsersList, LevelComponent, UserProfileInfo },
 
   data() {
     return {
       selectedItem: undefined as Item | undefined,
 
-      ResourceTypes,
       GuildLevels,
     };
   },

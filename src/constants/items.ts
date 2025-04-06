@@ -1101,3 +1101,10 @@ export const Items: { [key: string]: Item } = {
 Object.keys(Items).forEach(id => {
   Items[id].id = String(id);
 });
+
+export const InventoryIdsToNumbers: {[key: string]: number} = {};
+export const NumbersToInventoryIds: {[key: number]: string} = {};
+Object.keys(Items).forEach((key, idx) => {
+  InventoryIdsToNumbers[key] = idx;
+  NumbersToInventoryIds[idx] = key;
+});

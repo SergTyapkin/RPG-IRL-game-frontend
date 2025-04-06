@@ -254,11 +254,11 @@ export default class LocalStorageManager {
   }
 
   // ---- guildScannedQrs ----
-  saveGuildScannedQrs(data: {userId: string, qrId: string}[]) {
+  saveGuildScannedQrs(data: {u: string, q: string}[]) {
     localStorage.setItem(_PropertyNames.guildScannedQrs, JSON.stringify({ids: data}));
   }
 
-  loadGuildScannedQrs(): {userId: string, qrId: string}[] | null {
+  loadGuildScannedQrs(): {u: string, q: string}[] | null {
     const res = localStorage.getItem(_PropertyNames.guildScannedQrs);
     if (!res) {
       return null;
@@ -273,14 +273,14 @@ export default class LocalStorageManager {
               item: {
                 type: Object,
                 fields: {
-                  userId: String,
-                  qrId: String,
+                  u: String,
+                  q: String,
                 },
               },
             },
           },
           res,
-        ) as { ids: { userId: string; qrId: string }[] }
+        ) as { ids: { u: string; q: string }[] }
       ).ids;
     } catch {
       return null;

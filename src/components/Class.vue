@@ -10,10 +10,11 @@
   overflow hidden
   display flex
   flex-direction column
-  height 520px
+  max-height 520px
   background colorBgLight
   border-radius borderRadiusL
   hover-effect()
+  aspect-ratio 3/4
   .image-container
     position relative
     width 100%
@@ -36,8 +37,7 @@
         white-space nowrap
         background colorSec1
         border-radius borderRadiusMax
-        centered-flex-container()
-        font-small()
+        font-small-extra()
         &.power
           background colorEmpPower
         &.agility
@@ -71,9 +71,9 @@
       <img class="ability-bg" :src="classObj.imageUrl" alt="">
 
       <section class="stats">
-        <div class="stat power">Сила +{{ classObj.statsPerLevel.power }}</div>
-        <div class="stat agility">Ловкость +{{ classObj.statsPerLevel.agility }}</div>
-        <div class="stat intelligence">Интеллект +{{ classObj.statsPerLevel.intelligence }}</div>
+        <div class="stat power">Сила за ур. +{{ classObj.statsPerLevel.power }}</div>
+        <div class="stat agility">Ловкость за ур. +{{ classObj.statsPerLevel.agility }}</div>
+        <div class="stat intelligence">Интеллект за ур. +{{ classObj.statsPerLevel.intelligence }}</div>
       </section>
     </section>
     <section class="text-container">

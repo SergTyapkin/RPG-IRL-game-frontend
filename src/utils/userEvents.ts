@@ -98,7 +98,7 @@ export function finishFight(th: ComponentCustomProperties) {
 }
 
 export interface ExtendedGuild extends Guild {
-  scannedQRs: {userId: string, qrId: string}[]
+  scannedQRs: {u: string, q: string}[]
 }
 
 export function parseGuildData(th: ComponentCustomProperties, qrData: string) {
@@ -111,8 +111,8 @@ export function parseGuildData(th: ComponentCustomProperties, qrData: string) {
           item: {
             type: Object,
             fields: {
-              userId: String,
-              qrId: String,
+              u: String,
+              q: String,
             }
           }
         }

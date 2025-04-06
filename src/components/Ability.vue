@@ -145,11 +145,18 @@
 <template>
   <div class="root-ability" :class="{ preview, 'in-reloading': ability.reloadLeft }">
     <section class="image-container">
-      <img class="ability-bg" :src="ability.imageUrl" alt="">
+      <img v-if="ability.imageUrl" class="ability-bg" :src="ability.imageUrl" alt="">
+      <img v-else-if="ability.type === AbilityTypes.sword" class="ability-bg" src="/static/images/abilities/swordAttack.png" alt="">
+      <img v-else-if="ability.type === AbilityTypes.dagger" class="ability-bg" src="/static/images/abilities/swordAttack.png" alt="">
+      <img v-else-if="ability.type === AbilityTypes.pistol" class="ability-bg" src="/static/images/abilities/shotAttack.png" alt="">
+      <img v-else-if="ability.type === AbilityTypes.spell" class="ability-bg" src="/static/images/abilities/magicAttack.png" alt="">
+      <img v-else-if="ability.type === AbilityTypes.charge" class="ability-bg" src="/static/images/abilities/charge.png" alt="">
+      <img v-else-if="ability.type === AbilityTypes.potion" class="ability-bg" src="/static/images/abilities/potion.jpg" alt="">
+      <img v-else class="ability-bg" src="/static/images/abilities/defaultImage.png" alt="">
 
       <section class="stats">
-        <div class="damage-group">
-          <div v-if="ability.damage" class="stat damage">
+        <div v-if="ability.damage" class="damage-group">
+          <div class="stat damage">
             <img src="/static/icons/buffs/shadow/damage.svg" alt="damage">
             <span class="main-container">
               {{ ability.damage }}
@@ -164,8 +171,8 @@
             </span>
           </div>
         </div>
-        <div class="damage-piercing-group">
-          <div v-if="ability.piercingDamage" class="stat piercing-damage">
+        <div v-if="ability.piercingDamage" class="damage-piercing-group">
+          <div class="stat piercing-damage">
             <img src="/static/icons/buffs/shadow/damage.svg" alt="damage">
             <span class="main-container">
               {{ ability.piercingDamage }}
@@ -203,6 +210,8 @@
 </template>
 
 <script lang="ts">
+import { AbilityTypes } from '~/constants/constants';
+
 export default {
   props: {
     ability: {
@@ -214,6 +223,11 @@ export default {
 
   data() {
     return {};
+  },
+  computed: {
+    AbilityTypes() {
+      return AbilityTypes
+    }
   },
 
   mounted() {},

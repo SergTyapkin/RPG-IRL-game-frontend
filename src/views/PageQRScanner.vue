@@ -84,7 +84,6 @@ import { BuffsTypes, QRSources, QRTypes, ResourceTypes } from '~/constants/const
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import { ExtendedItem, getAllUserBuffs, getTotalUserMaxHP, itemIdToItem, itemsIdsToItems, parseQRText } from '~/utils/utils';
 import CircleLoading from '~/components/loaders/CircleLoading.vue';
-import { GuildModelMockData } from '~/utils/APIModels';
 import { type QRData } from '~/types/types';
 import { parseGuildData, syncWithGuild, userDead } from '~/utils/userEvents';
 
@@ -99,8 +98,6 @@ export default {
       scanResult: '',
       scannedSavedQrs: [] as string[],
       scannedNotSavedQrs: [] as QRData[],
-
-      GuildModelMockData,
     };
   },
 
@@ -121,7 +118,7 @@ export default {
 
   methods: {
     addScannedSavedQR(id: string) {
-      const idxSaved = this.scannedSavedQrs.findIndex(qrId => qrId === id);
+      const idxSaved = this.scannedSavedQrs.findIndex(q => q === id);
       if (idxSaved === -1) {
         this.scannedSavedQrs.push(id);
       }
@@ -145,7 +142,7 @@ export default {
       }
       const { type: QRType, source: QRSource, subType: QRSubType, value: QRValue, id: QRId } = qrData;
 
-      const idxSaved = this.scannedSavedQrs.findIndex(qrId => qrId === QRId);
+      const idxSaved = this.scannedSavedQrs.findIndex(q => q === QRId);
       const idxNotSaved = this.scannedNotSavedQrs.findIndex(qr => qr.id === QRId);
       if (idxSaved !== -1 || idxNotSaved !== -1) {
         this.$popups.error('QR отсканирован повторно', 'Вы уже сканировали этот QR');
@@ -276,7 +273,7 @@ export default {
       // Check not saved QRs
       for (const qr of this.scannedNotSavedQrs) {
         // Check all not saved QRs
-        const qrIdxInGuilds = guildData.scannedQRs.findIndex(q => q.qrId === qr.id);
+        const qrIdxInGuilds = guildData.scannedQRs.findIndex(q => q.q === qr.id);
         if (qrIdxInGuilds === -1) {
           this.$modals.alert(
             'Сперва необходимо показать свой QR гильдии',
@@ -287,13 +284,13 @@ export default {
       }
 
       for (const qr of this.scannedNotSavedQrs) {
-        const qrIdxInGuilds = guildData.scannedQRs.findIndex(q => q.qrId === qr.id);
+        const qrIdxInGuilds = guildData.scannedQRs.findIndex(q => q.q === qr.id);
         if (qrIdxInGuilds === -1) {
           this.$popups.error('Ошибка логики', 'QR не найдет в списке отсканированных даже после проверки');
           return;
         }
         const guildQrData = guildData.scannedQRs[qrIdxInGuilds];
-        if (guildQrData.userId === this.$user.id) {
+        if (guildQrData.u === this.$user.id) {
           // QR is ok. Owner is this user
           continue;
         }
@@ -367,7 +364,7 @@ export default {
       }
 
       // Save guild QRs
-      guildData.scannedQRs.map(qr => this.addScannedSavedQR(qr.qrId))
+      guildData.scannedQRs.map(qr => this.addScannedSavedQR(qr.q))
 
       this.scannedNotSavedQrs = [];
       this.$localStorageManager.saveScannedSavedQrs(this.scannedSavedQrs);

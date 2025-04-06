@@ -54,7 +54,10 @@ export const AbilityModel = {
   id: String,
   name: String,
   description: String,
-  imageUrl: String,
+  imageUrl: {
+    type: String,
+    optional: true,
+  },
   effectsToTargets: {
     type: Array,
     item: String,
@@ -208,14 +211,10 @@ export const GuildModelMockData = validateModel(GuildModel, {
 export const UserModel = {
   id: String,
   name: String,
-  imageUrl: {
-    type: String,
-  },
+  imageUrl: String,
   level: Number,
   role: new Set(Object.keys(UserRoles)),
-  classType: {
-    type: String,
-  },
+  classType: String,
   stats: {
     type: Object,
     fields: {
@@ -257,9 +256,7 @@ export const UserModel = {
     },
     optional: true,
   },
-  guildId: {
-    type: String,
-  },
+  guildId: String,
   skills: {
     type: Array,
     item: String,
@@ -357,3 +354,48 @@ export const QRDataModelMockData = validateModel(QRDataModel, {
   source: QRSources.quest,
   value: Items.daggerNightCardinal.id,
 });
+
+export const QRUserModel = {
+  id: String,
+  n: String,
+  iU: Number,
+  l: Number,
+  cT: String,
+  st: {
+    type: Object,
+    fields: {
+      e: Number,
+      m: Number,
+      p: Number,
+      a: Number,
+      i: Number,
+    }
+  },
+  gId: String,
+  i: {
+    type: Array,
+    item: Number,
+  },
+  e: {
+    type: Object,
+    fields: {
+      h: {
+        type: Number,
+        optional: true,
+      },
+      m: {
+        type: Number,
+        optional: true,
+      },
+      b: {
+        type: Number,
+        optional: true,
+      },
+    },
+  },
+  newQrs: {
+    type: Array,
+    item: String,
+    optional: true,
+  },
+};

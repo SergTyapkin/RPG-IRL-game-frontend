@@ -198,6 +198,45 @@
         >
           - Увеличивает защиту на {{ obj.buffs[BuffsTypes.protectionIncrease] }}
         </div>
+        <div v-if="obj.buffs && obj.buffs[BuffsTypes.damageDoneIncrease]">
+          - Увеличивает наносимый вами урон на {{ obj.buffs[BuffsTypes.damageDoneIncrease] }}
+        </div>
+        <div v-if="obj.buffs && obj.buffs[BuffsTypes.maxHpModifier]">
+          - Ваше макс. здоровье становится равно {{ obj.buffs[BuffsTypes.maxHpModifier] * 100 }}% от текущего
+        </div>
+        <div v-if="obj.buffs && obj.buffs[BuffsTypes.protectionModifier]">
+          - Ваша защита {{ obj.buffs[BuffsTypes.protectionModifier] * 100 }}% от текущего
+        </div>
+        <div v-if="obj.buffs && obj.buffs[BuffsTypes.damageDoneModifier]">
+          - Весь наносимый вами урон умножается на {{ obj.buffs[BuffsTypes.damageDoneModifier] * 100 }}%
+        </div>
+        <div v-if="obj.buffs && obj.buffs[BuffsTypes.hpEveryTurn]">
+          - Каждый ход в бою добавляет к здоровью {{ obj.buffs[BuffsTypes.damageDoneModifier] }}ед.
+        </div>
+        <div v-if="obj.buffs && obj.buffs[BuffsTypes.experienceModifier]">
+          - Вы получаете от бутылочек опыта {{ obj.buffs[BuffsTypes.experienceModifier] * 100 }}% опыта
+        </div>
+        <div v-if="obj.buffs && obj.buffs[BuffsTypes.moneyModifier]">
+          - Вы получаете от мешочков монет {{ obj.buffs[BuffsTypes.moneyModifier] * 100 }}% монет
+        </div>
+        <div v-if="obj.buffs && obj.buffs[BuffsTypes.powerCostDecrease]">
+          - Дает скидку {{ obj.buffs[BuffsTypes.powerCostDecrease] }} на прокачку всех скиллов в дереве Силы
+        </div>
+        <div v-if="obj.buffs && obj.buffs[BuffsTypes.agilityCostDecrease]">
+          - Дает скидку {{ obj.buffs[BuffsTypes.agilityCostDecrease] }} на прокачку всех скиллов в дереве Ловкости
+        </div>
+        <div v-if="obj.buffs && obj.buffs[BuffsTypes.intelligenceCostDecrease]">
+          - Дает скидку {{ obj.buffs[BuffsTypes.intelligenceCostDecrease] }} на прокачку всех скиллов в дереве Интеллекта
+        </div>
+        <div v-if="obj.buffs && obj.buffs[BuffsTypes.powerPerLevelIncrease]">
+          - Увеличивает очки силы, получаемые за каждый уровень, на {{ obj.buffs[BuffsTypes.powerPerLevelIncrease] }}
+        </div>
+        <div v-if="obj.buffs && obj.buffs[BuffsTypes.agilityPerLevelIncrease]">
+          - Увеличивает очки ловкости, получаемые за каждый уровень, на {{ obj.buffs[BuffsTypes.powerPerLevelIncrease] }}
+        </div>
+        <div v-if="obj.buffs && obj.buffs[BuffsTypes.intelligencePerLevelIncrease]">
+          - Увеличивает очки интеллекта, получаемые за каждый уровень, на {{ obj.buffs[BuffsTypes.powerPerLevelIncrease] }}
+        </div>
       </div>
     </section>
 

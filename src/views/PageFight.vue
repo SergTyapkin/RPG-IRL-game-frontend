@@ -118,6 +118,8 @@
 
   .section-abilities
     margin-top 60px
+    &.inactive
+      pointer-events none
 
     .abilities-container
       display flex
@@ -376,7 +378,7 @@
       </section>
     </transition>
 
-    <section class="section-abilities">
+    <section class="section-abilities" :class="{inactive: !isUserInFightReactiveValue}">
       <header>Способности</header>
       <div v-if="!abilities.length" class="info">Способностей нет</div>
       <div class="abilities-container">

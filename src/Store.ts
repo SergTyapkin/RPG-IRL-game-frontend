@@ -65,6 +65,7 @@ export default new Vuex.Store({
       }
       state.commit('SET_USER', syncedData.user);
       state.commit('SET_GUILD', syncedData.guild);
+      this.$app.isUserSignedInReactiveValue = true;
     },
     async GET_USER(this: Store, state: State) {
       let user = null;
@@ -88,6 +89,7 @@ export default new Vuex.Store({
       this.$app.$localStorageManager.saveSyncedData(user, guild);
       state.commit('SET_USER', user);
       state.commit('SET_GUILD', guild);
+      this.$app.isUserSignedInReactiveValue = true;
     },
     SET_GUILD(this: Store, state: State, guild: Guild) {
       state.commit('SET_GUILD', guild);
@@ -97,6 +99,7 @@ export default new Vuex.Store({
       this.$app.$localStorageManager.removeScannedSavedQrs();
       this.$app.$localStorageManager.removeScannedNotSavedQrs();
       state.commit('DELETE_USER');
+      this.$app.isUserSignedInReactiveValue = false;
     },
   },
 });

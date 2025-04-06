@@ -29,6 +29,7 @@
       position fixed
       z-index 999
       top 0
+      left 0
       width calc(100% - 20px)
       margin 10px
       padding 15px
@@ -188,43 +189,45 @@
         </section>
       </transition>
 
-      <section class="bottom-interface" v-if="userRoleReactiveValue !== UserRoles.guild">
-        <img class="bottom-line-bg" src="/static/images/bottom-line.svg" alt="">
-        <nav class="buttons">
-          <router-link :to="{ name: 'fight' }" class="fight" :class="{ disabled: false }">
-            <img src="/static/icons/buttons/fight.svg" alt="">
-          </router-link>
-          <router-link
-            :to="{ name: 'skillsTree' }"
-            class="tree"
-            :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
-          >
-            <img src="/static/icons/buttons/tree.svg" alt="">
-          </router-link>
-          <router-link
-            :to="{ name: 'map' }"
-            class="map"
-            :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
-          >
-            <img src="/static/icons/buttons/map.svg" alt="">
-          </router-link>
-          <router-link
-            :to="{ name: 'profile' }"
-            class="profile"
-            :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
-          >
-            <img src="/static/icons/buttons/profile.svg" alt="">
-          </router-link>
+      <transition name="opacity">
+        <section class="bottom-interface" v-if="isUserSignedInReactiveValue && userRoleReactiveValue !== UserRoles.guild">
+          <img class="bottom-line-bg" src="/static/images/bottom-line.svg" alt="">
+          <nav class="buttons">
+            <router-link :to="{ name: 'fight' }" class="fight" :class="{ disabled: false }">
+              <img src="/static/icons/buttons/fight.svg" alt="">
+            </router-link>
+            <router-link
+              :to="{ name: 'skillsTree' }"
+              class="tree"
+              :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
+            >
+              <img src="/static/icons/buttons/tree.svg" alt="">
+            </router-link>
+            <router-link
+              :to="{ name: 'map' }"
+              class="map"
+              :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
+            >
+              <img src="/static/icons/buttons/map.svg" alt="">
+            </router-link>
+            <router-link
+              :to="{ name: 'profile' }"
+              class="profile"
+              :class="{ disabled: isUserInFightReactiveValue || isUserDeadReactiveValue }"
+            >
+              <img src="/static/icons/buttons/profile.svg" alt="">
+            </router-link>
 
-          <router-link
-            :to="{ name: 'qrScanner' }"
-            class="button-scanner"
-            :class="{ disabled: isUserInFightReactiveValue && !isUserDeadReactiveValue }"
-          >
-            <img src="/static/icons/buttons/qr-scanner.svg" alt="">
-          </router-link>
-        </nav>
-      </section>
+            <router-link
+              :to="{ name: 'qrScanner' }"
+              class="button-scanner"
+              :class="{ disabled: isUserInFightReactiveValue && !isUserDeadReactiveValue }"
+            >
+              <img src="/static/icons/buttons/qr-scanner.svg" alt="">
+            </router-link>
+          </nav>
+        </section>
+      </transition>
     </section>
   </div>
 
@@ -257,6 +260,7 @@ export default {
       isUserInFightReactiveValue: this.$user?.isInFight,
       isUserDeadReactiveValue: this.$user?.stats?.hp <= 0,
       userRoleReactiveValue: this.$user?.role,
+      isUserSignedInReactiveValue: this.$user?.isSignedIn,
 
       UserRoles,
     };

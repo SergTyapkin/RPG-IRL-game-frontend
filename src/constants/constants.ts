@@ -1,5 +1,5 @@
 import DefaultKnifeImage from '#/images/items/daggerNightCardinal.png';
-import DefaultAbilityImage from '#/images/ability-image-example.png';
+import DefaultAbilityImage from '#/images/abilities/defaultImage.png';
 import DefaultAvatarImage from '#/icons/buffs/shadow/person.svg';
 
 export {DefaultKnifeImage, DefaultAbilityImage, DefaultAvatarImage};
@@ -9,13 +9,13 @@ export const NO_SERVER_MODE = true;
 export const DEFAULT_USER_MAX_UP = 10;
 export const DEFAULT_USER_PROTECTION = 0;
 export const USERS_IN_GUILD_AVERAGE_COUNT = 20;
-export const EXPERIENCE_PER_BOTTLE = 250;
 
 export const MONEY_LOSE_BY_DEATH_PERCENT = 0.5;
 
 export const QR_CODE_ID_SPLITTER = '||';
 export const UUID_LENGTH = 4;
-export const MAX_UUIDS_PER_QR = Math.round(1000 / UUID_LENGTH);
+export const MAX_QR_CODES_UUIDS_BYTES_SIZE = 400;
+export const MAX_UUIDS_PER_QR = Math.round(MAX_QR_CODES_UUIDS_BYTES_SIZE / UUID_LENGTH);
 
 
 export const UserRoles = {

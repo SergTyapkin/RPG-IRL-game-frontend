@@ -76,13 +76,15 @@ import QRGenerator from '~/components/QRGenerator.vue';
 import { Guilds } from '~/constants/guilds';
 import QRScanner from '~/components/QRScanner.vue';
 import { deepClone, generateQRText, parseQRText } from '~/utils/utils';
-import { MAX_UUIDS_PER_QR, QRSources, QRTypes } from '~/constants/constants';
+import { MAX_UUIDS_PER_QR, QRSources, QRTypes, UserRoles } from '~/constants/constants';
 import validateModel from '@sergtyapkin/models-validator';
-import { UserModel } from '~/utils/APIModels';
-import { User } from '~/types/types';
+import { QRUserModel } from '~/utils/APIModels';
+import { QRUserData, User } from '~/types/types';
 import { GuildLevels, UserLevels } from '~/constants/levels';
 import { nextTick } from 'vue';
 import { type ExtendedGuild } from '~/utils/userEvents';
+import { UserAvatars } from '~/constants/userAvatars';
+import { NumbersToInventoryIds } from '~/constants/items';
 
 
 export default {
@@ -94,7 +96,7 @@ export default {
 
       showHiddenGuilds: (this.$route.query.showHidden === 'true'),
 
-      scannedQRs: [] as {userId: string, qrId: string}[],
+      scannedQRs: [] as {u: string, q: string}[],
     };
   },
 
@@ -148,6 +150,8 @@ export default {
       const guild = this.allGuildsData[guildId];
       const guildDataCopy = deepClone(guild);
       guildDataCopy.scannedQRs = this.scannedQRs;
+      guildDataCopy.leaderId = guildDataCopy.members?.length ? guildDataCopy.members[0].id : '';
+      console.log(guildDataCopy);
       const qrData = await generateQRText(
         QRTypes.guildData, '_', QRSources.guild, JSON.stringify(guildDataCopy),
       );
@@ -205,9 +209,32 @@ export default {
       }
       let userData: User;
       try {
-        userData = validateModel(UserModel, QRValue) as User;
-      } catch {
+        const u = validateModel(QRUserModel, QRValue) as QRUserData;
+        userData = {
+          id: u.id,
+          name: u.n,
+          level: u.l,
+          imageUrl: UserAvatars[u.iU],
+          stats: {hp: 0, experience: 0, money: 0, power: 0, agility: 0, intelligence: 0},
+          notSyncedStats: {experience: 0, money: 0, power: 0, agility: 0, intelligence: 0},
+          classType: u.cT,
+          guildId: u.gId,
+          skills: [],
+          inventory: u.i.map(i => NumbersToInventoryIds[i]),
+          notSyncedInventory: [],
+          equipment: {
+            hat: u.e.h ? NumbersToInventoryIds[u.e.h] : undefined,
+            main: u.e.m ? NumbersToInventoryIds[u.e.m] : undefined,
+            boots: u.e.b ? NumbersToInventoryIds[u.e.b] : undefined,
+          },
+          scannedQRs: u.newQrs,
+          role: UserRoles.user,
+          isInFight: false,
+          isSignedIn: false,
+        }
+      } catch (err) {
         this.$popups.error('Ошибка чтения QR', 'Ошибка при парсинге объекта пользователя');
+        console.error("Ошибка при парсинге объекта пользователя", err);
         return;
       }
 
@@ -235,13 +262,13 @@ export default {
       }
       this.recalculateGuildLevel(guild);
       // Update scanned QRs
-      (userData.scannedQRs || []).forEach(qrId => {
-        const idx = this.scannedQRs.findIndex(qr => qr.qrId === qrId);
+      (userData.scannedQRs || []).forEach(q => {
+        const idx = this.scannedQRs.findIndex(qr => qr.q === q);
         if (idx === -1) {
           if (this.scannedQRs.length >= (MAX_UUIDS_PER_QR / 2)) {
             this.scannedQRs.shift();
           }
-          this.scannedQRs.push({userId: userData.id, qrId: qrId});
+          this.scannedQRs.push({u: userData.id, q: q});
         }
       });
       this.$localStorageManager.saveGuildScannedQrs(this.scannedQRs);
