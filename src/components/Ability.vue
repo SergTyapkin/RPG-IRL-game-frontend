@@ -196,7 +196,7 @@
     </section>
 
     <section class="section-reloading">
-      <div v-if="Number.isFinite(ability.reloadLeft)">{{ ability.reloadLeft }}</div>
+      <div v-if="isFinite(ability.reloadLeft)">{{ ability.reloadLeft }}</div>
       <img v-else src="/static/icons/close.svg" alt="">
     </section>
   </div>
@@ -219,5 +219,10 @@ export default {
   mounted() {},
 
   methods: {},
+  watch: {
+    ability(to) {
+      console.log(to);
+    }
+  }
 };
 </script>

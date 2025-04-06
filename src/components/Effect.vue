@@ -17,7 +17,7 @@
     padding 10px
     padding-top 15px
     background 'linear-gradient(%s, %s), var(--bg-url) 50% 50% / 100% auto no-repeat' % \
-      (mix(colorBgLight, transparent) mix(colorBgLight, transparent))
+    (mix(colorBgLight, transparent) mix(colorBgLight, transparent))
     border-radius borderRadiusM 0 0 borderRadiusM
 
     .name
@@ -103,11 +103,7 @@
 
     <section class="buffs">
       <div v-for="(value, buff) in effect.buffs" class="buff">
-        <img
-          v-if="buff === BuffsTypes.maxHpIncrease"
-          src="/static/icons/buffs/flat/max-hp.svg"
-          alt="hp"
-        >
+        <img v-if="buff === BuffsTypes.maxHpIncrease" src="/static/icons/buffs/flat/max-hp.svg" alt="hp">
         <img
           v-else-if="buff === BuffsTypes.protectionIncrease"
           src="/static/icons/buffs/flat/protection.svg"
@@ -118,11 +114,7 @@
           src="/static/icons/buffs/flat/xp.svg"
           alt="experience"
         >
-        <img
-          v-else-if="buff === BuffsTypes.moneyModifier"
-          src="/static/icons/buffs/flat/money.svg"
-          alt="money"
-        >
+        <img v-else-if="buff === BuffsTypes.moneyModifier" src="/static/icons/buffs/flat/money.svg" alt="money">
         <img
           v-else-if="buff === BuffsTypes.powerCostDecrease"
           src="/static/icons/buffs/flat/stat-lower.svg"
@@ -189,8 +181,37 @@
           src="/static/icons/buffs/flat/max-hp-minus.svg"
           alt="max-hp-decrease"
         >
-
         <div class="value">{{ Math.round(value) !== value ? `${value * 100}%` : value }}</div>
+      </div>
+      <!--      Special effects     -->
+      <div
+        class="buff"
+        v-if="
+          [
+            Effects.swordEfficiency.id,
+            Effects.daggerEfficiency.id,
+            Effects.spellEfficiency.id,
+            Effects.potionEfficiency.id,
+            Effects.pistolEfficiency.id,
+          ].includes(effect.id)
+        "
+      >
+        <img src="/static/icons/buffs/flat/plus-damage.svg" alt="plus-damage">
+        <div class="value">30%</div>
+      </div>
+      <div
+        class="buff"
+        v-if="effect.id === Effects.statsJustice.id"
+      >
+        <img src="/static/icons/buffs/flat/stats-justice.svg" alt="ststs-justice">
+        <div class="value" />
+      </div>
+      <div
+        class="buff"
+        v-if="effect.id === Effects.protectionAddHalfHp.id"
+      >
+        <img src="/static/icons/buffs/flat/shield-half-hp.svg" alt="shield-half-hp">
+        <div class="value">/2</div>
       </div>
     </section>
   </div>
@@ -198,6 +219,7 @@
 
 <script lang="ts">
 import { BuffsTypes } from '~/constants/constants';
+import { Effects } from '~/constants/effects';
 
 export default {
   props: {
@@ -211,6 +233,7 @@ export default {
   data() {
     return {
       BuffsTypes,
+      Effects,
     };
   },
 

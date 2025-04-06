@@ -521,15 +521,6 @@ export default {
     this.$app.isUserDeadReactiveValue = this.isUserDeadReactiveValue;
     this.recalculateUserStats();
 
-    const abilitiesReloads = this.$localStorageManager.loadAbilitiesReloads();
-    if (abilitiesReloads) {
-      this.abilities.forEach(ability => {
-        if (abilitiesReloads[ability.id] !== undefined) {
-          ability.reloadLeft = abilitiesReloads[ability.id];
-        }
-      });
-    }
-
     const fightEffects = this.$localStorageManager.loadFightEffects();
     if (fightEffects) {
       this.fightEffects = fightEffects;
@@ -566,6 +557,15 @@ export default {
       this.shownEffects = getAllUserEffects(this.$user, true);
       this.effects = getAllUserEffects(this.$user);
       this.abilities = getAllUserAbilities(this.$user) as unknown as InFightExtendedAbility[];
+
+      const abilitiesReloads = this.$localStorageManager.loadAbilitiesReloads();
+      if (abilitiesReloads) {
+        this.abilities.forEach(ability => {
+          if (abilitiesReloads[ability.id] !== undefined) {
+            ability.reloadLeft = abilitiesReloads[ability.id];
+          }
+        });
+      }
     },
 
     async startFight() {
@@ -629,7 +629,7 @@ export default {
       ability.reloadLeft = ability.reload;
 
       // Ability is power charger ------------
-      if (ability.type === AbilityTypes.power) {
+      if (ability.type === AbilityTypes.charge) {
         await this.$modals.alert(
           'Разыграйте ещё одну способность',
           'Ваш ход ещё не закончен. Разыграйте ещё одну способность, которая будет усилена использованной',
@@ -646,19 +646,9 @@ export default {
 
       // Calculate played stats ------------
       const totalEffects = (this.effects as Effect[]).concat(this.fightEffects);
-      // Calculate damage
       let damage = ability.damage;
       const targetsCount = ability.targetsCount;
-      let damageModifier = 1;
-      totalEffects.forEach(e => {
-        damage += e.buffs[BuffsTypes.damageDoneIncrease] ?? 0;
-        damageModifier *= e.buffs[BuffsTypes.damageDoneModifier] ?? 1;
-      });
-      damage *= damageModifier;
-      damage = Math.round(damage);
-      // Calculate heal
       let heal = ability.heal;
-      // Calculate effects
       const effectsToTargets = ability.effectsToTargets;
       const effectsForMe = ability.effectsForMe;
       // Calculate chances
@@ -670,6 +660,16 @@ export default {
           effectsForMe.push(...effectsIdsToEffects(chance.effectsForMe ?? []));
         }
       });
+      // Calculate damage
+      let damageModifier = 1;
+      totalEffects.forEach(e => {
+        damage += damage > 0 ? e.buffs[BuffsTypes.damageDoneIncrease] ?? 0 : 0;
+        damageModifier *= e.buffs[BuffsTypes.damageDoneModifier] ?? 1;
+      });
+      damage *= damageModifier;
+      damage = Math.round(damage);
+      // Calculate heal
+      // ~*~
       // Calculate special effects
       const efficiencyModifiers = {
         [AbilityTypes.sword]: 1,
@@ -701,7 +701,7 @@ export default {
       });
 
       // Inform user ------------
-      if (ability.damage > 0 && damage > 0) {
+      if (damage > 0) {
         await this.$modals.alert(
           `Вы наносите ${damage} урона по ${targetsCount} противник${targetsCount > 1 ? 'ам' : 'у'}`,
           'Выберите противников и громко скажите им, от какой способности и сколько урона они получают. Они должны ввести его себе сами',
@@ -725,7 +725,7 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
           this.takeEffect(Effects[e.id]);
         });
       }
-      if (ability.heal > 0 && heal > 0) {
+      if (heal > 0) {
         if (ability.targetsCount === 0) {
           this.takeHeal(heal); // User gets heal by himself
         } else {
