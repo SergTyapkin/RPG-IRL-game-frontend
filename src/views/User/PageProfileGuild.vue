@@ -75,14 +75,13 @@
 import QRGenerator from '~/components/QRGenerator.vue';
 import { Guilds } from '~/constants/guilds';
 import QRScanner from '~/components/QRScanner.vue';
-import { deepClone, generateQRText, parseQRText } from '~/utils/utils';
+import { generateQRText, parseQRText } from '~/utils/utils';
 import { MAX_UUIDS_PER_QR, QRSources, QRTypes, UserRoles } from '~/constants/constants';
 import validateModel from '@sergtyapkin/models-validator';
 import { QRUserModel } from '~/utils/APIModels';
-import { QRUserData, User } from '~/types/types';
+import { Guild, QRGuildData, QRUserData, User } from '~/types/types';
 import { GuildLevels, UserLevels } from '~/constants/levels';
 import { nextTick } from 'vue';
-import { type ExtendedGuild } from '~/utils/userEvents';
 import { UserAvatars } from '~/constants/userAvatars';
 import { NumbersToInventoryIds } from '~/constants/items';
 
@@ -92,7 +91,7 @@ export default {
 
   data() {
     return {
-      allGuildsData: {} as {[key: number]: ExtendedGuild},
+      allGuildsData: {} as {[key: number]: Guild},
 
       showHiddenGuilds: (this.$route.query.showHidden === 'true'),
 
@@ -114,23 +113,23 @@ export default {
         const guild = Guilds[guildIdNum];
         if (guild && (this.showHiddenGuilds || !guild.hidden)) {
           this.allGuildsData[guildIdNum] = {
-            id: guildId,
+            id: guildIdNum,
             name: guild.name,
             description: guild.description,
             money: 0,
             experience: 0,
             level: 0,
             imageUrl: guild.imageUrl,
-            inventory: [] as string[],
+            inventory: [],
             leaderId: '',
-            members: [] as object[],
+            members: [],
             hidden: false,
-          } as ExtendedGuild;
+          };
         }
       });
       this.$localStorageManager.saveAllGuildsData(this.allGuildsData);
     } else {
-      this.allGuildsData = allGuildsData as unknown as {[key: number]: ExtendedGuild};
+      this.allGuildsData = allGuildsData;
     }
 
     this.scannedQRs = this.$localStorageManager.loadGuildScannedQrs() || [];
@@ -148,12 +147,24 @@ export default {
       const qrInputs = this.$refs.qrInputs as HTMLInputElement[];
       const qrIdx = Object.keys(this.allGuildsData).findIndex(gId => Number(gId) === Number(guildId))
       const guild = this.allGuildsData[guildId];
-      const guildDataCopy = deepClone(guild);
-      guildDataCopy.scannedQRs = this.scannedQRs;
-      guildDataCopy.leaderId = guildDataCopy.members?.length ? guildDataCopy.members[0].id : '';
-      console.log(guildDataCopy);
+      const guildData: QRGuildData = {
+        id: guild.id,
+        m: guild.money,
+        l: guild.level,
+        e: guild.experience,
+        i: [],
+        lId: guild.members?.length ? guild.members[0].id : '',
+        mbs: guild.members.map(m => ({
+          i: m.id,
+          n: m.name,
+          u: m.imageUrl,
+          l: m.level,
+          e: m.experience,
+        })),
+        newQrs: this.scannedQRs,
+      };
       const qrData = await generateQRText(
-        QRTypes.guildData, '_', QRSources.guild, JSON.stringify(guildDataCopy),
+        QRTypes.guildData, '_', QRSources.guild, JSON.stringify(guildData),
       );
       if (qrElements && qrIdx !== -1 && qrElements[qrIdx]) {
         qrElements[qrIdx].regenerate(qrData);
@@ -166,7 +177,7 @@ export default {
       });
     },
 
-    recalculateGuildLevel(guild: ExtendedGuild) {
+    recalculateGuildLevel(guild: Guild) {
       function getTotalMemberExperience($user: {level: number, experience: number}): number {
         let res = 0;
         for (let level = 1; level < $user.level; level++) {

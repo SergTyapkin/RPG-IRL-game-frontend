@@ -133,7 +133,7 @@ export const ItemModelMockData = validateModel(ItemModel, {
 
 
 export const GuildModel = {
-  id: String,
+  id: Number,
   name: String,
   description: String,
   experience: Number,
@@ -166,7 +166,7 @@ export const GuildModel = {
 }
 
 export const GuildModelMockData = validateModel(GuildModel, {
-  id: '3',
+  id: 3,
   name: 'Ушкуйники',
   description: 'Описание гильдии (ушкуйники блин)',
   money: 80,
@@ -399,3 +399,37 @@ export const QRUserModel = {
     optional: true,
   },
 };
+
+
+export const QRGuildModel = {
+  id: Number,
+  e: Number,
+  m: Number,
+  l:  Number,
+  i: {
+    type: Array,
+    item: Number,
+  },
+
+  lId: String,
+  mbs: {
+    type: Array,
+    item: {
+      type: Object,
+      fields: {
+        i: String,
+        n: String,
+        u: String,
+        l: Number,
+        e: Number,
+      }
+    },
+  },
+  newQrs: {
+    type: Array,
+    item: {
+      type: Object,
+      fields: {u: String, q: String},
+    }
+  },
+}

@@ -15,7 +15,6 @@
 
   .item-bg
     padding 10%
-    opacity 0.5
 
   .item-bg
   .item-img
@@ -25,6 +24,7 @@
     size = 'calc(100% - %s)' % (padding * 2)
     width size
     height size
+    object-fit contain
 
   .stats
     user-select none

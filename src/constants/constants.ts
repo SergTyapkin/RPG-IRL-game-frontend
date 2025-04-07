@@ -14,7 +14,7 @@ export const MONEY_LOSE_BY_DEATH_PERCENT = 0.5;
 
 export const QR_CODE_ID_SPLITTER = '||';
 export const UUID_LENGTH = 4;
-export const MAX_QR_CODES_UUIDS_BYTES_SIZE = 400;
+export const MAX_QR_CODES_UUIDS_BYTES_SIZE = 120;
 export const MAX_UUIDS_PER_QR = Math.round(MAX_QR_CODES_UUIDS_BYTES_SIZE / UUID_LENGTH);
 
 

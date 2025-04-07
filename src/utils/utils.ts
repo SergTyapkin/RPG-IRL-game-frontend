@@ -374,7 +374,7 @@ export function getTotalUserProtection($user: User): number {
       res += Math.round($user.stats.hp / 2);
     }
   });
-  res *= modifier;
+  res = Math.round(res * modifier);
   return res;
 }
 export function getTotalUserMaxHP($user: User): number {
@@ -384,7 +384,7 @@ export function getTotalUserMaxHP($user: User): number {
     res += buffs[BuffsTypes.protectionIncrease] ?? 0;
     modifier *= buffs[BuffsTypes.protectionModifier] ?? 1;
   });
-  res *= modifier;
+  res = Math.round(res * modifier);
   return res;
 }
 export function getTotalUserExperience($user: User): number {

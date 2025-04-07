@@ -41,7 +41,7 @@ export default new Vuex.Store({
       state.user.isSignedIn = true;
     },
     SET_GUILD(state: State, guildData: Guild) {
-      state.guild.id = String(guildData.id);
+      state.guild.id = Number(guildData.id);
       state.guild.name = String(guildData.name);
       state.guild.description = String(guildData.description);
       state.guild.money = Number(guildData.money);

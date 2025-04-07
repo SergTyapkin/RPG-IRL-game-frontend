@@ -133,6 +133,7 @@ export default {
     },
 
     async onScan(text: string) {
+      this.textInput = '';
       this.scanResult = text;
 
       const qrData = await parseQRText(text);
@@ -228,7 +229,7 @@ export default {
           break;
         }
         case QRTypes.guildData: {
-          await this.syncData(QRValue);
+          scanError = !(await this.syncData(QRValue));
           break;
         }
         case QRTypes.userData: {
@@ -260,36 +261,37 @@ export default {
       }
     },
 
-    async syncData(QRValue: string) {
-      const guildData = parseGuildData(this, QRValue);
-      if (!guildData) {
-        return;
+    async syncData(QRValue: string): Promise<boolean> {
+      const guildAndQrs = parseGuildData(this, QRValue);
+      if (!guildAndQrs) {
+        return false;
       }
+      const {guild: guildData, qrs: scannedQRs} = guildAndQrs;
       if (Number(guildData.id) !== Number(this.$user.guildId)) {
         this.$popups.error('QR не вашей гильдии!', `Это QR гильдии ${guildData.name}`);
-        return;
+        return false;
       }
 
       // Check not saved QRs
       for (const qr of this.scannedNotSavedQrs) {
         // Check all not saved QRs
-        const qrIdxInGuilds = guildData.scannedQRs.findIndex(q => q.q === qr.id);
+        const qrIdxInGuilds = scannedQRs.findIndex(q => q.q === qr.id);
         if (qrIdxInGuilds === -1) {
           this.$modals.alert(
             'Сперва необходимо показать свой QR гильдии',
             `Свой QR можно найти, нажав на иконку вашего профиля`
           );
-          return;
+          return false;
         }
       }
 
       for (const qr of this.scannedNotSavedQrs) {
-        const qrIdxInGuilds = guildData.scannedQRs.findIndex(q => q.q === qr.id);
+        const qrIdxInGuilds = scannedQRs.findIndex(q => q.q === qr.id);
         if (qrIdxInGuilds === -1) {
           this.$popups.error('Ошибка логики', 'QR не найдет в списке отсканированных даже после проверки');
-          return;
+          return false;
         }
-        const guildQrData = guildData.scannedQRs[qrIdxInGuilds];
+        const guildQrData = scannedQRs[qrIdxInGuilds];
         if (guildQrData.u === this.$user.id) {
           // QR is ok. Owner is this user
           continue;
@@ -349,7 +351,7 @@ export default {
               itemsIds = JSON.parse(qr.value);
             } catch {
               this.$popups.error('Ошибка в структуре', 'Ошибка при парсинге предметов');
-              return;
+              return false;
             }
             itemsIds.forEach(itemId => {
               const idx = this.$user.notSyncedInventory.findIndex(i => i === itemId);
@@ -364,7 +366,7 @@ export default {
       }
 
       // Save guild QRs
-      guildData.scannedQRs.map(qr => this.addScannedSavedQR(qr.q))
+      scannedQRs.map(qr => this.addScannedSavedQR(qr.q))
 
       this.scannedNotSavedQrs = [];
       this.$localStorageManager.saveScannedSavedQrs(this.scannedSavedQrs);
@@ -374,6 +376,8 @@ export default {
       this.loading = true;
       await syncWithGuild(this, QRValue);
       this.loading = false;
+
+      return true;
     },
   },
 };

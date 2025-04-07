@@ -649,6 +649,7 @@ export default {
       // Calculate played stats ------------
       const totalEffects = (this.effects as Effect[]).concat(this.fightEffects);
       let damage = ability.damage;
+      let piercingDamage = ability.piercingDamage || 0;
       const targetsCount = ability.targetsCount;
       let heal = ability.heal;
       const effectsToTargets = ability.effectsToTargets;
@@ -705,8 +706,15 @@ export default {
       // Inform user ------------
       if (damage > 0) {
         await this.$modals.alert(
-          `Вы наносите ${damage} урона по ${targetsCount} противник${targetsCount > 1 ? 'ам' : 'у'}`,
+          `Вы наносите ${damage} обычного урона по ${targetsCount} противник${targetsCount > 1 ? 'ам' : 'у'}`,
           'Выберите противников и громко скажите им, от какой способности и сколько урона они получают. Они должны ввести его себе сами',
+        );
+      }
+      if (piercingDamage > 0) {
+        await this.$modals.alert(
+          `Вы наносите ${piercingDamage} ПРОБИВАЮЩЕГО урона по ${targetsCount} противник${targetsCount > 1 ? 'ам' : 'у'}`,
+          'Выберите противников и громко скажите им, от какой способности и сколько пробивающего урона они получают.' +
+          'Они должны ввести его себе сами',
         );
       }
       if (effectsToTargets.length > 0) {
@@ -732,7 +740,7 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
           this.takeHeal(heal); // User gets heal by himself
         } else {
           await this.$modals.alert(
-            `Вы лечите ${heal} HP ${targetsCount} союзник${targetsCount > 1 ? 'ам' : 'у'}`,
+            `Вы лечите ${heal} здоровья ${targetsCount} союзник${targetsCount > 1 ? 'ам' : 'у'}`,
             'Выберите союзников и громко скажите им, от чего и сколько очков здоровья они восстанавливают. Они должны ввести это себе сами',
           );
         }
@@ -778,13 +786,13 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
       });
       if (teamTotalHPChangeVal < 0) {
         this.$modals.alert(
-          `Все ваши союзники получают по ${teamTotalHPChangeVal} урона`,
+          `Все ваши союзники получают по ${teamTotalHPChangeVal} ПРОБИВАЮЩЕГО урона`,
           'Громко скажите им это. Они должны ввести этот урон себе сами',
         );
       } else if (teamTotalHPChangeVal > 0) {
         this.$modals.alert(
           `Все ваши союзники восстанавливают по ${teamTotalHPChangeVal} единиц здоровья`,
-          'Громко скажите им это. Они должны ввести этот урон себе сами',
+          'Громко скажите им это. Они должны ввести размер лечения себе сами',
         );
       }
 
@@ -803,6 +811,10 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
     },
 
     takeDamage(value: number, isPiercing = false) {
+      if (value <= 0) {
+        console.log(`Taken damage < 0: ${value}`);
+        return;
+      }
       // Calculate damage
       let resultDamage = 0;
       if (isPiercing) {
@@ -833,6 +845,10 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
       this.$forceUpdate();
     },
     takeHeal(value: number) {
+      if (value <= 0) {
+        console.log(`Taken heal < 0: ${value}`);
+        return;
+      }
       if (!this.isUserDeadReactiveValue) {
         this.$popups.success(
           'Лечение засчитано',

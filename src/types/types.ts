@@ -106,7 +106,7 @@ export interface Skill {
 }
 
 export interface Guild {
-  id: string;
+  id: number;
   name: string;
   description: string;
   money: number;
@@ -173,5 +173,23 @@ export interface QRUserData {
     b?: number,
   },
   newQrs: string[],
+}
+
+export interface QRGuildData {
+  id: number,
+  e: number,
+  m: number,
+  l:  number,
+  i: number[]
+
+  lId: string,
+  mbs: {
+    i: string,
+    n: string,
+    u: string,
+    l: number,
+    e: number,
+  }[],
+  newQrs: {u: string, q: string}[],
 }
 

@@ -1,5 +1,5 @@
 import { type Modals } from '@sergtyapkin/modals-popups';
-import { Guild, User } from '~/types/types';
+import { Guild, QRGuildData, User } from '~/types/types';
 import { UserLevels } from '~/constants/levels';
 import { Classes } from '~/constants/classes';
 import { BuffsTypes, ClassTypes, MONEY_LOSE_BY_DEATH_PERCENT, NO_SERVER_MODE } from '~/constants/constants';
@@ -7,7 +7,9 @@ import { getAllUserBuffs, getAllUserEffects, getTotalUserMaxHP } from '~/utils/u
 import { Effects } from '~/constants/effects';
 import { ComponentCustomProperties } from 'vue';
 import validateModel from '@sergtyapkin/models-validator';
-import { GuildModel } from '~/utils/APIModels';
+import { QRGuildModel } from '~/utils/APIModels';
+import { NumbersToInventoryIds } from '~/constants/items';
+import { Guilds } from '~/constants/guilds';
 
 
 export function userTryToIncreaseLevel($user: User, $modals: typeof Modals) {
@@ -97,28 +99,32 @@ export function finishFight(th: ComponentCustomProperties) {
   th.$localStorageManager.saveSyncedData(th.$user, th.$guild);
 }
 
-export interface ExtendedGuild extends Guild {
-  scannedQRs: {u: string, q: string}[]
-}
-
 export function parseGuildData(th: ComponentCustomProperties, qrData: string) {
+  console.log(QRGuildModel, JSON.parse(qrData));
   try {
-    return validateModel(Object.assign({},
-      GuildModel,
-      {
-        scannedQRs: {
-          type: Array,
-          item: {
-            type: Object,
-            fields: {
-              u: String,
-              q: String,
-            }
-          }
-        }
-      }), qrData) as ExtendedGuild;
+    const g = validateModel(QRGuildModel, qrData) as QRGuildData;
+    const guildDefaultData = Guilds[g.id];
+    const guildData: Guild = {
+      id: g.id,
+      name: guildDefaultData.name,
+      description: guildDefaultData.description,
+      imageUrl: guildDefaultData.imageUrl,
+      money: g.m,
+      level: g.l,
+      experience: g.e,
+      inventory: g.i.map(i => NumbersToInventoryIds[i]),
+      leaderId: g.lId,
+      members: g.mbs.map(m => ({
+        id: m.i,
+        name: m.n,
+        imageUrl: m.u,
+        level: m.l,
+        experience: m.e,
+      })),
+    };
+    return {guild: guildData, qrs: g.newQrs};
   } catch (err) {
-    console.error("Qrr with QR:", err, " | QR Data:", qrData);
+    console.error("Error with QR:", err, " | QR Data:", qrData);
     th.$popups.error('Ошибка чтения данных гильдии', `С QR'ом что-то не так`);
     return;
   }
@@ -149,10 +155,11 @@ export async function syncWithGuild(th: ComponentCustomProperties, guildQRValue:
     return;
   }
 
-  const guildData = parseGuildData(th, guildQRValue);
-  if (!guildData) {
+  const guildAndQrs = parseGuildData(th, guildQRValue);
+  if (!guildAndQrs) {
     return;
   }
+  const {guild: guildData} = guildAndQrs;
   await th.$store.commit('SET_GUILD', guildData);
   th.$popups.success('QR отсканирован', 'Данные гильдии обновлены');
 

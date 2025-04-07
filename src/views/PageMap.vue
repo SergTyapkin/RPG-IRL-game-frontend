@@ -37,7 +37,7 @@
       :max-x-offset="200"
       :min-y-offset="200"
       :max-y-offset="200"
-      :default-scale="0.5"
+      :default-scale="0.35"
       unique-name="map"
       class="draggable-element"
     >
