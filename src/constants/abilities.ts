@@ -3,6 +3,8 @@ import { AbilityTypes } from '~/constants/constants';
 import { EffectedAbility } from '~/utils/utils';
 import { Effects } from '~/constants/effects';
 
+import ImgFists from '#/images/abilities/fists.png'
+
 export interface InFightAbility extends EffectedAbility {
   reloadLeft?: number;
 }
@@ -13,6 +15,7 @@ export const Abilities: { [key: string]: Ability } = {
     name: 'Кулаки',
     description: 'Удар кулаком наносит 1 или 2 урона с 50% шансом',
     type: AbilityTypes.other,
+    imageUrl: ImgFists,
     effectsToTargets: [],
     effectsForMe: [],
     damage: 0,
