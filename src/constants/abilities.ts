@@ -13,7 +13,7 @@ export const Abilities: { [key: string]: Ability } = {
   default: {
     id: String(),
     name: 'Кулаки',
-    description: 'Удар кулаком наносит 1 или 2 урона с 50% шансом',
+    description: 'Удар кулаком наносит 0 или 1 урона с 50% шансом',
     type: AbilityTypes.other,
     imageUrl: ImgFists,
     effectsToTargets: [],
