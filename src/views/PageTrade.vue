@@ -176,8 +176,6 @@ export default {
   methods: {
     async confirm() {
       if (this.qrType === QRTypes.resource && (this.moneyToTrade <= 0 || this.moneyToTrade > this.$user.stats.money)) {
-        
-      })) {
         this.$popups.alert('Увы', `Нельзя передать ${this.moneyToTrade} монет`);
         return;
       }
