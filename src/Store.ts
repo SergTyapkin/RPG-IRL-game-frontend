@@ -57,10 +57,10 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    GET_USER_OR_LOAD(this: Store, state: State) {
-      const syncedData = this.$app.$localStorageManager.loadSyncedData();
+    async GET_USER_OR_LOAD(this: Store, state: State) {
+      const syncedData = await this.$app.$localStorageManager.loadSyncedData();
       if (!syncedData) {
-        this.dispatch('GET_USER');
+        await this.dispatch('GET_USER');
         return;
       }
       state.commit('SET_USER', syncedData.user);
@@ -86,7 +86,7 @@ export default new Vuex.Store({
         }
         guild = this.state.guild;
       }
-      this.$app.$localStorageManager.saveSyncedData(user, guild);
+      await this.$app.$localStorageManager.saveSyncedData(user, guild);
       state.commit('SET_USER', user);
       state.commit('SET_GUILD', guild);
       this.$app.isUserSignedInReactiveValue = true;

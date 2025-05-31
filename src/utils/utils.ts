@@ -1,22 +1,25 @@
 import { IterableSkillTrees } from '~/constants/skills';
-import { Ability, Buffs, Effect, Item, QRData, Skill, User } from '~/types/types';
+import { Ability, Buffs, Effect, Item, QRData, QRUserData, Skill, User } from '~/types/types';
 import {
   BuffsTypes,
   DEFAULT_USER_MAX_UP,
   DEFAULT_USER_PROTECTION,
   ItemTypes,
   QR_CODE_ID_SPLITTER,
-  QRSource,
-  QRType,
-  ResourceType, UUID_LENGTH,
+  QRSource, QRSources,
+  QRType, QRTypes,
+  ResourceType, UserRoles, UUID_LENGTH,
 } from '~/constants/constants';
-import { Items } from '~/constants/items';
+import { InventoryIdsToNumbers, Items, NumbersToInventoryIds } from '~/constants/items';
 import { Abilities, InFightAbility } from '~/constants/abilities';
 import { Effects } from '~/constants/effects';
 
 import swAPI from '~/serviceWorker/swAPI';
 import { UserLevels } from '~/constants/levels';
 import { myDecoding, myEncoding } from '~/utils/encodeDecode';
+import { validateModel } from '@sergtyapkin/models-validator';
+import { QRUserModel } from '~/utils/APIModels';
+import { UserAvatars } from '~/constants/userAvatars';
 
 export function getCookie(name: string) {
   const matches = document.cookie.match(
@@ -398,6 +401,89 @@ export function getTotalUserExperience($user: User): number {
 
 
 // -----------------
+export async function generateUserDataQRText($user: User, scannedNotSavedQrs: QRData[], isFull=false): Promise<string> {
+  const userQRData = validateModel(QRUserModel, {
+    id: $user.id,
+    n: $user.name,
+    iU: UserAvatars.findIndex(i => i === $user.imageUrl),
+    l: $user.level,
+    cT: $user.classType,
+    st: {
+      ...(isFull && {h: $user.stats.hp}),
+      e: $user.stats.experience,
+      m: $user.stats.money,
+      p: $user.stats.power,
+      a: $user.stats.agility,
+      i: $user.stats.intelligence,
+    },
+    gId: $user.guildId,
+    i: $user.inventory.map(i => InventoryIdsToNumbers[i]),
+    e: {
+      h: $user.equipment.hat ? InventoryIdsToNumbers[$user.equipment.hat] : undefined,
+      m: $user.equipment.main ? InventoryIdsToNumbers[$user.equipment.main] : undefined,
+      b: $user.equipment.boots ? InventoryIdsToNumbers[$user.equipment.boots] : undefined,
+    },
+    newQrs: scannedNotSavedQrs.map(qr => qr.id),
+    ...(isFull && {
+      iIF: $user.isInFight,
+      iSI: $user.isSignedIn,
+      nSI: $user.notSyncedInventory.map(i => InventoryIdsToNumbers[i]),
+      nSS: {
+        e: $user.notSyncedStats.experience,
+        m: $user.notSyncedStats.money,
+        p: $user.notSyncedStats.power,
+        a: $user.notSyncedStats.agility,
+        i: $user.notSyncedStats.intelligence,
+      },
+      r: $user.role,
+      s: $user.skills,
+    }),
+  });
+  return generateQRText(QRTypes.userData, '_', QRSources.user, JSON.stringify(userQRData));
+}
+export async function parseUserDataQRText(QRDataText: string): Promise<User | null> {
+  const decodedQRData = await parseQRText(QRDataText);
+  if (!decodedQRData || decodedQRData.type !== QRTypes.userData) {
+    return null;
+  }
+  const u = validateModel(QRUserModel, decodedQRData.value) as QRUserData;
+  return {
+    id: u.id,
+    name: u.n,
+    level: u.l,
+    imageUrl: UserAvatars[u.iU],
+    stats: {
+      hp: u.st.h || 0,
+      experience: u.st.e,
+      money: u.st.m,
+      power: u.st.p,
+      agility: u.st.a,
+      intelligence: u.st.i,
+    },
+    classType: u.cT,
+    guildId: u.gId,
+    inventory: u.i.map(i => NumbersToInventoryIds[i]),
+    equipment: {
+      hat: u.e.h ? NumbersToInventoryIds[u.e.h] : undefined,
+      main: u.e.m ? NumbersToInventoryIds[u.e.m] : undefined,
+      boots: u.e.b ? NumbersToInventoryIds[u.e.b] : undefined,
+    },
+    scannedQRs: u.newQrs,
+
+    isInFight: u.iIF || false,
+    isSignedIn: u.iSI || false,
+    notSyncedInventory: u.nSI?.map?.(i => NumbersToInventoryIds[i]) || [],
+    notSyncedStats: {
+      experience: u.nSS?.e || 0,
+      money: u.nSS?.m || 0,
+      power: u.nSS?.p || 0,
+      agility: u.nSS?.a || 0,
+      intelligence: u.nSS?.i || 0,
+    },
+    role: u.r || UserRoles.user,
+    skills: u.s || [],
+  };
+}
 export async function generateQRText(QRType: QRType, QRSubType: ResourceType | '_', QRSource: QRSource, QRValue: string, QRId?: string): Promise<string> {
   QRId = QRId || myUuid();
   const qrText = `${QRType}${QRSubType}${QRSource}${QRValue}${QR_CODE_ID_SPLITTER}${QRId}`;
@@ -405,18 +491,22 @@ export async function generateQRText(QRType: QRType, QRSubType: ResourceType | '
 }
 
 export async function parseQRText(text: string): Promise<QRData | null> {
-  const qrText = await myDecoding(text)
+  console.log(text);
+  const qrText = await myDecoding(text);
+  console.log(qrText);
   if (!qrText) {
     return null;
   }
 
   // work with data
   const splitted = qrText.split(QR_CODE_ID_SPLITTER);
+  console.log(splitted);
   if (splitted.length !== 2) {
     console.error('QR not splitted by splitter symbol');
     return null;
   }
   const [textVal, textId] = splitted;
+  console.log(textVal, textId);
   return {
     type: textVal[0] as QRType,
     subType: textVal[1] as ResourceType | '_',

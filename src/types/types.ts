@@ -159,6 +159,7 @@ export interface QRUserData {
   l: number,
   cT: string,
   st: {
+    h?: number,
     e: number,
     m: number,
     p: number,
@@ -173,6 +174,19 @@ export interface QRUserData {
     b?: number,
   },
   newQrs: string[],
+
+  iIF?: boolean,
+  iSI?: boolean,
+  nSI?: number[],
+  nSS?: {
+    e: number,
+    m: number,
+    p: number,
+    a: number,
+    i: number,
+  },
+  r?: UserRole,
+  s?: string[],
 }
 
 export interface QRGuildData {

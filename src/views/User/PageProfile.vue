@@ -340,10 +340,10 @@ export default {
       this.$user.inventory.splice(idx, 1);
 
       this.selectedItem = undefined;
-      this.saveAndUpdateInventories();
+      await this.saveAndUpdateInventories();
     },
-    saveAndUpdateInventories() {
-      this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
+    async saveAndUpdateInventories() {
+      await this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
       this.recalculateUserStats();
       (this.$refs.inventory as typeof Inventory).update();
       (this.$refs.equipment as typeof Equipment).update();

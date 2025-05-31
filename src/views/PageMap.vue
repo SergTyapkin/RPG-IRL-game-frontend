@@ -11,7 +11,7 @@
   padding-bottom 100px !important
   .draggable-element
     //position unset
-    max-height calc(100vh - 90px)
+    max-height calc(100vh - 100px)
     background linear-gradient(165deg, black, mix(mix(colorEmp1, black, 40%), transparent, 40%))
     &::before
       content ""
@@ -31,12 +31,14 @@
 <template>
   <div class="root-map">
     <ZoomPinch
-      :min-scale="0.2"
-      :max-scale="5"
+      min-scale-is-object-fit-contains
+      :max-scale="1"
       :default-scale="0.4"
-      :offsets="{ left: 100, top: 100, right: 100, bottom: 100 }"
+      :offsets="{ left: 200, top: 200, right: 200, bottom: 200 }"
+      local-storage-unique-name="map"
       mouse
       touch
+      default-centered
       ref="draggableEl"
       class="draggable-element"
     >
@@ -50,7 +52,6 @@
 
 <script lang="ts">
 import ZoomPinch from '@sergtyapkin/vue3-zoompinch';
-import { nextTick } from 'vue';
 
 export default {
   components: { ZoomPinch },
@@ -60,8 +61,6 @@ export default {
   },
 
   async mounted() {
-    await nextTick();
-    this.$refs.draggableEl.$forceUpdate();
   },
 
   methods: {},

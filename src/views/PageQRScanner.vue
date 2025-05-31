@@ -252,7 +252,7 @@ export default {
             value: QRValue,
           });
           this.$localStorageManager.saveScannedNotSavedQrs(this.scannedNotSavedQrs);
-          this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
+          await this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
           this.$router.push({ name: 'profile' });
         }
         if (QRType === QRTypes.guildData) {

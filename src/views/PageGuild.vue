@@ -155,7 +155,9 @@ export default {
     },
   },
 
-  mounted() {},
+  mounted() {
+    console.log(this.$guild, this.$user);
+  },
 
   methods: {
     selectItem(item: Item) {

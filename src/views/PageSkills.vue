@@ -28,12 +28,15 @@
       border-radius borderRadiusM
       hover-effect()
       trans()
+
       &:nth-child(1)
         animation-float(0.5s, -20px, 0, left)
+
       &:nth-child(2)
         animation-opacity()
+
       &:nth-child(3)
-        animation-float(0.5s, +20px, 0, right)
+        animation-float(0.5s, + 20px, 0, right)
 
       &.selected
         background colorBlockBg
@@ -228,7 +231,7 @@
       <ZoomPinch
         :min-scale="0.5"
         :max-scale="3"
-        :offsets="{left: 100, top: 100, right: 100, bottom: 100}"
+        :offsets="{ left: 100, top: 100, right: 100, bottom: 100 }"
         mouse
         touch
         :inner-element-width="svgMaxWidth"
@@ -249,13 +252,13 @@
                   :y2="line[1] + 40"
                   :x1="line[2] + 40"
                   :y1="line[3] + 40"
-                  :style="{'--animation-index': 3 + idx + i}"
+                  :style="{ '--animation-index': 3 + idx + i }"
                 />
               </g>
             </g>
 
             <g class="skills">
-              <g v-for="(skill, idx) in currentIterableSkillTree" :key="skill.id" :style="{'--animation-index': idx}">
+              <g v-for="(skill, idx) in currentIterableSkillTree" :key="skill.id" :style="{ '--animation-index': idx }">
                 <foreignObject
                   class="cell-container"
                   :x="skill.position[0]"
@@ -406,19 +409,19 @@ export default {
       this.selectedSkill = skill;
     },
 
-    learnSkill(skill: Skill) {
+    async learnSkill(skill: Skill) {
       const skillCost = Math.max(0, skill.cost - this.currentDiscounts[this.selectedTree]);
-      if (this.$user.stats[this.ResourceTypesToStats[this.selectedTree]] < skillCost) {
+      if (this.$user.stats[this.ResourceTypesToStats[this.selectedTree] as keyof typeof this.$user.stats] < skillCost) {
         return;
       }
-      this.$user.stats[this.ResourceTypesToStats[this.selectedTree]] -= skillCost;
+      this.$user.stats[this.ResourceTypesToStats[this.selectedTree] as keyof typeof this.$user.stats] -= skillCost;
       const idx = this.$user.skills.findIndex(i => i === skill.id!);
       if (idx === -1) {
         this.$user.skills.push(skill.id!);
       }
       this.selectedSkill = undefined;
       this.updateSkillPoints();
-      this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
+      await this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
     },
   },
 };

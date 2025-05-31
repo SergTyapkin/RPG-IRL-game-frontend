@@ -75,15 +75,11 @@
 import QRGenerator from '~/components/QRGenerator.vue';
 import { Guilds } from '~/constants/guilds';
 import QRScanner from '~/components/QRScanner.vue';
-import { generateQRText, parseQRText } from '~/utils/utils';
-import { MAX_UUIDS_PER_QR, QRSources, QRTypes, UserRoles } from '~/constants/constants';
-import { validateModel } from '@sergtyapkin/models-validator';
-import { QRUserModel } from '~/utils/APIModels';
-import { Guild, QRGuildData, QRUserData, User } from '~/types/types';
+import { generateQRText, parseQRText, parseUserDataQRText } from '~/utils/utils';
+import { MAX_UUIDS_PER_QR, QRSources, QRTypes } from '~/constants/constants';
+import { Guild, QRGuildData, User } from '~/types/types';
 import { GuildLevels, UserLevels } from '~/constants/levels';
 import { nextTick } from 'vue';
-import { UserAvatars } from '~/constants/userAvatars';
-import { NumbersToInventoryIds } from '~/constants/items';
 
 export default {
   components: { QRScanner, QRGenerator },
@@ -116,7 +112,7 @@ export default {
             description: guild.description,
             money: 0,
             experience: 0,
-            level: 0,
+            level: 1,
             imageUrl: guild.imageUrl,
             inventory: [],
             leaderId: '',
@@ -160,6 +156,7 @@ export default {
         })),
         newQrs: this.scannedQRs,
       };
+      console.log(`Regenerated QR for guild: ${guild.name} #${guild.id}:`, guildData);
       const qrData = await generateQRText(QRTypes.guildData, '_', QRSources.guild, JSON.stringify(guildData));
       if (qrElements && qrIdx !== -1 && qrElements[qrIdx]) {
         qrElements[qrIdx].regenerate(qrData);
@@ -208,36 +205,18 @@ export default {
         this.$popups.error('Неизвестный QR-код', 'Проверьте, что этот QR код от этой игры');
         return;
       }
-      const { type: QRType, value: QRValue } = res;
+      const { type: QRType } = res;
       if (QRType !== QRTypes.userData) {
         this.$popups.error('Это не QR вашего персонажа', 'Этому экрану можно показывать только QR персонажа');
         return;
       }
       let userData: User;
       try {
-        const u = validateModel(QRUserModel, QRValue) as QRUserData;
-        userData = {
-          id: u.id,
-          name: u.n,
-          level: u.l,
-          imageUrl: UserAvatars[u.iU],
-          stats: { hp: 0, experience: 0, money: 0, power: 0, agility: 0, intelligence: 0 },
-          notSyncedStats: { experience: 0, money: 0, power: 0, agility: 0, intelligence: 0 },
-          classType: u.cT,
-          guildId: u.gId,
-          skills: [],
-          inventory: u.i.map(i => NumbersToInventoryIds[i]),
-          notSyncedInventory: [],
-          equipment: {
-            hat: u.e.h ? NumbersToInventoryIds[u.e.h] : undefined,
-            main: u.e.m ? NumbersToInventoryIds[u.e.m] : undefined,
-            boots: u.e.b ? NumbersToInventoryIds[u.e.b] : undefined,
-          },
-          scannedQRs: u.newQrs,
-          role: UserRoles.user,
-          isInFight: false,
-          isSignedIn: false,
-        };
+        const parsed = await parseUserDataQRText(text);
+        if (!parsed) {
+          throw Error("userData is null");
+        }
+        userData = parsed;
       } catch (err) {
         this.$popups.error('Ошибка чтения QR', 'Ошибка при парсинге объекта пользователя');
         console.error('Ошибка при парсинге объекта пользователя', err);

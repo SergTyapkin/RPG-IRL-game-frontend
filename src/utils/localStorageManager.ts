@@ -2,8 +2,9 @@
 
 import { Ability, Effect, Guild, QRData, SyncedData, type User } from '~/types/types';
 import { validateModel } from '@sergtyapkin/models-validator';
-import { AbilityModel, EffectModel, GuildModel, QRDataModel, SyncDataModel } from '~/utils/APIModels';
-import { ExtendedAbility, InFightExtendedAbility } from '~/utils/utils';
+import { AbilityModel, EffectModel, GuildModel, QRDataModel, SyncLocalDataModel } from '~/utils/APIModels';
+import { ExtendedAbility, generateUserDataQRText, InFightExtendedAbility, parseUserDataQRText } from '~/utils/utils';
+import { myDecoding, myEncoding } from '~/utils/encodeDecode';
 
 /**
  * @enum _PropertyNames
@@ -29,17 +30,37 @@ const _PropertyNames = {
  */
 export default class LocalStorageManager {
   // ---- USER ----
-  saveSyncedData(user: User, guild: Guild) {
-    localStorage.setItem(_PropertyNames.syncedData, JSON.stringify({ user, guild }));
+  async saveSyncedData(user: User, guild: Guild) {
+    console.log("Saved User:", user);
+    console.log("Saved Guild:", guild);
+    localStorage.setItem(
+      _PropertyNames.syncedData,
+      JSON.stringify({
+        user: await generateUserDataQRText(user, [], true),
+        guild: await myEncoding(JSON.stringify(guild)),
+      })
+    );
   }
 
-  loadSyncedData(): SyncedData | null {
+  async loadSyncedData(): Promise<SyncedData | null> {
     const res = localStorage.getItem(_PropertyNames.syncedData);
     if (!res) {
       return null;
     }
     try {
-      return validateModel(SyncDataModel, res) as SyncedData;
+      const loaded = validateModel(SyncLocalDataModel, res) as { user: string, guild: string };
+      const userData = await parseUserDataQRText(loaded.user);
+      const guildDataText = await myDecoding(loaded.guild);
+      if (!userData || !guildDataText) {
+        return null;
+      }
+      const guildData = validateModel(GuildModel, guildDataText) as Guild;
+      console.log("Loaded User:", userData);
+      console.log("Loaded Guild:", guildData);
+      return {
+        user: userData,
+        guild: guildData,
+      }
     } catch {
       return null;
     }

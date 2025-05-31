@@ -582,7 +582,7 @@ export default {
       this.isUserInFightReactiveValue = true;
       this.fightPowers = [];
       this.isHpProtectionShowedOnly = true;
-      startFight(this);
+      await startFight(this);
       this.$forceUpdate();
       await this.$modals.alert(
         'Бой начат',
@@ -601,13 +601,13 @@ export default {
         return;
       }
       this.$user.isInFight = false;
-      this.finishFight();
+      await this.finishFight();
     },
-    finishFight() {
+    async finishFight() {
       this.isUserInFightReactiveValue = false;
       this.fightEffects = [];
       this.fightPowers = [];
-      finishFight(this);
+      await finishFight(this);
 
       this.abilities.forEach(ability => (ability.reloadLeft = 0));
       this.$forceUpdate();
@@ -737,7 +737,7 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
       }
       if (heal > 0) {
         if (ability.targetsCount === 0) {
-          this.takeHeal(heal); // User gets heal by himself
+          await this.takeHeal(heal); // User gets heal by himself
         } else {
           await this.$modals.alert(
             `Вы лечите ${heal} здоровья ${targetsCount} союзник${targetsCount > 1 ? 'ам' : 'у'}`,
@@ -748,7 +748,7 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
 
       this.fightPowers = [];
       this.$localStorageManager.removeFightPowers();
-      this.applyOneTurnEffects();
+      await this.applyOneTurnEffects();
       this.saveAbilitiesReloads();
       this.recalculateUserStats();
     },
@@ -760,7 +760,7 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
 
       this.$localStorageManager.saveAbilitiesReloads(abilitiesReloads);
     },
-    applyOneTurnEffects() {
+    async applyOneTurnEffects() {
       // Abilities reload decrease by 1
       this.abilities.forEach(ability => {
         ability.reloadLeft = Math.max((ability.reloadLeft ?? 1) - 1, 0);
@@ -772,9 +772,9 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
         totalHPChangeVal += effect.buffs[BuffsTypes.hpEveryTurn] ?? 0;
       });
       if (totalHPChangeVal < 0) {
-        this.takeDamage(totalHPChangeVal);
+        await this.takeDamage(totalHPChangeVal);
       } else if (totalHPChangeVal > 0) {
-        this.takeHeal(totalHPChangeVal);
+        await this.takeHeal(totalHPChangeVal);
       }
 
       // Team bleeding
@@ -796,7 +796,7 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
         );
       }
 
-      this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
+      await this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
       this.$forceUpdate();
     },
 
@@ -810,7 +810,7 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
       this.modalState = this.ModalStates.chooseHeal;
     },
 
-    takeDamage(value: number, isPiercing = false) {
+    async takeDamage(value: number, isPiercing = false) {
       if (value <= 0) {
         console.log(`Taken damage < 0: ${value}`);
         return;
@@ -837,14 +837,14 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
       if (this.$user.stats.hp <= 0) {
         this.userDead();
       }
-      this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
+      await this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
 
       this.modalState = this.ModalStates.none;
       this.chosenValue = 0;
       this.recalculateUserStats();
       this.$forceUpdate();
     },
-    takeHeal(value: number) {
+    async takeHeal(value: number) {
       if (value <= 0) {
         console.log(`Taken heal < 0: ${value}`);
         return;
@@ -857,7 +857,7 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
         this.$user.stats.hp += value;
         this.$user.stats.hp = Math.min(this.$user.stats.hp, this.userMaxHp);
       }
-      this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
+      await this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
 
       this.modalState = this.ModalStates.none;
       this.chosenValue = 0;
@@ -891,7 +891,7 @@ ${effectsToTargetsNames} на ${targetsCount} противник${targetsCount >
             `Артефакт использован!`,
             `Вы восстанавливаете все очки здоровья. Это не считалось за ход`,
           );
-          this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
+          await this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
           this.recalculateUserStats();
           this.$forceUpdate();
           return;

@@ -1,4 +1,4 @@
-import { validateModel } from '@sergtyapkin/models-validator';
+import { ArrayType, ObjectType, Type, validateModel } from '@sergtyapkin/models-validator';
 import {
   AbilityTypes,
   BuffsTypes,
@@ -334,6 +334,12 @@ export const SyncDataModel = {
   },
 };
 
+
+export const SyncLocalDataModel = {
+  user: String,
+  guild: String,
+};
+
 export const SyncDataModelMockData = {
   user: UserModelMockData,
   guild: GuildModelMockData,
@@ -361,43 +367,34 @@ export const QRUserModel = {
   iU: Number,
   l: Number,
   cT: String,
-  st: {
-    type: Object,
-    fields: {
-      e: Number,
-      m: Number,
-      p: Number,
-      a: Number,
-      i: Number,
-    }
-  },
+  st: ObjectType({
+    h: Type(Number, true),
+    e: Number,
+    m: Number,
+    p: Number,
+    a: Number,
+    i: Number,
+  }),
   gId: String,
-  i: {
-    type: Array,
-    item: Number,
-  },
-  e: {
-    type: Object,
-    fields: {
-      h: {
-        type: Number,
-        optional: true,
-      },
-      m: {
-        type: Number,
-        optional: true,
-      },
-      b: {
-        type: Number,
-        optional: true,
-      },
-    },
-  },
-  newQrs: {
-    type: Array,
-    item: String,
-    optional: true,
-  },
+  i: ArrayType(Number),
+  e: ObjectType({
+    h: Type(Number, true),
+    m: Type(Number, true),
+    b: Type(Number, true),
+  }),
+  newQrs: ArrayType(String, true),
+
+  iIF: Type(Boolean, true),
+  nSI: ArrayType(Number, true),
+  nSS: ObjectType({
+    e: Number,
+    m: Number,
+    p: Number,
+    a: Number,
+    i: Number,
+  }, true),
+  r: Type(new Set(Array.from(Object.values(UserRoles))), true),
+  s: ArrayType(String, true),
 };
 
 

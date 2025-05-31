@@ -195,7 +195,7 @@ export default {
         );
         this.$user.stats.money -= this.moneyToTrade;
       }
-      this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
+      await this.$localStorageManager.saveSyncedData(this.$user, this.$guild);
     },
     finish() {
       this.$router.push({ name: 'profile' });

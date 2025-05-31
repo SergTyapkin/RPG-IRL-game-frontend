@@ -83,20 +83,20 @@ export function userRevive($user: User) {
   $user.stats.hp = getTotalUserMaxHP($user);
 }
 
-export function startFight(th: ComponentCustomProperties) {
+export async function startFight(th: ComponentCustomProperties) {
   th.$user.isInFight = true;
   th.$app.isUserInFightReactiveValue = true;
   th.$localStorageManager.removeFightPowers();
-  th.$localStorageManager.saveSyncedData(th.$user, th.$guild);
+  await th.$localStorageManager.saveSyncedData(th.$user, th.$guild);
 }
 
-export function finishFight(th: ComponentCustomProperties) {
+export async function finishFight(th: ComponentCustomProperties) {
   th.$user.isInFight = false;
   th.$app.isUserInFightReactiveValue = false;
   th.$localStorageManager.removeAbilitiesReloads();
   th.$localStorageManager.removeFightPowers();
   th.$localStorageManager.removeFightEffects();
-  th.$localStorageManager.saveSyncedData(th.$user, th.$guild);
+  await th.$localStorageManager.saveSyncedData(th.$user, th.$guild);
 }
 
 export function parseGuildData(th: ComponentCustomProperties, qrData: string) {
@@ -184,5 +184,5 @@ export async function syncWithGuild(th: ComponentCustomProperties, guildQRValue:
 
   userTryToIncreaseLevel(th.$user, th.$modals);
 
-  th.$localStorageManager.saveSyncedData(th.$user, th.$guild);
+  await th.$localStorageManager.saveSyncedData(th.$user, th.$guild);
 }
