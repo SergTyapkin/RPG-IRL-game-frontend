@@ -1,5 +1,5 @@
 import REST_API from '@sergtyapkin/rest-api';
-import validateModel, { type Model } from '@sergtyapkin/models-validator';
+import { validateModel, type Model } from '@sergtyapkin/models-validator';
 import { SyncDataModel, SyncDataModelMockData, UserModel } from '~/utils/APIModels';
 import { Item, SyncedData, type User } from '~/types/types';
 

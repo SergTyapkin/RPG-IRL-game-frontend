@@ -7,6 +7,8 @@ import createVueRouter from '~/Router';
 
 import '~/styles/fontsLoader.styl';
 import '~/styles/global.styl';
+import '@sergtyapkin/vue3-zoompinch/style.css';
+
 import swAPI from '~/serviceWorker/swAPI';
 
 await swAPI.register();

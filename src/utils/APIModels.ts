@@ -1,4 +1,4 @@
-import validateModel from "@sergtyapkin/models-validator";
+import { validateModel } from '@sergtyapkin/models-validator';
 import {
   AbilityTypes,
   BuffsTypes,

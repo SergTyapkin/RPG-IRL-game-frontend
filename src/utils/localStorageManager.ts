@@ -1,7 +1,7 @@
 /** @module **/
 
 import { Ability, Effect, Guild, QRData, SyncedData, type User } from '~/types/types';
-import validateModel from '@sergtyapkin/models-validator';
+import { validateModel } from '@sergtyapkin/models-validator';
 import { AbilityModel, EffectModel, GuildModel, QRDataModel, SyncDataModel } from '~/utils/APIModels';
 import { ExtendedAbility, InFightExtendedAbility } from '~/utils/utils';
 

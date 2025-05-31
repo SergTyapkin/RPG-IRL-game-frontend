@@ -78,7 +78,7 @@ import { NO_SERVER_MODE, QRSources, QRTypes } from '~/constants/constants';
 import { nextTick } from 'vue';
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import { QRData } from '~/types/types';
-import validateModel from '@sergtyapkin/models-validator';
+import { validateModel } from '@sergtyapkin/models-validator';
 import { QRUserModel } from '~/utils/APIModels';
 import { InventoryIdsToNumbers } from '~/constants/items';
 import { UserAvatars } from '~/constants/userAvatars';

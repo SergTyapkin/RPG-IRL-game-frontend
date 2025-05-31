@@ -6,7 +6,7 @@ import { BuffsTypes, ClassTypes, MONEY_LOSE_BY_DEATH_PERCENT, NO_SERVER_MODE } f
 import { getAllUserBuffs, getAllUserEffects, getTotalUserMaxHP } from '~/utils/utils';
 import { Effects } from '~/constants/effects';
 import { ComponentCustomProperties } from 'vue';
-import validateModel from '@sergtyapkin/models-validator';
+import { validateModel } from '@sergtyapkin/models-validator';
 import { QRGuildModel } from '~/utils/APIModels';
 import { NumbersToInventoryIds } from '~/constants/items';
 import { Guilds } from '~/constants/guilds';

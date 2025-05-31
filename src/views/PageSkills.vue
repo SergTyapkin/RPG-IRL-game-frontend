@@ -225,18 +225,16 @@
 
     <hr>
     <section class="section-skills-tree">
-      <DraggableComponent
-        ref="draggableEl"
-        :default-scale="1"
-        :max-x-offset="100"
-        :max-y-offset="100"
-        :min-x-offset="100"
-        :min-y-offset="100"
+      <ZoomPinch
         :min-scale="0.5"
         :max-scale="3"
+        :offsets="{left: 100, top: 100, right: 100, bottom: 100}"
+        mouse
+        touch
         :inner-element-width="svgMaxWidth"
         :inner-element-height="svgMaxHeight"
         class="draggable-element"
+        ref="draggableEl"
       >
         <div class="tree-container">
           <svg :viewBox="`0 0 ${svgMaxWidth} ${svgMaxHeight}`" :width="svgMaxWidth" :height="svgMaxHeight">
@@ -290,7 +288,7 @@
             </g>
           </svg>
         </div>
-      </DraggableComponent>
+      </ZoomPinch>
     </section>
     <hr>
 
@@ -337,15 +335,15 @@
 import UserProfileInfo from '~/components/UserProfileInfo.vue';
 import ValueBadge from '~/components/ValueBadge.vue';
 import { BuffsTypes, ResourceType, ResourceTypes } from '~/constants/constants';
-import DraggableComponent from '~/components/DraggableComponent.vue';
 import Cell from '~/components/Cell.vue';
 import { type Skill } from '~/types/types';
 import { IterableSkillTrees } from '~/constants/skills';
 import ItemInfo from '~/components/ItemInfo.vue';
 import { ExtendedSkill, getAllUserBuffs } from '~/utils/utils';
+import ZoomPinch from '@sergtyapkin/vue3-zoompinch';
 
 export default {
-  components: { ItemInfo, Cell, DraggableComponent, ValueBadge, UserProfileInfo },
+  components: { ZoomPinch, ItemInfo, Cell, ValueBadge, UserProfileInfo },
 
   data() {
     return {
@@ -399,7 +397,7 @@ export default {
       // this.$refs.agility.$forceUpdate();
       // this.$refs.intelligence.$forceUpdate();
       this.$forceUpdate();
-      (this.$refs.draggableEl as typeof DraggableComponent).$forceUpdate();
+      (this.$refs.draggableEl as typeof ZoomPinch).$forceUpdate();
     },
     selectTree(type: ResourceType) {
       this.selectedTree = type;

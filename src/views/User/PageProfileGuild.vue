@@ -77,7 +77,7 @@ import { Guilds } from '~/constants/guilds';
 import QRScanner from '~/components/QRScanner.vue';
 import { generateQRText, parseQRText } from '~/utils/utils';
 import { MAX_UUIDS_PER_QR, QRSources, QRTypes, UserRoles } from '~/constants/constants';
-import validateModel from '@sergtyapkin/models-validator';
+import { validateModel } from '@sergtyapkin/models-validator';
 import { QRUserModel } from '~/utils/APIModels';
 import { Guild, QRGuildData, QRUserData, User } from '~/types/types';
 import { GuildLevels, UserLevels } from '~/constants/levels';
@@ -85,22 +85,20 @@ import { nextTick } from 'vue';
 import { UserAvatars } from '~/constants/userAvatars';
 import { NumbersToInventoryIds } from '~/constants/items';
 
-
 export default {
   components: { QRScanner, QRGenerator },
 
   data() {
     return {
-      allGuildsData: {} as {[key: number]: Guild},
+      allGuildsData: {} as { [key: number]: Guild },
 
-      showHiddenGuilds: (this.$route.query.showHidden === 'true'),
+      showHiddenGuilds: this.$route.query.showHidden === 'true',
 
-      scannedQRs: [] as {u: string, q: string}[],
+      scannedQRs: [] as { u: string; q: string }[],
     };
   },
 
-  computed: {
-  },
+  computed: {},
 
   async mounted() {
     this.$app.userRoleReactiveValue = this.$user.role;
@@ -109,7 +107,7 @@ export default {
     if (!allGuildsData) {
       this.allGuildsData = {};
       Object.keys(Guilds).forEach(guildId => {
-        const guildIdNum = Number(guildId)
+        const guildIdNum = Number(guildId);
         const guild = Guilds[guildIdNum];
         if (guild && (this.showHiddenGuilds || !guild.hidden)) {
           this.allGuildsData[guildIdNum] = {
@@ -138,14 +136,13 @@ export default {
     this.regenerateQRs();
   },
 
-  unmounted() {
-  },
+  unmounted() {},
 
   methods: {
     async regenerateGuildQr(guildId: number) {
-      const qrElements = this.$refs.qrs as typeof QRGenerator[];
+      const qrElements = this.$refs.qrs as (typeof QRGenerator)[];
       const qrInputs = this.$refs.qrInputs as HTMLInputElement[];
-      const qrIdx = Object.keys(this.allGuildsData).findIndex(gId => Number(gId) === Number(guildId))
+      const qrIdx = Object.keys(this.allGuildsData).findIndex(gId => Number(gId) === Number(guildId));
       const guild = this.allGuildsData[guildId];
       const guildData: QRGuildData = {
         id: guild.id,
@@ -163,22 +160,20 @@ export default {
         })),
         newQrs: this.scannedQRs,
       };
-      const qrData = await generateQRText(
-        QRTypes.guildData, '_', QRSources.guild, JSON.stringify(guildData),
-      );
+      const qrData = await generateQRText(QRTypes.guildData, '_', QRSources.guild, JSON.stringify(guildData));
       if (qrElements && qrIdx !== -1 && qrElements[qrIdx]) {
         qrElements[qrIdx].regenerate(qrData);
         qrInputs[qrIdx].value = qrData;
       }
     },
     regenerateQRs() {
-      Object.keys(this.allGuildsData).forEach(guildId =>  {
+      Object.keys(this.allGuildsData).forEach(guildId => {
         this.regenerateGuildQr(Number(guildId));
       });
     },
 
     recalculateGuildLevel(guild: Guild) {
-      function getTotalMemberExperience($user: {level: number, experience: number}): number {
+      function getTotalMemberExperience($user: { level: number; experience: number }): number {
         let res = 0;
         for (let level = 1; level < $user.level; level++) {
           res += UserLevels[level].experience;
@@ -188,7 +183,7 @@ export default {
       }
 
       guild.experience = 0;
-      guild.members.forEach(member => guild.experience += getTotalMemberExperience(member));
+      guild.members.forEach(member => (guild.experience += getTotalMemberExperience(member)));
 
       const maxLevel = Math.max(...Object.keys(GuildLevels).map(Number));
       const prevLevel = guild.level;
@@ -213,7 +208,7 @@ export default {
         this.$popups.error('Неизвестный QR-код', 'Проверьте, что этот QR код от этой игры');
         return;
       }
-      const {type: QRType, value: QRValue} = res;
+      const { type: QRType, value: QRValue } = res;
       if (QRType !== QRTypes.userData) {
         this.$popups.error('Это не QR вашего персонажа', 'Этому экрану можно показывать только QR персонажа');
         return;
@@ -226,8 +221,8 @@ export default {
           name: u.n,
           level: u.l,
           imageUrl: UserAvatars[u.iU],
-          stats: {hp: 0, experience: 0, money: 0, power: 0, agility: 0, intelligence: 0},
-          notSyncedStats: {experience: 0, money: 0, power: 0, agility: 0, intelligence: 0},
+          stats: { hp: 0, experience: 0, money: 0, power: 0, agility: 0, intelligence: 0 },
+          notSyncedStats: { experience: 0, money: 0, power: 0, agility: 0, intelligence: 0 },
           classType: u.cT,
           guildId: u.gId,
           skills: [],
@@ -242,10 +237,10 @@ export default {
           role: UserRoles.user,
           isInFight: false,
           isSignedIn: false,
-        }
+        };
       } catch (err) {
         this.$popups.error('Ошибка чтения QR', 'Ошибка при парсинге объекта пользователя');
-        console.error("Ошибка при парсинге объекта пользователя", err);
+        console.error('Ошибка при парсинге объекта пользователя', err);
         return;
       }
 
@@ -257,7 +252,7 @@ export default {
         return;
       }
       // Update members
-      const memberIdx = guild.members.findIndex(m => m.id === userData.id)
+      const memberIdx = guild.members.findIndex(m => m.id === userData.id);
       if (memberIdx !== -1) {
         const member = guild.members[memberIdx];
         member.level = userData.level;
@@ -276,10 +271,10 @@ export default {
       (userData.scannedQRs || []).forEach(q => {
         const idx = this.scannedQRs.findIndex(qr => qr.q === q);
         if (idx === -1) {
-          if (this.scannedQRs.length >= (MAX_UUIDS_PER_QR / 2)) {
+          if (this.scannedQRs.length >= MAX_UUIDS_PER_QR / 2) {
             this.scannedQRs.shift();
           }
-          this.scannedQRs.push({u: userData.id, q: q});
+          this.scannedQRs.push({ u: userData.id, q: q });
         }
       });
       this.$localStorageManager.saveGuildScannedQrs(this.scannedQRs);
@@ -295,7 +290,7 @@ export default {
       // const userData = UserModelMockData;
       // userData.stats.experience = 40;
       // this.onScan(await generateQRText(QRTypes.userData, '_', QRSources.user, JSON.stringify(userData)));
-    }
-  }
+    },
+  },
 };
 </script>
