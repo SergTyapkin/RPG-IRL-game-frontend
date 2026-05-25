@@ -40,8 +40,9 @@ export default defineConfig(({ mode }: { command: 'build' | 'serve'; mode: 'deve
         injectManifest: {
           injectionPoint: undefined,
         },
-        srcDir: 'dist',
-        filename: 'sw.js',
+        srcDir: 'src/serviceWorker',
+        filename: 'sw.ts',
+        outDir: 'dist',
 
 
         includeManifestIcons: true,
