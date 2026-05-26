@@ -1,12 +1,19 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "lib": ["ESNext", "DOM", "WebWorker"],
+    "lib": ["ESNext", "WebWorker"],
     "noEmit": false,
+    "outDir": "../../dist",
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "isolatedModules": false,
     "strict": false,
-    "outDir": "public",
-    "target": "ESNext",
-    "isolatedModules": false
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "types": []
   },
-  "include": ["sw"]
+  "include": ["sw.ts"],
+  "exclude": ["node_modules"]
 }
