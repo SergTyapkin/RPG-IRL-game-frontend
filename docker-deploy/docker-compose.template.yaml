@@ -2,7 +2,7 @@ name: ${FRONTEND_COMPOSE_NAME:-frontend-compose}
 services:
   # Base frontend container. When all certs generated any other nginx containers must be stopped
   nginx:
-    container_name: ${FRONTEND_COMPOSE_NAME:-frontend-compose}-frontend-nginx
+    container_name: ${FRONTEND_CONTAINER_NAME:-frontend-container}
     build:
       context: ../
       dockerfile: ./docker-deploy/Dockerfile
