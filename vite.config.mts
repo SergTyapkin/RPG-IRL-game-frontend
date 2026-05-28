@@ -7,8 +7,7 @@ import { VitePWA as pluginVitePWA } from 'vite-plugin-pwa';
 import { viteStaticCopy as pluginViteStaticCopy } from 'vite-plugin-static-copy';
 import pluginSitemap from 'vite-plugin-sitemap';
 import routes from './src/routes';
-import pluginTsCompileServiceWorker from './src/serviceWorker/pluginTsCompileServiceWorker';
-import pluginAssetsInserter from './src/serviceWorker/pluginAssetsListGenerator';
+import pluginAssetsInserter from'./src/serviceWorker/pluginAssetsListGenerator';
 import pluginDynamicImport from 'vite-plugin-dynamic-import';
 
 const pluginPrettier = () => ({ name: 'prettier' });
@@ -33,7 +32,6 @@ export default defineConfig(({ mode }: { command: 'build' | 'serve'; mode: 'deve
         dynamicRoutes: Object.keys(routes).filter(route => routes[route]),
         generateRobotsTxt: true,
       }),
-      pluginTsCompileServiceWorker(),
       pluginVitePWA({
         strategies: 'injectManifest',
         injectRegister: false,
